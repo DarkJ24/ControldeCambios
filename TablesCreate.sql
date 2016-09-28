@@ -1,7 +1,3 @@
-Drop table Estado_Requerimientos, CambiosRequerimientos, Requerimiento_Usuarios, Requerimientos, 
-Estado_Requerimientos, Tipo_Vinculacion, Sprints, Modulos, Rol_Permisos, 
-Permisos, Proyecto_Equipo, Tipo_Desarrollador, Proyectos, Usuarios_Telefonos, Usuarios;
-
 CREATE TABLE Usuarios(
 nombre varchar(25) not null,
 cedula varchar(11) primary key,
@@ -39,11 +35,15 @@ ON DELETE CASCADE
 
 CREATE TABLE Proyectos(
 nombre varchar(25) primary key,
-descripcion varchar(80)
+descripcion varchar(80),
+lider varchar(11) not null,
+constraint fk_UserProy foreign key (lider) references Usuarios(cedula)
+ON UPDATE NO ACTION
+ON DELETE NO ACTION,
 );
 
 CREATE TABLE Tipo_Desarrollador(
-nombre char(13) primary key
+nombre char(13) primary key --Tester, Diseñador, Programador
 );
 
 CREATE TABLE Proyecto_Equipo(
@@ -55,7 +55,7 @@ constraint fk_Proy foreign key (proyecto) references Proyectos(nombre)
 ON UPDATE CASCADE
 ON DELETE NO ACTION,
 constraint fk_UserPE foreign key (usuario) references Usuarios(cedula)
-ON UPDATE CASCADE
+ON UPDATE NO ACTION
 ON DELETE NO ACTION,
 constraint fk_UserPETipo foreign key (tipo) references Tipo_Desarrollador(nombre)
 ON UPDATE CASCADE
@@ -106,31 +106,31 @@ prioridad int not null,
 observaciones varchar(150),
 esfuerzo int default 1,
 estado char(13) not null,
+creadoPor varchar(11) not null,
+solicitadoPor varchar(11) not null,
 constraint primarykey_Req primary key (codigo, version),
 constraint fk_EstadoReq foreign key (estado) references Estado_Requerimientos(nombre)
 ON UPDATE CASCADE
+ON DELETE NO ACTION,
+constraint fk_ReqUserCre foreign key (creadoPor) references Usuarios(cedula)
+ON UPDATE NO ACTION
+ON DELETE NO ACTION,
+constraint fk_ReqUserSol foreign key (solicitadoPor) references Usuarios(cedula)
+ON UPDATE NO ACTION
 ON DELETE NO ACTION
 );
 
-CREATE TABLE Tipo_Vinculacion(
-nombre char(13) primary key --Creado Por, Solicitado Por, Encargado1, 2, etc...
-);
-
-CREATE TABLE Requerimiento_Usuarios(
+CREATE TABLE Requerimiento_Encargados(
 requerimiento char(15),
 version int,
 usuario varchar(11),
-vinculacion char(13),
 constraint pk_Req_User primary key (requerimiento, version, usuario),
 constraint fk_ReqResUser foreign key (usuario) references Usuarios(cedula)
-ON UPDATE CASCADE
+ON UPDATE NO ACTION
 ON DELETE NO ACTION,
 constraint fk_ReqResReq foreign key (requerimiento,version) references Requerimientos(codigo,version)
 ON UPDATE CASCADE
-ON DELETE NO ACTION,
-constraint fk_ReqResVin foreign key (vinculacion) references Tipo_Vinculacion(nombre)
-ON UPDATE CASCADE
-ON DELETE NO ACTION,
+ON DELETE NO ACTION
 );
 
 CREATE TABLE Sprint_Mod_Req(
@@ -161,9 +161,13 @@ constraint fk_ReqCam foreign key (requerimiento,versionReqVieja) references Requ
 ON UPDATE CASCADE
 ON DELETE NO ACTION,
 constraint fk_ReqCam2 foreign key (requerimiento,versionReqNueva) references Requerimientos(codigo,version)
-ON UPDATE CASCADE
+ON UPDATE NO ACTION
 ON DELETE NO ACTION,
 constraint fk_UserCam foreign key (creadoPor) references Usuarios(cedula)
-ON UPDATE CASCADE
+ON UPDATE NO ACTION
 ON DELETE NO ACTION
 );
+
+DROP TABLE CambiosRequerimientos, Sprint_Mod_Req, Requerimiento_Encargados, Requerimientos,
+Estado_Requerimientos, Sprint_Modulo, Modulos, Sprints, Proyecto_Equipo, Tipo_Desarrollador,
+Proyectos, Rol_Permisos, Permisos, Usuarios_Telefonos, Usuarios;
