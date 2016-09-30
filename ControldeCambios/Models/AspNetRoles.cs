@@ -15,16 +15,27 @@ namespace ControldeCambios.Models
 using System;
     using System.Collections.Generic;
     
-public partial class Usuarios_Telefonos
+public partial class AspNetRoles
 {
 
-    public string usuario { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public AspNetRoles()
+    {
 
-    public string telefono { get; set; }
+        this.AspNetUsers = new HashSet<AspNetUsers>();
+
+    }
+
+
+    public string Id { get; set; }
+
+    public string Name { get; set; }
 
 
 
-    public virtual Usuarios Usuarios { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+
+    public virtual ICollection<AspNetUsers> AspNetUsers { get; set; }
 
 }
 

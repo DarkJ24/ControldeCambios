@@ -204,9 +204,31 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AspNetRoles.cs">
+      <DependentUpon>CreateUserModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AspNetUsers.cs">
+      <DependentUpon>CreateUserModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\CambiosRequerimiento.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CreateUserModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CreateUserModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CreateUserModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CreateUserModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\CreateUserModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CreateUserModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\RegisterViewModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Modelo.Context.cs">
@@ -245,8 +267,11 @@
     <Compile Include="Models\Usuario.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Usuarios.cs">
+      <DependentUpon>CreateUserModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Usuarios_Telefonos.cs">
-      <DependentUpon>Modelo.tt</DependentUpon>
+      <DependentUpon>CreateUserModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -258,6 +283,16 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Models\CreateUserModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>CreateUserModel.edmx</DependentUpon>
+      <LastGenOutput>CreateUserModel.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Models\CreateUserModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>CreateUserModel.edmx</DependentUpon>
+      <LastGenOutput>CreateUserModel.cs</LastGenOutput>
+    </Content>
     <Content Include="Models\Modelo.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>Modelo.edmx</DependentUpon>
@@ -282,6 +317,13 @@
     <Content Include="Models\Modelo.edmx.diagram">
       <DependentUpon>Modelo.edmx</DependentUpon>
     </Content>
+    <EntityDeploy Include="Models\CreateUserModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>CreateUserModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\CreateUserModel.edmx.diagram">
+      <DependentUpon>CreateUserModel.edmx</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -294,7 +336,9 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
