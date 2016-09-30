@@ -13,10 +13,10 @@ namespace ControldeCambios.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class Entities : DbContext
+    public partial class IndexEntities : DbContext
     {
-        public Entities()
-            : base("name=Entities")
+        public IndexEntities()
+            : base("name=IndexEntities")
         {
         }
     
@@ -25,14 +25,8 @@ namespace ControldeCambios.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<CambiosRequerimiento> CambiosRequerimientos { get; set; }
-        public virtual DbSet<Modulo> Modulos { get; set; }
-        public virtual DbSet<Permiso> Permisos { get; set; }
-        public virtual DbSet<Proyecto> Proyectos { get; set; }
-        public virtual DbSet<Requerimiento> Requerimientos { get; set; }
-        public virtual DbSet<Rol_Permisos> Rol_Permisos { get; set; }
-        public virtual DbSet<Sprint> Sprints { get; set; }
-        public virtual DbSet<Usuario> Usuarios { get; set; }
-        public virtual DbSet<Usuarios_Telefonos> Usuarios_Telefonos { get; set; }
+        public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
+        public virtual DbSet<Usuarios> Usuarios { get; set; }
+        public virtual DbSet<AspNetRoles> AspNetRoles { get; set; }
     }
 }

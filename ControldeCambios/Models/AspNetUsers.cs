@@ -12,26 +12,31 @@ namespace ControldeCambios.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Proyecto
+    public partial class AspNetUsers
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Proyecto()
+        public AspNetUsers()
         {
-            this.Modulos = new HashSet<Modulo>();
-            this.Sprints = new HashSet<Sprint>();
-            this.Usuarios = new HashSet<Usuario>();
+            this.Usuarios = new HashSet<Usuarios>();
+            this.AspNetRoles = new HashSet<AspNetRoles>();
         }
     
-        public string nombre { get; set; }
-        public string lider { get; set; }
-        public string descripcion { get; set; }
+        public string Id { get; set; }
+        public string Email { get; set; }
+        public bool EmailConfirmed { get; set; }
+        public string PasswordHash { get; set; }
+        public string SecurityStamp { get; set; }
+        public string PhoneNumber { get; set; }
+        public bool PhoneNumberConfirmed { get; set; }
+        public bool TwoFactorEnabled { get; set; }
+        public Nullable<System.DateTime> LockoutEndDateUtc { get; set; }
+        public bool LockoutEnabled { get; set; }
+        public int AccessFailedCount { get; set; }
+        public string UserName { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Modulo> Modulos { get; set; }
-        public virtual Usuario Usuario { get; set; }
+        public virtual ICollection<Usuarios> Usuarios { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Sprint> Sprints { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Usuario> Usuarios { get; set; }
+        public virtual ICollection<AspNetRoles> AspNetRoles { get; set; }
     }
 }
