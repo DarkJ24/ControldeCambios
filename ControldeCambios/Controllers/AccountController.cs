@@ -139,6 +139,9 @@ namespace ControldeCambios.Controllers
         [AllowAnonymous]
         public ActionResult Register()
         {
+            CreateUserEntities db = new CreateUserEntities();
+            ViewBag.Name = new SelectList(db.AspNetRoles//.Where(u => !u.Name.Contains("Admin"))
+                                .ToList(), "Name", "Name");
             return View();
         }
 
@@ -149,6 +152,8 @@ namespace ControldeCambios.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
+            CreateUserEntities db = new CreateUserEntities();
+
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
@@ -156,6 +161,43 @@ namespace ControldeCambios.Controllers
                 if (result.Succeeded)
                 {
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
+
+                    
+
+                    var userEntry = new Usuarios();
+                    userEntry.cedula = model.Cedula;
+                    userEntry.nombre = model.Nombre;
+                    userEntry.id = db.AspNetUsers.Where(u => u.Email == model.Email).FirstOrDefault().Id;
+
+                    db.Usuarios.Add(userEntry);
+                    db.SaveChanges();
+
+                    var telefonoEntry = new Usuarios_Telefonos();
+                    telefonoEntry.telefono = model.Telefono;
+                    telefonoEntry.Usuarios = userEntry;
+
+                    db.Usuarios_Telefonos.Add(telefonoEntry);
+
+                    if(model.Telefono2 != null)
+                    {
+                        var telefonoEntry2 = new Usuarios_Telefonos();
+                        telefonoEntry2.telefono = model.Telefono2;
+                        telefonoEntry2.Usuarios = userEntry;
+                        db.Usuarios_Telefonos.Add(telefonoEntry2);
+                    }
+
+                    if(model.Telefono3 != null)
+                    {
+                        var telefonoEntry3 = new Usuarios_Telefonos();
+                        telefonoEntry3.telefono = model.Telefono3;
+                        telefonoEntry3.Usuarios = userEntry;
+                        db.Usuarios_Telefonos.Add(telefonoEntry3);
+                    }
+
+                    db.SaveChanges();
+
+
+                    
                     
                     // Para obtener más información sobre cómo habilitar la confirmación de cuenta y el restablecimiento de contraseña, visite http://go.microsoft.com/fwlink/?LinkID=320771
                     // Enviar correo electrónico con este vínculo
@@ -163,11 +205,17 @@ namespace ControldeCambios.Controllers
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirmar cuenta", "Para confirmar la cuenta, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
 
+                    await this.UserManager.AddToRoleAsync(user.Id, model.UserRoles);
+                    
                     return RedirectToAction("Index", "Home");
                 }
+
                 AddErrors(result);
             }
 
+           
+            ViewBag.Name = new SelectList(db.AspNetRoles//.Where(u => !u.Name.Contains("Admin"))
+                    .ToList(), "Name", "Name");
             // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
             return View(model);
         }

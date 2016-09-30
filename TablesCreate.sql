@@ -3,8 +3,6 @@ nombre varchar(25) not null,
 cedula varchar(11) primary key,
 id nvarchar(128) not null,
 constraint fk_AspUserId foreign key (id) references AspNetUsers(id)
-ON UPDATE CASCADE
-ON DELETE NO ACTION
 );
 
 CREATE TABLE Usuarios_Telefonos(
@@ -12,8 +10,6 @@ usuario varchar(11),
 telefono char(8),
 constraint pk_Req primary key (usuario, telefono),
 constraint fk_User foreign key (usuario) references Usuarios(cedula)
-ON UPDATE CASCADE
-ON DELETE CASCADE
 );
 
 CREATE TABLE Permisos(
@@ -25,41 +21,31 @@ CREATE TABLE Rol_Permisos(
 rol nvarchar(128),
 permiso int,
 constraint pk_RP primary key (rol, permiso),
-constraint fk_Rol foreign key (rol) references AspNetRoles(id)
-ON UPDATE CASCADE
-ON DELETE NO ACTION,
+constraint fk_Rol foreign key (rol) references AspNetRoles(id),
 constraint fk_Permiso foreign key (permiso) references Permisos(codigo)
-ON UPDATE CASCADE
-ON DELETE CASCADE
 );
 
 CREATE TABLE Proyectos(
 nombre varchar(25) primary key,
-descripcion varchar(80),
 lider varchar(11) not null,
-constraint fk_UserProy foreign key (lider) references Usuarios(cedula)
-ON UPDATE NO ACTION
-ON DELETE NO ACTION,
-);
-
-CREATE TABLE Tipo_Desarrollador(
-nombre char(13) primary key --Tester, Diseñador, Programador
+descripcion varchar(80),
+constraint fk_UserProyecto foreign key (lider) references Usuarios(cedula)
 );
 
 CREATE TABLE Proyecto_Equipo(
 usuario varchar(11),
 proyecto varchar(25),
-tipo char(13),
 constraint pk_ReqPE primary key (proyecto, usuario),
-constraint fk_Proy foreign key (proyecto) references Proyectos(nombre)
-ON UPDATE CASCADE
-ON DELETE NO ACTION,
+constraint fk_Proy foreign key (proyecto) references Proyectos(nombre),
 constraint fk_UserPE foreign key (usuario) references Usuarios(cedula)
-ON UPDATE NO ACTION
-ON DELETE NO ACTION,
-constraint fk_UserPETipo foreign key (tipo) references Tipo_Desarrollador(nombre)
-ON UPDATE CASCADE
-ON DELETE NO ACTION
+);
+
+CREATE TABLE Modulos(
+numero int identity(1,1),
+nombre varchar(25) not null,
+proyecto varchar(25),
+constraint pk_ReqMod primary key (proyecto, numero),
+constraint fk_ProyMod foreign key (proyecto) references Proyectos(nombre)
 );
 
 CREATE TABLE Sprints(
@@ -69,31 +55,6 @@ fechaInicio date not null,
 fechaFinal date not null,
 constraint pk_ReqSprint primary key (proyecto, numero),
 constraint fk_UserSprint foreign key (proyecto) references Proyectos(nombre)
-ON UPDATE CASCADE
-ON DELETE NO ACTION
-);
-
-CREATE TABLE Modulos(
-id int identity(1,1) primary key,
-numero int not null,
-nombre varchar(25) not null
-);
-
-CREATE TABLE Sprint_Modulo(
-proyecto varchar(25),
-sprint int not null,
-modulo int not null,
-constraint pk_SpMod primary key (proyecto, sprint, modulo),
-constraint fk_SpMod foreign key (proyecto, sprint) references Sprints(proyecto, numero)
-ON UPDATE CASCADE
-ON DELETE NO ACTION,
-constraint fk_UserSprintMod foreign key (modulo) references Modulos(id)
-ON UPDATE CASCADE
-ON DELETE NO ACTION
-);
-
-CREATE TABLE Estado_Requerimientos(
-nombre char(13) primary key --Pendiente, En Progreso, En Pruebas, Terminado
 );
 
 CREATE TABLE Requerimientos(
@@ -105,47 +66,25 @@ nombre varchar(25) not null,
 prioridad int not null,
 observaciones varchar(150),
 esfuerzo int default 1,
-estado char(13) not null,
+estado char(13) check (estado in ('Pendiente','Implementando','Probando', 'Terminado')),
 creadoPor varchar(11) not null,
 solicitadoPor varchar(11) not null,
+proyecto varchar(25) not null,
+modulo int not null,
 constraint primarykey_Req primary key (codigo, version),
-constraint fk_EstadoReq foreign key (estado) references Estado_Requerimientos(nombre)
-ON UPDATE CASCADE
-ON DELETE NO ACTION,
-constraint fk_ReqUserCre foreign key (creadoPor) references Usuarios(cedula)
-ON UPDATE NO ACTION
-ON DELETE NO ACTION,
-constraint fk_ReqUserSol foreign key (solicitadoPor) references Usuarios(cedula)
-ON UPDATE NO ACTION
-ON DELETE NO ACTION
+constraint fk_ReqUser foreign key (creadoPor) references Usuarios(cedula),
+constraint fk_ReqUser2 foreign key (solicitadoPor) references Usuarios(cedula),
+constraint fk_ModReq foreign key (proyecto, modulo) references Modulos(proyecto, numero)
 );
 
-CREATE TABLE Requerimiento_Encargados(
-requerimiento char(15),
-version int,
-usuario varchar(11),
-constraint pk_Req_User primary key (requerimiento, version, usuario),
-constraint fk_ReqResUser foreign key (usuario) references Usuarios(cedula)
-ON UPDATE NO ACTION
-ON DELETE NO ACTION,
-constraint fk_ReqResReq foreign key (requerimiento,version) references Requerimientos(codigo,version)
-ON UPDATE CASCADE
-ON DELETE NO ACTION
-);
-
-CREATE TABLE Sprint_Mod_Req(
+CREATE TABLE Sprint_Requerimientos(
 proyecto varchar(25),
 sprint int,
-modulo int,
 requerimiento char(15),
-version int,
-constraint pk_SpModReq primary key (proyecto, sprint, modulo, requerimiento, version),
-constraint fk_SpModReq foreign key (proyecto, sprint, modulo) references Sprint_Modulo(proyecto, sprint, modulo)
-ON UPDATE CASCADE
-ON DELETE NO ACTION,
-constraint fk_SpModReqReq foreign key (requerimiento, version) references Requerimientos(codigo, version)
-ON UPDATE CASCADE
-ON DELETE NO ACTION
+versionRequerimiento int,
+constraint pk_SR primary key (proyecto, sprint, requerimiento, versionRequerimiento),
+constraint fk_ProySR foreign key (proyecto,sprint) references Sprints(proyecto,numero),
+constraint fk_ReqSR foreign key (requerimiento,versionRequerimiento) references Requerimientos(codigo,version),
 );
 
 CREATE TABLE CambiosRequerimientos(
@@ -157,17 +96,7 @@ fecha date default getDate(),
 comentarios varchar(150),
 motivo varchar(80),
 constraint pk_ReqCam primary key (requerimiento, versionReqVieja, versionReqNueva),
-constraint fk_ReqCam foreign key (requerimiento,versionReqVieja) references Requerimientos(codigo,version)
-ON UPDATE CASCADE
-ON DELETE NO ACTION,
-constraint fk_ReqCam2 foreign key (requerimiento,versionReqNueva) references Requerimientos(codigo,version)
-ON UPDATE NO ACTION
-ON DELETE NO ACTION,
+constraint fk_ReqCam foreign key (requerimiento,versionReqVieja) references Requerimientos(codigo,version),
+constraint fk_ReqCam2 foreign key (requerimiento,versionReqNueva) references Requerimientos(codigo,version),
 constraint fk_UserCam foreign key (creadoPor) references Usuarios(cedula)
-ON UPDATE NO ACTION
-ON DELETE NO ACTION
 );
-
-DROP TABLE CambiosRequerimientos, Sprint_Mod_Req, Requerimiento_Encargados, Requerimientos,
-Estado_Requerimientos, Sprint_Modulo, Modulos, Sprints, Proyecto_Equipo, Tipo_Desarrollador,
-Proyectos, Rol_Permisos, Permisos, Usuarios_Telefonos, Usuarios;
