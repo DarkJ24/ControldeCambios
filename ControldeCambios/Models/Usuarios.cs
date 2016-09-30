@@ -12,11 +12,12 @@ namespace ControldeCambios.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Rol_Permisos
+    public partial class Usuarios
     {
-        public string rol { get; set; }
-        public int permiso { get; set; }
+        public string nombre { get; set; }
+        public string cedula { get; set; }
+        public string id { get; set; }
     
-        public virtual Permiso Permiso1 { get; set; }
+        public virtual AspNetUsers AspNetUsers { get; set; }
     }
 }

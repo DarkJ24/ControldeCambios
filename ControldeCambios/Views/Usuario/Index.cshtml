@@ -1,0 +1,46 @@
+﻿@model ControldeCambios.Models.ModeloIntermedioIndex
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Cédula
+        </th>
+        <th>
+            Nombre
+        </th>
+        
+        <th>
+            Correo
+        </th>
+        <th></th>
+    </tr>
+    @for (int i = 0; i < Model.listaUsuarios.Count; i++)
+    {
+        <tr>
+            <td>@Html.DisplayFor(modelItem => Model.listaUsuarios.ElementAt(i).cedula)</td>
+            <td>@Html.DisplayFor(modelItem => Model.listaUsuarios.ElementAt(i).nombre)</td>
+            
+            <td>
+                @for (int j = 0; j < Model.listaAspUser.Count; j++)
+                {
+                    if (Model.listaAspUser.ElementAt(j).Id.Equals(Model.listaUsuarios.ElementAt(i).id))
+                    {
+                        @Html.DisplayFor(modelItem => Model.listaAspUser.ElementAt(j).Email)
+                        @Html.Raw(" ")
+                    }
+                }
+            </td>
+            <td>
+            </td>
+        </tr>
+    }
+    </table>

@@ -5,28 +5,11 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="8f4627deea82470ab59ffd98988056b9" Name="Diagram1" ZoomLevel="64">
-        <EntityTypeShape EntityType="ModeloEntities.CambiosRequerimiento" Width="1.5" PointX="3" PointY="5.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ModeloEntities.Modulo" Width="1.5" PointX="5.25" PointY="8.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="ModeloEntities.Permiso" Width="1.5" PointX="0.75" PointY="0.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ModeloEntities.Proyecto" Width="1.5" PointX="3" PointY="9.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="ModeloEntities.Requerimiento" Width="1.5" PointX="7.5" PointY="7.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ModeloEntities.Rol_Permisos" Width="1.5" PointX="3" PointY="0.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ModeloEntities.Sprint" Width="1.5" PointX="5.25" PointY="11.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="ModeloEntities.Usuario" Width="1.5" PointX="0.75" PointY="7" IsExpanded="true" />
-        <EntityTypeShape EntityType="ModeloEntities.Usuarios_Telefonos" Width="1.5" PointX="3" PointY="14" IsExpanded="true" />
-        <AssociationConnector Association="ModeloEntities.fk_ReqCam" ManuallyRouted="false" />
-        <AssociationConnector Association="ModeloEntities.fk_ReqCam2" ManuallyRouted="false" />
-        <AssociationConnector Association="ModeloEntities.fk_UserCam" ManuallyRouted="false" />
-        <AssociationConnector Association="ModeloEntities.fk_ModReq" ManuallyRouted="false" />
-        <AssociationConnector Association="ModeloEntities.fk_ProyMod" ManuallyRouted="false" />
-        <AssociationConnector Association="ModeloEntities.fk_Permiso" ManuallyRouted="false" />
-        <AssociationConnector Association="ModeloEntities.fk_UserProyecto" ManuallyRouted="false" />
-        <AssociationConnector Association="ModeloEntities.fk_UserSprint" ManuallyRouted="false" />
-        <AssociationConnector Association="ModeloEntities.fk_ReqUser" ManuallyRouted="false" />
-        <AssociationConnector Association="ModeloEntities.fk_ReqUser2" ManuallyRouted="false" />
-        <AssociationConnector Association="ModeloEntities.fk_User" ManuallyRouted="false" />
-        <AssociationConnector Association="ModeloEntities.Proyecto_Equipo" ManuallyRouted="false" />
-        <AssociationConnector Association="ModeloEntities.Sprint_Requerimientos" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="ModeloEntities.AspNetUserRole" Width="1.5" PointX="3" PointY="1" />
+        <EntityTypeShape EntityType="ModeloEntities.AspNetUser" Width="1.5" PointX="0.75" PointY="1.25" />
+        <EntityTypeShape EntityType="ModeloEntities.Usuario" Width="1.5" PointX="3" PointY="3.375" />
+        <AssociationConnector Association="ModeloEntities.FK_dbo_AspNetUserRoles_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="ModeloEntities.fk_AspUserId" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

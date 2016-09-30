@@ -12,18 +12,18 @@ namespace ControldeCambios.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Permiso
+    public partial class AspNetRoles
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Permiso()
+        public AspNetRoles()
         {
-            this.Rol_Permisos = new HashSet<Rol_Permisos>();
+            this.AspNetUsers = new HashSet<AspNetUsers>();
         }
     
-        public int codigo { get; set; }
-        public string nombre { get; set; }
+        public string Id { get; set; }
+        public string Name { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Rol_Permisos> Rol_Permisos { get; set; }
+        public virtual ICollection<AspNetUsers> AspNetUsers { get; set; }
     }
 }

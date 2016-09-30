@@ -1,0 +1,329 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="ModeloEntities" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="CambiosRequerimiento">
+    <Key>
+      <PropertyRef Name="requerimiento" />
+      <PropertyRef Name="versionReqVieja" />
+      <PropertyRef Name="versionReqNueva" />
+    </Key>
+    <Property Name="creadoPor" Type="String" MaxLength="11" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="requerimiento" Type="String" MaxLength="15" FixedLength="true" Unicode="false" Nullable="false" />
+    <Property Name="versionReqVieja" Type="Int32" Nullable="false" />
+    <Property Name="versionReqNueva" Type="Int32" Nullable="false" />
+    <Property Name="fecha" Type="DateTime" Precision="0" />
+    <Property Name="comentarios" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="motivo" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Requerimiento1" Relationship="Self.fk_ReqCam" FromRole="CambiosRequerimientos" ToRole="Requerimientos" />
+    <NavigationProperty Name="Requerimiento2" Relationship="Self.fk_ReqCam2" FromRole="CambiosRequerimientos" ToRole="Requerimientos" />
+    <NavigationProperty Name="Usuario" Relationship="Self.fk_UserCam" FromRole="CambiosRequerimientos" ToRole="Usuarios" />
+  </EntityType>
+  <EntityType Name="Modulo">
+    <Key>
+      <PropertyRef Name="numero" />
+      <PropertyRef Name="proyecto" />
+    </Key>
+    <Property Name="numero" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="nombre" Type="String" MaxLength="25" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="proyecto" Type="String" MaxLength="25" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Requerimientos" Relationship="Self.fk_ModReq" FromRole="Modulos" ToRole="Requerimientos" />
+    <NavigationProperty Name="Proyecto1" Relationship="Self.fk_ProyMod" FromRole="Modulos" ToRole="Proyectos" />
+  </EntityType>
+  <EntityType Name="Permiso">
+    <Key>
+      <PropertyRef Name="codigo" />
+    </Key>
+    <Property Name="codigo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="nombre" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Rol_Permisos" Relationship="Self.fk_Permiso" FromRole="Permisos" ToRole="Rol_Permisos" />
+  </EntityType>
+  <EntityType Name="Proyecto">
+    <Key>
+      <PropertyRef Name="nombre" />
+    </Key>
+    <Property Name="nombre" Type="String" MaxLength="25" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="lider" Type="String" MaxLength="11" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="descripcion" Type="String" MaxLength="80" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Modulos" Relationship="Self.fk_ProyMod" FromRole="Proyectos" ToRole="Modulos" />
+    <NavigationProperty Name="Usuario" Relationship="Self.fk_UserProyecto" FromRole="Proyectos" ToRole="Usuarios" />
+    <NavigationProperty Name="Sprints" Relationship="Self.fk_UserSprint" FromRole="Proyectos" ToRole="Sprints" />
+    <NavigationProperty Name="Usuarios" Relationship="Self.Proyecto_Equipo" FromRole="Proyectos" ToRole="Usuarios" />
+  </EntityType>
+  <EntityType Name="Requerimiento">
+    <Key>
+      <PropertyRef Name="codigo" />
+      <PropertyRef Name="version" />
+    </Key>
+    <Property Name="codigo" Type="String" MaxLength="15" FixedLength="true" Unicode="false" Nullable="false" />
+    <Property Name="version" Type="Int32" Nullable="false" />
+    <Property Name="creadoEn" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="descripcion" Type="String" MaxLength="120" FixedLength="false" Unicode="false" />
+    <Property Name="nombre" Type="String" MaxLength="25" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="prioridad" Type="Int32" Nullable="false" />
+    <Property Name="observaciones" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="esfuerzo" Type="Int32" />
+    <Property Name="estado" Type="String" MaxLength="13" FixedLength="true" Unicode="false" />
+    <Property Name="creadoPor" Type="String" MaxLength="11" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="solicitadoPor" Type="String" MaxLength="11" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="proyecto" Type="String" MaxLength="25" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="modulo" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="CambiosRequerimientos" Relationship="Self.fk_ReqCam" FromRole="Requerimientos" ToRole="CambiosRequerimientos" />
+    <NavigationProperty Name="CambiosRequerimientos1" Relationship="Self.fk_ReqCam2" FromRole="Requerimientos" ToRole="CambiosRequerimientos" />
+    <NavigationProperty Name="Modulo1" Relationship="Self.fk_ModReq" FromRole="Requerimientos" ToRole="Modulos" />
+    <NavigationProperty Name="Usuario" Relationship="Self.fk_ReqUser" FromRole="Requerimientos" ToRole="Usuarios" />
+    <NavigationProperty Name="Usuario1" Relationship="Self.fk_ReqUser2" FromRole="Requerimientos" ToRole="Usuarios" />
+    <NavigationProperty Name="Sprints" Relationship="Self.Sprint_Requerimientos" FromRole="Requerimientos" ToRole="Sprints" />
+  </EntityType>
+  <EntityType Name="Rol_Permisos">
+    <Key>
+      <PropertyRef Name="rol" />
+      <PropertyRef Name="permiso" />
+    </Key>
+    <Property Name="rol" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="permiso" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Permiso1" Relationship="Self.fk_Permiso" FromRole="Rol_Permisos" ToRole="Permisos" />
+  </EntityType>
+  <EntityType Name="Sprint">
+    <Key>
+      <PropertyRef Name="proyecto" />
+      <PropertyRef Name="numero" />
+    </Key>
+    <Property Name="proyecto" Type="String" MaxLength="25" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="numero" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="fechaInicio" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="fechaFinal" Type="DateTime" Nullable="false" Precision="0" />
+    <NavigationProperty Name="Proyecto1" Relationship="Self.fk_UserSprint" FromRole="Sprints" ToRole="Proyectos" />
+    <NavigationProperty Name="Requerimientos" Relationship="Self.Sprint_Requerimientos" FromRole="Sprints" ToRole="Requerimientos" />
+  </EntityType>
+  <EntityType Name="Usuario">
+    <Key>
+      <PropertyRef Name="cedula" />
+    </Key>
+    <Property Name="nombre" Type="String" MaxLength="25" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="cedula" Type="String" MaxLength="11" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="id" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="CambiosRequerimientos" Relationship="Self.fk_UserCam" FromRole="Usuarios" ToRole="CambiosRequerimientos" />
+    <NavigationProperty Name="Proyectos" Relationship="Self.fk_UserProyecto" FromRole="Usuarios" ToRole="Proyectos" />
+    <NavigationProperty Name="Requerimientos" Relationship="Self.fk_ReqUser" FromRole="Usuarios" ToRole="Requerimientos" />
+    <NavigationProperty Name="Requerimientos1" Relationship="Self.fk_ReqUser2" FromRole="Usuarios" ToRole="Requerimientos" />
+    <NavigationProperty Name="Usuarios_Telefonos" Relationship="Self.fk_User" FromRole="Usuarios" ToRole="Usuarios_Telefonos" />
+    <NavigationProperty Name="Proyectos1" Relationship="Self.Proyecto_Equipo" FromRole="Usuarios" ToRole="Proyectos" />
+  </EntityType>
+  <EntityType Name="Usuarios_Telefonos">
+    <Key>
+      <PropertyRef Name="usuario" />
+      <PropertyRef Name="telefono" />
+    </Key>
+    <Property Name="usuario" Type="String" MaxLength="11" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="telefono" Type="String" MaxLength="8" FixedLength="true" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="Usuario1" Relationship="Self.fk_User" FromRole="Usuarios_Telefonos" ToRole="Usuarios" />
+  </EntityType>
+  <Association Name="fk_ReqCam">
+    <End Role="Requerimientos" Type="Self.Requerimiento" Multiplicity="1" />
+    <End Role="CambiosRequerimientos" Type="Self.CambiosRequerimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Requerimientos">
+        <PropertyRef Name="codigo" />
+        <PropertyRef Name="version" />
+      </Principal>
+      <Dependent Role="CambiosRequerimientos">
+        <PropertyRef Name="requerimiento" />
+        <PropertyRef Name="versionReqVieja" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_ReqCam2">
+    <End Role="Requerimientos" Type="Self.Requerimiento" Multiplicity="1" />
+    <End Role="CambiosRequerimientos" Type="Self.CambiosRequerimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Requerimientos">
+        <PropertyRef Name="codigo" />
+        <PropertyRef Name="version" />
+      </Principal>
+      <Dependent Role="CambiosRequerimientos">
+        <PropertyRef Name="requerimiento" />
+        <PropertyRef Name="versionReqNueva" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_UserCam">
+    <End Role="Usuarios" Type="Self.Usuario" Multiplicity="1" />
+    <End Role="CambiosRequerimientos" Type="Self.CambiosRequerimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuarios">
+        <PropertyRef Name="cedula" />
+      </Principal>
+      <Dependent Role="CambiosRequerimientos">
+        <PropertyRef Name="creadoPor" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_ModReq">
+    <End Role="Modulos" Type="Self.Modulo" Multiplicity="1" />
+    <End Role="Requerimientos" Type="Self.Requerimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Modulos">
+        <PropertyRef Name="proyecto" />
+        <PropertyRef Name="numero" />
+      </Principal>
+      <Dependent Role="Requerimientos">
+        <PropertyRef Name="proyecto" />
+        <PropertyRef Name="modulo" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_ProyMod">
+    <End Role="Proyectos" Type="Self.Proyecto" Multiplicity="1" />
+    <End Role="Modulos" Type="Self.Modulo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyectos">
+        <PropertyRef Name="nombre" />
+      </Principal>
+      <Dependent Role="Modulos">
+        <PropertyRef Name="proyecto" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_Permiso">
+    <End Role="Permisos" Type="Self.Permiso" Multiplicity="1" />
+    <End Role="Rol_Permisos" Type="Self.Rol_Permisos" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Permisos">
+        <PropertyRef Name="codigo" />
+      </Principal>
+      <Dependent Role="Rol_Permisos">
+        <PropertyRef Name="permiso" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_UserProyecto">
+    <End Role="Usuarios" Type="Self.Usuario" Multiplicity="1" />
+    <End Role="Proyectos" Type="Self.Proyecto" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuarios">
+        <PropertyRef Name="cedula" />
+      </Principal>
+      <Dependent Role="Proyectos">
+        <PropertyRef Name="lider" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_UserSprint">
+    <End Role="Proyectos" Type="Self.Proyecto" Multiplicity="1" />
+    <End Role="Sprints" Type="Self.Sprint" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyectos">
+        <PropertyRef Name="nombre" />
+      </Principal>
+      <Dependent Role="Sprints">
+        <PropertyRef Name="proyecto" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_ReqUser">
+    <End Role="Usuarios" Type="Self.Usuario" Multiplicity="1" />
+    <End Role="Requerimientos" Type="Self.Requerimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuarios">
+        <PropertyRef Name="cedula" />
+      </Principal>
+      <Dependent Role="Requerimientos">
+        <PropertyRef Name="creadoPor" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_ReqUser2">
+    <End Role="Usuarios" Type="Self.Usuario" Multiplicity="1" />
+    <End Role="Requerimientos" Type="Self.Requerimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuarios">
+        <PropertyRef Name="cedula" />
+      </Principal>
+      <Dependent Role="Requerimientos">
+        <PropertyRef Name="solicitadoPor" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_User">
+    <End Role="Usuarios" Type="Self.Usuario" Multiplicity="1" />
+    <End Role="Usuarios_Telefonos" Type="Self.Usuarios_Telefonos" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuarios">
+        <PropertyRef Name="cedula" />
+      </Principal>
+      <Dependent Role="Usuarios_Telefonos">
+        <PropertyRef Name="usuario" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="Proyecto_Equipo">
+    <End Role="Proyectos" Type="Self.Proyecto" Multiplicity="*" />
+    <End Role="Usuarios" Type="Self.Usuario" Multiplicity="*" />
+  </Association>
+  <Association Name="Sprint_Requerimientos">
+    <End Role="Sprints" Type="Self.Sprint" Multiplicity="*" />
+    <End Role="Requerimientos" Type="Self.Requerimiento" Multiplicity="*" />
+  </Association>
+  <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="CambiosRequerimientos" EntityType="Self.CambiosRequerimiento" />
+    <EntitySet Name="Modulos" EntityType="Self.Modulo" />
+    <EntitySet Name="Permisos" EntityType="Self.Permiso" />
+    <EntitySet Name="Proyectos" EntityType="Self.Proyecto" />
+    <EntitySet Name="Requerimientos" EntityType="Self.Requerimiento" />
+    <EntitySet Name="Rol_Permisos" EntityType="Self.Rol_Permisos" />
+    <EntitySet Name="Sprints" EntityType="Self.Sprint" />
+    <EntitySet Name="Usuarios" EntityType="Self.Usuario" />
+    <EntitySet Name="Usuarios_Telefonos" EntityType="Self.Usuarios_Telefonos" />
+    <AssociationSet Name="fk_ReqCam" Association="Self.fk_ReqCam">
+      <End Role="Requerimientos" EntitySet="Requerimientos" />
+      <End Role="CambiosRequerimientos" EntitySet="CambiosRequerimientos" />
+    </AssociationSet>
+    <AssociationSet Name="fk_ReqCam2" Association="Self.fk_ReqCam2">
+      <End Role="Requerimientos" EntitySet="Requerimientos" />
+      <End Role="CambiosRequerimientos" EntitySet="CambiosRequerimientos" />
+    </AssociationSet>
+    <AssociationSet Name="fk_UserCam" Association="Self.fk_UserCam">
+      <End Role="Usuarios" EntitySet="Usuarios" />
+      <End Role="CambiosRequerimientos" EntitySet="CambiosRequerimientos" />
+    </AssociationSet>
+    <AssociationSet Name="fk_ModReq" Association="Self.fk_ModReq">
+      <End Role="Modulos" EntitySet="Modulos" />
+      <End Role="Requerimientos" EntitySet="Requerimientos" />
+    </AssociationSet>
+    <AssociationSet Name="fk_ProyMod" Association="Self.fk_ProyMod">
+      <End Role="Proyectos" EntitySet="Proyectos" />
+      <End Role="Modulos" EntitySet="Modulos" />
+    </AssociationSet>
+    <AssociationSet Name="fk_Permiso" Association="Self.fk_Permiso">
+      <End Role="Permisos" EntitySet="Permisos" />
+      <End Role="Rol_Permisos" EntitySet="Rol_Permisos" />
+    </AssociationSet>
+    <AssociationSet Name="fk_UserProyecto" Association="Self.fk_UserProyecto">
+      <End Role="Usuarios" EntitySet="Usuarios" />
+      <End Role="Proyectos" EntitySet="Proyectos" />
+    </AssociationSet>
+    <AssociationSet Name="fk_UserSprint" Association="Self.fk_UserSprint">
+      <End Role="Proyectos" EntitySet="Proyectos" />
+      <End Role="Sprints" EntitySet="Sprints" />
+    </AssociationSet>
+    <AssociationSet Name="fk_ReqUser" Association="Self.fk_ReqUser">
+      <End Role="Usuarios" EntitySet="Usuarios" />
+      <End Role="Requerimientos" EntitySet="Requerimientos" />
+    </AssociationSet>
+    <AssociationSet Name="fk_ReqUser2" Association="Self.fk_ReqUser2">
+      <End Role="Usuarios" EntitySet="Usuarios" />
+      <End Role="Requerimientos" EntitySet="Requerimientos" />
+    </AssociationSet>
+    <AssociationSet Name="fk_User" Association="Self.fk_User">
+      <End Role="Usuarios" EntitySet="Usuarios" />
+      <End Role="Usuarios_Telefonos" EntitySet="Usuarios_Telefonos" />
+    </AssociationSet>
+    <AssociationSet Name="Proyecto_Equipo" Association="Self.Proyecto_Equipo">
+      <End Role="Proyectos" EntitySet="Proyectos" />
+      <End Role="Usuarios" EntitySet="Usuarios" />
+    </AssociationSet>
+    <AssociationSet Name="Sprint_Requerimientos" Association="Self.Sprint_Requerimientos">
+      <End Role="Sprints" EntitySet="Sprints" />
+      <End Role="Requerimientos" EntitySet="Requerimientos" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
