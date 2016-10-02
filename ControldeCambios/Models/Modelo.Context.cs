@@ -26,12 +26,16 @@ namespace ControldeCambios.Models
         }
     
         public virtual DbSet<CambiosRequerimiento> CambiosRequerimientos { get; set; }
+        public virtual DbSet<Estado_Requerimientos> Estado_Requerimientos { get; set; }
         public virtual DbSet<Modulo> Modulos { get; set; }
         public virtual DbSet<Permiso> Permisos { get; set; }
+        public virtual DbSet<Proyecto_Equipo> Proyecto_Equipo { get; set; }
         public virtual DbSet<Proyecto> Proyectos { get; set; }
         public virtual DbSet<Requerimiento> Requerimientos { get; set; }
         public virtual DbSet<Rol_Permisos> Rol_Permisos { get; set; }
+        public virtual DbSet<Sprint_Modulo> Sprint_Modulo { get; set; }
         public virtual DbSet<Sprint> Sprints { get; set; }
+        public virtual DbSet<Tipo_Desarrollador> Tipo_Desarrollador { get; set; }
         public virtual DbSet<Usuario> Usuarios { get; set; }
         public virtual DbSet<Usuarios_Telefonos> Usuarios_Telefonos { get; set; }
     }

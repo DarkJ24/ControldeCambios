@@ -1,0 +1,66 @@
+﻿@model ControldeCambios.Models.UsuariosModelo
+@{
+    ViewBag.Title = "index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Usuarios</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            Cedula
+        </th>
+        <th>
+            Nombre
+        </th>
+        <th>
+            Correo
+        </th>
+        <th>
+            Rol
+        </th>
+        <th>
+            Detalles
+        </th>
+    </tr>
+    @for (int i = 0; i < Model.usuarios.Count; i++)
+    {
+        <tr id="@(Model.usuarios.ElementAt(i).cedula)">
+            <td>
+                @Html.DisplayFor(modelItem =>
+Model.usuarios.ElementAt(i).cedula)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem =>
+Model.usuarios.ElementAt(i).nombre)
+            </td>
+            <td>
+                @for (int j = 0; j < Model.identityUsuarios.Count; j++)
+                {
+                    if (Model.usuarios.ElementAt(i).id.Equals(Model.identityUsuarios.ElementAt(j).Id))
+                    {
+                       @Html.DisplayFor(modelItem =>
+Model.identityUsuarios.ElementAt(j).Email)
+                       @Html.Raw("</td><td>")
+                        for (int k = 0; k < Model.roles.Count; k++)
+                        {
+                            if (Model.roles.ElementAt(k).Id.Equals(Model.identityUsuarios.ElementAt(j).Roles.First().RoleId))
+                            {
+                                @Html.DisplayFor(modelItem =>
+Model.roles.ElementAt(k).Name)
+                            }
+                        }
+                    }
+                }
+            </td>
+            <td>
+                @Html.ActionLink("Detalles", "Detalles", new
+           {
+               id =
+Model.usuarios.ElementAt(i).cedula
+           })
+            </td>
+        </tr>
+    }
+</table>

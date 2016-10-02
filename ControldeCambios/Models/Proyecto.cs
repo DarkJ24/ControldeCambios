@@ -17,21 +17,18 @@ namespace ControldeCambios.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Proyecto()
         {
-            this.Modulos = new HashSet<Modulo>();
+            this.Proyecto_Equipo = new HashSet<Proyecto_Equipo>();
             this.Sprints = new HashSet<Sprint>();
-            this.Usuarios = new HashSet<Usuario>();
         }
     
         public string nombre { get; set; }
-        public string lider { get; set; }
         public string descripcion { get; set; }
+        public string lider { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Modulo> Modulos { get; set; }
+        public virtual ICollection<Proyecto_Equipo> Proyecto_Equipo { get; set; }
         public virtual Usuario Usuario { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Sprint> Sprints { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Usuario> Usuarios { get; set; }
     }
 }

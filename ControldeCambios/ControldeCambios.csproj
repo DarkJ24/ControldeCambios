@@ -200,11 +200,16 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\Roles_PermisosController.cs" />
+    <Compile Include="Controllers\UsuariosController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CambiosRequerimiento.cs">
+      <DependentUpon>Modelo.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Estado_Requerimientos.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\IdentityModels.cs" />
@@ -233,18 +238,29 @@
     <Compile Include="Models\Proyecto.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Proyecto_Equipo.cs">
+      <DependentUpon>Modelo.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Requerimiento.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Roles_Permisos.cs" />
     <Compile Include="Models\Rol_Permisos.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Sprint.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Sprint_Modulo.cs">
+      <DependentUpon>Modelo.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Tipo_Desarrollador.cs">
+      <DependentUpon>Modelo.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Usuario.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\UsuariosModelo.cs" />
     <Compile Include="Models\Usuarios_Telefonos.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
@@ -328,6 +344,9 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <Content Include="Views\Roles_Permisos\index.cshtml" />
+    <Content Include="Views\Usuarios\index.cshtml" />
+    <Content Include="Views\Usuarios\detalles.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

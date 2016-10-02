@@ -12,21 +12,17 @@ namespace ControldeCambios.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Sprint
+    public partial class Tipo_Desarrollador
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Sprint()
+        public Tipo_Desarrollador()
         {
-            this.Sprint_Modulo = new HashSet<Sprint_Modulo>();
+            this.Proyecto_Equipo = new HashSet<Proyecto_Equipo>();
         }
     
-        public string proyecto { get; set; }
-        public int numero { get; set; }
-        public System.DateTime fechaInicio { get; set; }
-        public System.DateTime fechaFinal { get; set; }
+        public string nombre { get; set; }
     
-        public virtual Proyecto Proyecto1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Sprint_Modulo> Sprint_Modulo { get; set; }
+        public virtual ICollection<Proyecto_Equipo> Proyecto_Equipo { get; set; }
     }
 }

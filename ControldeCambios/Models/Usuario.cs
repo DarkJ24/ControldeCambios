@@ -18,11 +18,12 @@ namespace ControldeCambios.Models
         public Usuario()
         {
             this.CambiosRequerimientos = new HashSet<CambiosRequerimiento>();
+            this.Proyecto_Equipo = new HashSet<Proyecto_Equipo>();
             this.Proyectos = new HashSet<Proyecto>();
             this.Requerimientos = new HashSet<Requerimiento>();
             this.Requerimientos1 = new HashSet<Requerimiento>();
             this.Usuarios_Telefonos = new HashSet<Usuarios_Telefonos>();
-            this.Proyectos1 = new HashSet<Proyecto>();
+            this.Requerimientos2 = new HashSet<Requerimiento>();
         }
     
         public string nombre { get; set; }
@@ -32,6 +33,8 @@ namespace ControldeCambios.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CambiosRequerimiento> CambiosRequerimientos { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Proyecto_Equipo> Proyecto_Equipo { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Proyecto> Proyectos { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Requerimiento> Requerimientos { get; set; }
@@ -40,6 +43,6 @@ namespace ControldeCambios.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Usuarios_Telefonos> Usuarios_Telefonos { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Proyecto> Proyectos1 { get; set; }
+        public virtual ICollection<Requerimiento> Requerimientos2 { get; set; }
     }
 }
