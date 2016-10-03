@@ -3,6 +3,10 @@ using System.Web.Mvc;
 using ControldeCambios.Models;
 using System.Net;
 using System;
+using System.Web;
+using Microsoft.AspNet.Identity.Owin;
+using System.Threading.Tasks;
+using Microsoft.AspNet.Identity;
 
 namespace ControldeCambios.Controllers
 {
@@ -10,6 +14,20 @@ namespace ControldeCambios.Controllers
     {
         Entities baseDatos = new Entities();
         ApplicationDbContext context = new ApplicationDbContext();
+
+        private ApplicationUserManager _userManager;
+
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
 
         // GET: Usuarios
         public ActionResult Index()
@@ -51,6 +69,90 @@ namespace ControldeCambios.Controllers
             modelo.rol = context.Roles.Find(modelo.identityUsuario.Roles.First().RoleId);
             ViewBag.Name = new SelectList(context.Roles.ToList(), "Id", "Name", modelo.rol);
             return View(modelo);
+        }
+
+        // GET: /Usuarios/Crear
+        [AllowAnonymous]
+        public ActionResult Crear()
+        {
+
+            ViewBag.Name = new SelectList(context.Roles
+                                .ToList(), "Name", "Name");
+            return View();
+        }
+
+        // POST: /Usuarios/Crear
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Crear(CrearUsuarioModel model)
+        {
+            Entities db = new Entities();
+
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var result = await UserManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+
+                    var userEntry = new Usuario();
+                    userEntry.cedula = model.Cedula;
+                    userEntry.nombre = model.Nombre;
+                    userEntry.id = context.Users.Where(u => u.Email == model.Email).FirstOrDefault().Id;
+
+                    db.Usuarios.Add(userEntry);
+                    db.SaveChanges();
+
+                    var telefonoEntry = new Usuarios_Telefonos();
+                    telefonoEntry.telefono = model.Telefono;
+                    telefonoEntry.usuario = model.Cedula;
+
+                    db.Usuarios_Telefonos.Add(telefonoEntry);
+
+                    if (model.Telefono2 != null)
+                    {
+                        var telefonoEntry2 = new Usuarios_Telefonos();
+                        telefonoEntry2.telefono = model.Telefono2;
+                        telefonoEntry2.usuario = model.Cedula;
+                        db.Usuarios_Telefonos.Add(telefonoEntry2);
+                    }
+
+                    if (model.Telefono3 != null)
+                    {
+                        var telefonoEntry3 = new Usuarios_Telefonos();
+                        telefonoEntry3.telefono = model.Telefono3;
+                        telefonoEntry3.usuario = model.Cedula;
+                        db.Usuarios_Telefonos.Add(telefonoEntry3);
+                    }
+
+                    db.SaveChanges();
+
+
+
+
+                    // Para obtener más información sobre cómo habilitar la confirmación de cuenta y el restablecimiento de contraseña, visite http://go.microsoft.com/fwlink/?LinkID=320771
+                    // Enviar correo electrónico con este vínculo
+                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    // await UserManager.SendEmailAsync(user.Id, "Confirmar cuenta", "Para confirmar la cuenta, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
+
+                    await this.UserManager.AddToRoleAsync(user.Id, model.UserRoles);
+
+                    return RedirectToAction("Index", "Usuarios");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error);
+                }
+            }
+
+
+            ViewBag.Name = new SelectList(context.Roles
+                    .ToList(), "Name", "Name");
+            // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
+            return View(model);
         }
     }
 }
