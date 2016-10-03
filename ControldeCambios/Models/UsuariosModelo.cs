@@ -5,14 +5,14 @@ namespace ControldeCambios.Models
 {
     public class UsuariosModelo
     {
-        public Usuario usuario = new Usuario();
-        public ApplicationUser identityUsuario = new ApplicationUser();
-        public IdentityRole rol = new IdentityRole();
-        public Usuarios_Telefonos tel1 = new Usuarios_Telefonos();
-        public Usuarios_Telefonos tel2 = new Usuarios_Telefonos();
-        public List<Usuario> usuarios = new List<Usuario>();
-        public List<ApplicationUser> identityUsuarios = new List<ApplicationUser>();
-        public List<IdentityRole> roles = new List<IdentityRole>();
-        public List<Usuarios_Telefonos> telefonos = new List<Usuarios_Telefonos>();
+        public Usuario usuario { get; set; }
+        public ApplicationUser identityUsuario { get; set; }
+        public IdentityRole rol { get; set; }
+        public Usuarios_Telefonos tel1 { get; set; }
+        public Usuarios_Telefonos tel2 { get; set; }
+        public List<Usuario> usuarios { get; set; }
+        public List<ApplicationUser> identityUsuarios { get; set; }
+        public List<IdentityRole> roles { get; set; }
+        public List<Usuarios_Telefonos> telefonos { get; set; }
     }
 }

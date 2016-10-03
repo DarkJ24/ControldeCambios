@@ -71,6 +71,16 @@ namespace ControldeCambios.Controllers
             return View(modelo);
         }
 
+        // POST: Detalles
+        // POST: /Usuarios/Crear
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public ActionResult Detalles(UsuariosModelo model)
+        {
+            return RedirectToAction("Index", "Usuarios");
+        }
+
         // GET: /Usuarios/Crear
         [AllowAnonymous]
         public ActionResult Crear()
@@ -154,5 +164,7 @@ namespace ControldeCambios.Controllers
             // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
             return View(model);
         }
+
+
     }
 }
