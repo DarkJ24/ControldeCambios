@@ -10,6 +10,7 @@ namespace ControldeCambios.Models
         public IdentityRole rol { get; set; }
         public Usuarios_Telefonos tel1 { get; set; }
         public Usuarios_Telefonos tel2 { get; set; }
+        public Usuarios_Telefonos tel3 { get; set; }
         public List<Usuario> usuarios { get; set; }
         public List<ApplicationUser> identityUsuarios { get; set; }
         public List<IdentityRole> roles { get; set; }
