@@ -73,3 +73,20 @@ _[Ss]cripts
 *.nupkg
 *.ncrunchsolution
 *.dot[Cc]over
+# Autogenerado por .NET #
+ControldeCambios/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+ControldeCambios/obj/Debug/ControldeCambios.pdb
+ControldeCambios/obj/Debug/ControldeCambios.dll
+ControldeCambios/obj/Debug/ControldeCambios.csprojResolveAssemblyReference.cache
+ControldeCambios/obj/Debug/ControldeCambios.csproj.FileListAbsolute.txt
+ControldeCambios/bin/ControldeCambios.pdb
+ControldeCambios/bin/ControldeCambios.dll.config
+ControldeCambios/bin/ControldeCambios.dll
+ControldeCambios/Web.config
+ControldeCambios/Views/Usuarios/detalles.cshtml
+ControldeCambios/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+ControldeCambios/obj/Debug/ControldeCambios.pdb
+ControldeCambios/obj/Debug/ControldeCambios.dll
+ControldeCambios/obj/Debug/ControldeCambios.csprojResolveAssemblyReference.cache
+ControldeCambios/bin/ControldeCambios.pdb
+ControldeCambios/bin/ControldeCambios.dll
