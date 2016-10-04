@@ -77,6 +77,22 @@ namespace ControldeCambios.Controllers
             return View(modelo);
         }
 
+        //POST: Delete
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Borrar(UsuariosModelo model)
+        {
+            var user = await baseDatos.Usuarios.FindAsync(model.usuario.cedula);
+            baseDatos.Entry(user).State = System.Data.Entity.EntityState.Deleted;
+            baseDatos.SaveChanges();
+
+            var aspUser = await UserManager.FindByIdAsync(model.identityUsuario.Id);
+            await UserManager.DeleteAsync(aspUser);
+
+            return RedirectToAction("Index", "Usuarios");
+        }
+
         // POST: Detalles
         [HttpPost]
         [AllowAnonymous]
@@ -134,6 +150,8 @@ namespace ControldeCambios.Controllers
 
             return RedirectToAction("Index", "Usuarios");
         }
+
+
 
         // GET: /Usuarios/Crear
         [AllowAnonymous]
