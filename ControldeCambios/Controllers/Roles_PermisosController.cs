@@ -25,7 +25,8 @@ namespace ControldeCambios.Controllers
             modelo.roles = context.Roles.ToList();
             modelo.permisos = baseDatos.Permisos.ToList();
             modelo.rol_permisos = baseDatos.Rol_Permisos.ToList();
-            modelo.diccionario = new Dictionary<System.Tuple<string, int>, bool>();
+            modelo.rolPermisoId = new List<Roles_Permisos.Relacion_Rol_Permiso>();
+
 
             foreach (var rol in modelo.roles)
             {
@@ -40,15 +41,46 @@ namespace ControldeCambios.Controllers
                         if(rol_permiso.permiso == permiso.codigo && rol.Id == rol_permiso.rol)
                         {
                             exists = true;
-                        }
+                        } 
                     }
 
-
-                    modelo.diccionario[System.Tuple.Create(rol.Id, permiso.codigo)] = exists;
+                    modelo.rolPermisoId.Add(new Roles_Permisos.Relacion_Rol_Permiso(rol.Id, permiso.codigo, exists));
+ 
+                    
                 }
             }
 
             return View(modelo);
+        }
+
+        //POST: Roles_Permisos
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Index(Roles_Permisos model)
+        {
+            var rol_permisos = baseDatos.Rol_Permisos.ToList();
+
+            foreach (var rol_permiso in rol_permisos)
+            {
+ 
+                    baseDatos.Entry(rol_permiso).State = System.Data.Entity.EntityState.Deleted;
+            }
+            baseDatos.SaveChanges();
+       
+
+            foreach(var relacion_rol_permiso in model.rolPermisoId)
+            {
+                if(relacion_rol_permiso.valor)
+                {
+                    var rolPermisosEntry = new Rol_Permisos();
+                    rolPermisosEntry.permiso = relacion_rol_permiso.permiso;
+                    rolPermisosEntry.rol = relacion_rol_permiso.rol;
+                    baseDatos.Rol_Permisos.Add(rolPermisosEntry);
+                }
+            }
+            baseDatos.SaveChanges();
+
+            return RedirectToAction("Index", "Roles_Permisos");
         }
     }
 }
