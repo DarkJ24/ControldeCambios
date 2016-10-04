@@ -20,7 +20,8 @@ Model.roles.ElementAt(i).Name)
             </th>
         }
     </tr>
-    @for (int i = 0; i < Model.permisos.Count; i++)
+@using(Html.BeginForm()) {
+    for (int i = 0; i < Model.permisos.Count; i++)
     {
         <tr>
             <th id="@(Model.permisos.ElementAt(i).codigo)">
@@ -30,21 +31,12 @@ Model.permisos.ElementAt(i).nombre)
             @for (int j = 0; j < Model.roles.Count; j++)
             {
                 <th id="@(Model.permisos.ElementAt(i).codigo)_/_@(Model.roles.ElementAt(j).Id)">
-                    @{bool exists = false;}
-                    @for(int k = 0; k < Model.rol_permisos.Count; k++)
-                    {
-                        if (Model.rol_permisos.ElementAt(k).rol.Equals(Model.roles.ElementAt(j).Id))
-                        {
-                            if (Model.rol_permisos.ElementAt(k).permiso.Equals(Model.permisos.ElementAt(i).codigo))
-                            {
-                                exists = true;
-                            }
-                        }
-                    }
-                    @Html.CheckBox("checkbox", exists)
+                        @Html.CheckBoxFor(m=>m.diccionario[Tuple.Create(Model.roles.ElementAt(j).Id,Model.permisos.ElementAt(i).codigo)])
+                    
                 </th>
             }
         </tr>
     }
+}
 </table>
 
