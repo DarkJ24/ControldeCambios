@@ -66,10 +66,92 @@ namespace ControldeCambios.Controllers
             {
                 modelo.tel2 = modelo.telefonos.ElementAt(1);
             }
+            if(modelo.telefonos.Count > 2)
+            {
+                modelo.tel3 = modelo.telefonos.ElementAt(2);
+            }
+            
+
             modelo.rol = context.Roles.Find(modelo.identityUsuario.Roles.First().RoleId);
-            ViewBag.Name = new SelectList(context.Roles.ToList(), "Id", "Name", modelo.rol);
+            ViewBag.Name = new SelectList(context.Roles.ToList(), "Name", "Name", modelo.rol);
             return View(modelo);
         }
+
+        //POST: Delete
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Borrar(UsuariosModelo model)
+        {
+            var user = await baseDatos.Usuarios.FindAsync(model.usuario.cedula);
+            baseDatos.Entry(user).State = System.Data.Entity.EntityState.Deleted;
+            baseDatos.SaveChanges();
+
+            var aspUser = await UserManager.FindByIdAsync(model.identityUsuario.Id);
+            await UserManager.DeleteAsync(aspUser);
+
+            return RedirectToAction("Index", "Usuarios");
+        }
+
+        // POST: Detalles
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public ActionResult Detalles(UsuariosModelo model)
+        {
+            var telefonos_viejos = baseDatos.Usuarios_Telefonos.Where(m => m.usuario == model.usuario.cedula);
+
+            foreach (Usuarios_Telefonos telefono in telefonos_viejos)
+            {
+                baseDatos.Entry(telefono).State = System.Data.Entity.EntityState.Deleted;
+            }
+            baseDatos.SaveChanges();
+
+            var telefonoEntry = new Usuarios_Telefonos();
+            telefonoEntry.telefono = model.tel1.telefono;
+            telefonoEntry.usuario = model.usuario.cedula;
+
+            baseDatos.Usuarios_Telefonos.Add(telefonoEntry);
+
+            if (model.tel2.telefono != null)
+            {
+                var telefonoEntry2 = new Usuarios_Telefonos();
+                telefonoEntry2.telefono = model.tel2.telefono;
+                telefonoEntry2.usuario = model.usuario.cedula;
+                baseDatos.Usuarios_Telefonos.Add(telefonoEntry2);
+            }
+
+            if (model.tel3.telefono != null)
+            {
+                var telefonoEntry3 = new Usuarios_Telefonos();
+                telefonoEntry3.telefono = model.tel3.telefono;
+                telefonoEntry3.usuario = model.usuario.cedula;
+                baseDatos.Usuarios_Telefonos.Add(telefonoEntry3);
+            }
+
+            baseDatos.SaveChanges();
+
+            var usuario = baseDatos.Usuarios.Find(model.usuario.cedula);
+            usuario.nombre = model.usuario.nombre;
+
+            baseDatos.Entry(usuario).State = System.Data.Entity.EntityState.Modified;
+            baseDatos.SaveChanges();
+
+            var aspUser = UserManager.FindById(model.identityUsuario.Id);
+            aspUser.UserName = model.identityUsuario.Email;
+            aspUser.Email = model.identityUsuario.Email;
+
+            UserManager.Update(aspUser);
+
+            var rolViejo = aspUser.Roles.SingleOrDefault().RoleId;
+            var nombreRolViejo = context.Roles.SingleOrDefault(m => m.Id == rolViejo).Name;
+            UserManager.RemoveFromRole(model.identityUsuario.Id, nombreRolViejo);
+            UserManager.AddToRole(model.identityUsuario.Id, model.rol.Name);
+
+            return RedirectToAction("Index", "Usuarios");
+        }
+
+
 
         // GET: /Usuarios/Crear
         [AllowAnonymous]
@@ -154,5 +236,7 @@ namespace ControldeCambios.Controllers
             // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
             return View(model);
         }
+
+
     }
 }

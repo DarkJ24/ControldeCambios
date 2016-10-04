@@ -5,8 +5,10 @@ namespace ControldeCambios.Models
 {
     public class Roles_Permisos
     {
-        public List<Rol_Permisos> rol_permisos = new List<Rol_Permisos>();
-        public List<Permiso> permisos = new List<Permiso>();
-        public List<IdentityRole> roles = new List<IdentityRole>();
+        public List<Rol_Permisos> rol_permisos { get; set; }
+        public List<Permiso> permisos { get; set; }
+        public List<IdentityRole> roles { get; set; }
+
+        public Dictionary<System.Tuple<string, int>, bool> diccionario { get; set; } // la tupla es rol, permiso
     }
 }
