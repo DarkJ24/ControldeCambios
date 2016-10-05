@@ -35,9 +35,9 @@ Model.permisos.ElementAt(i).nombre)
             {
                 <th id="@(Model.permisos.ElementAt(i).codigo)_/_@(Model.roles.ElementAt(j).Id)">
 
-                        @Html.HiddenFor(m => m.rolPermisoId[Model.roles.Count * i + j].permiso)
-                        @Html.HiddenFor(m => m.rolPermisoId[Model.roles.Count * i + j].rol)
-                        @Html.CheckBoxFor(m => m.rolPermisoId[Model.roles.Count * i +j].valor)
+                        @Html.HiddenFor(m => m.rolPermisoId[i + Model.permisos.Count * j].permiso)
+                        @Html.HiddenFor(m => m.rolPermisoId[i + Model.permisos.Count * j].rol)
+                        @Html.CheckBoxFor(m => m.rolPermisoId[i + Model.permisos.Count * j].valor)
                         
 
                 </th>
