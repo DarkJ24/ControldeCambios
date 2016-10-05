@@ -1,5 +1,6 @@
 ﻿using System.Web;
 using System.Web.Mvc;
+using ControldeCambios.App_Start;
 
 namespace ControldeCambios
 {
@@ -8,6 +9,7 @@ namespace ControldeCambios
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
+            filters.Add(new MessagesActionFilter());
         }
     }
 }
