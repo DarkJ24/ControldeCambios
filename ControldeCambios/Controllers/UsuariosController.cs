@@ -29,19 +29,42 @@ namespace ControldeCambios.Controllers
             }
         }
 
+        private bool revisarPermisos(string permiso)
+        {
+            String userID = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            var rol = context.Users.Find(userID).Roles.First();
+            var permisoID = baseDatos.Permisos.Where(m => m.nombre == permiso).First().codigo;
+            var listaRoles = baseDatos.Rol_Permisos.Where(m => m.permiso == permisoID).ToList().Select(n => n.rol);
+            bool userRol = listaRoles.Contains(rol.RoleId);
+
+            return userRol;
+        }
+
         // GET: Usuarios
         public ActionResult Index()
         {
+            if (!revisarPermisos("Consultar Usuarios"))
+            {
+                return RedirectToAction("Index", "Home"); // To do: mensaje de toastr 
+            }
             UsuariosModelo modelo = new UsuariosModelo();
             modelo.roles = context.Roles.ToList();
             modelo.usuarios = baseDatos.Usuarios.ToList();
             modelo.identityUsuarios = context.Users.ToList();
+            modelo.crearUsuario = revisarPermisos("Crear Usuarios");
+            modelo.detallesUsuario = revisarPermisos("Detalles Usuarios");
             return View(modelo);
         }
 
         // GET: Detalles
         public ActionResult Detalles(string id)
         {
+
+            if(!revisarPermisos("Detalles Usuarios"))
+            {
+                return RedirectToAction("Index", "Home"); // To do: mensaje de toastr 
+            }
+
             if (String.IsNullOrEmpty(id))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -70,7 +93,9 @@ namespace ControldeCambios.Controllers
             {
                 modelo.tel3 = modelo.telefonos.ElementAt(2);
             }
-            
+
+            modelo.eliminarUsuario = revisarPermisos("Eliminar Usuarios");
+            modelo.modificarUsuario = revisarPermisos("Modificar Usuarios");
 
             modelo.rol = context.Roles.Find(modelo.identityUsuario.Roles.First().RoleId);
             ViewBag.Name = new SelectList(context.Roles.ToList(), "Name", "Name", modelo.rol);
@@ -79,7 +104,6 @@ namespace ControldeCambios.Controllers
 
         //POST: Delete
         [HttpPost]
-        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Borrar(UsuariosModelo model)
         {
@@ -95,7 +119,6 @@ namespace ControldeCambios.Controllers
 
         // POST: Detalles
         [HttpPost]
-        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public ActionResult Detalles(UsuariosModelo model)
         {
@@ -154,10 +177,12 @@ namespace ControldeCambios.Controllers
 
 
         // GET: /Usuarios/Crear
-        [AllowAnonymous]
         public ActionResult Crear()
         {
-
+            if (!revisarPermisos("Crear Usuarios"))
+            {
+                return RedirectToAction("Index", "Home"); // To do: mensaje de toastr 
+            }
             ViewBag.Name = new SelectList(context.Roles
                                 .ToList(), "Name", "Name");
             return View();
@@ -165,7 +190,6 @@ namespace ControldeCambios.Controllers
 
         // POST: /Usuarios/Crear
         [HttpPost]
-        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Crear(CrearUsuarioModel model)
         {
