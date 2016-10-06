@@ -8,7 +8,7 @@ using Microsoft.AspNet.Identity;
 namespace ControldeCambios.Controllers
 {
 
-    public class Roles_PermisosController : Controller
+    public class Roles_PermisosController : ToastrController
     {
         ApplicationDbContext context;
         Entities baseDatos;
@@ -34,7 +34,7 @@ namespace ControldeCambios.Controllers
         public ActionResult Index()
         {
 
-            if(!revisarPermisos("GestionarPermisos"))
+            if(!revisarPermisos("Gestionar Permisos"))
             {
                 return RedirectToAction("Index", "Home"); // to do: mensaje de toastr
             }

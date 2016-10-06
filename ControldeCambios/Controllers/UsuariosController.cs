@@ -10,7 +10,7 @@ using Microsoft.AspNet.Identity;
 
 namespace ControldeCambios.Controllers
 {
-    public class UsuariosController : Controller
+    public class UsuariosController : ToastrController
     {
         Entities baseDatos = new Entities();
         ApplicationDbContext context = new ApplicationDbContext();
