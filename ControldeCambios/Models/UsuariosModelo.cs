@@ -15,5 +15,10 @@ namespace ControldeCambios.Models
         public List<ApplicationUser> identityUsuarios { get; set; }
         public List<IdentityRole> roles { get; set; }
         public List<Usuarios_Telefonos> telefonos { get; set; }
+
+        public bool eliminarUsuario { get; set; }
+        public bool modificarUsuario { get; set; }
+        public bool crearUsuario { get; set; }
+        public bool detallesUsuario { get; set; }
     }
 }

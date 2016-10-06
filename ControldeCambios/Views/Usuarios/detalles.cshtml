@@ -26,14 +26,18 @@
 
 <h2>Detalles</h2>
 <br/>
-<button type="button" class="btn btn-primary" onClick="esconderNoEditable()">Modificar</button>
-<button type="button" class="btn btn-default" onClick="esconderEditable()">Ver Detalles</button>
-@using (Html.BeginForm("Borrar", "Usuarios", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+@if (Model.modificarUsuario)
+{<button type="button" class="btn btn-primary" onClick="esconderNoEditable()">Modificar</button>
+<button type="button" class="btn btn-default" onClick="esconderEditable()">Ver Detalles</button>}
+@if (Model.eliminarUsuario)
 {
+    using (Html.BeginForm("Borrar", "Usuarios", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m => m.identityUsuario.Id)
     @Html.HiddenFor(m => m.usuario.cedula)
 <button type="submit" class="btn btn-danger">Eliminar</button>
+    }
 }
 
 <div class="noEditable" style="margin-top:15px">

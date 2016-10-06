@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using ControldeCambios.Models;
 using System.Collections.Generic;
 using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity;
 
 namespace ControldeCambios.Controllers
 {
@@ -18,9 +19,26 @@ namespace ControldeCambios.Controllers
             baseDatos = new Entities();
         }
 
+        private bool revisarPermisos(string permiso)
+        {
+            string userID = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            var rol = context.Users.Find(userID).Roles.First();
+            var permisoID = baseDatos.Permisos.Where(m => m.nombre == permiso).First().codigo;
+            var listaRoles = baseDatos.Rol_Permisos.Where(m => m.permiso == permisoID).ToList().Select(n => n.rol);
+            bool userRol = listaRoles.Contains(rol.RoleId);
+
+            return userRol;
+        }
+
         // GET: Roles_Permisos
         public ActionResult Index()
         {
+
+            if(!revisarPermisos("GestionarPermisos"))
+            {
+                return RedirectToAction("Index", "Home"); // to do: mensaje de toastr
+            }
+
             Roles_Permisos modelo = new Roles_Permisos();
             modelo.roles = context.Roles.ToList();
             modelo.permisos = baseDatos.Permisos.ToList();
