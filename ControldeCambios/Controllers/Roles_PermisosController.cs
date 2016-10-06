@@ -2,8 +2,8 @@
 using System.Web.Mvc;
 using ControldeCambios.Models;
 using System.Collections.Generic;
-using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity;
+using ControldeCambios.App_Start;
 
 namespace ControldeCambios.Controllers
 {
@@ -36,7 +36,8 @@ namespace ControldeCambios.Controllers
 
             if(!revisarPermisos("Gestionar Permisos"))
             {
-                return RedirectToAction("Index", "Home"); // to do: mensaje de toastr
+                this.AddToastMessage("Acceso Denegado", "No tienes el permiso para gestionar Roles!", ToastType.Warning);
+                return RedirectToAction("Index", "Home");
             }
 
             Roles_Permisos modelo = new Roles_Permisos();
@@ -61,10 +62,7 @@ namespace ControldeCambios.Controllers
                             exists = true;
                         } 
                     }
-
                     modelo.rolPermisoId.Add(new Roles_Permisos.Relacion_Rol_Permiso(rol.Id, permiso.codigo, exists));
- 
-                    
                 }
             }
 
@@ -84,7 +82,6 @@ namespace ControldeCambios.Controllers
                     baseDatos.Entry(rol_permiso).State = System.Data.Entity.EntityState.Deleted;
             }
             baseDatos.SaveChanges();
-       
 
             foreach(var relacion_rol_permiso in model.rolPermisoId)
             {
@@ -98,6 +95,7 @@ namespace ControldeCambios.Controllers
             }
             baseDatos.SaveChanges();
 
+            this.AddToastMessage("Permisos Guardados", "Se han logrado asignar los permisos a sus respectivos roles correctamente.", ToastType.Success);
             return RedirectToAction("Index", "Roles_Permisos");
         }
     }

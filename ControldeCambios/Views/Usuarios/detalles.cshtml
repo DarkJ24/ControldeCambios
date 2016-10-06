@@ -21,7 +21,7 @@
 <button type="button" class="btn btn-default" onClick="esconderEditable()">Ver Detalles</button>}
 @if (Model.eliminarUsuario)
 {
-    using (Html.BeginForm("Borrar", "Usuarios", FormMethod.Post, new { @class = "form-horizontal", role = "form", style = "display:inline" }))
+    using (Html.BeginForm("Borrar", "Usuarios", FormMethod.Post, new { @class = "form-horizontal", role = "form", style = "display:inline;padding-left:5px;" }))
     {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m => m.identityUsuario.Id)

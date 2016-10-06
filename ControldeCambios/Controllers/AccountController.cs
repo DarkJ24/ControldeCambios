@@ -9,11 +9,12 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using ControldeCambios.Models;
+using ControldeCambios.App_Start;
 
 namespace ControldeCambios.Controllers
 {
     [Authorize]
-    public class AccountController : Controller
+    public class AccountController : ToastrController
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
@@ -92,6 +93,7 @@ namespace ControldeCambios.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
+                    this.AddToastMessage("Bienvenido", "Esperemos que disfrutes de nuestro sistema y tengas un buen dia.", ToastType.Info);
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");

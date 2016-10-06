@@ -7,6 +7,7 @@ using System.Web;
 using Microsoft.AspNet.Identity.Owin;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
+using ControldeCambios.App_Start;
 
 namespace ControldeCambios.Controllers
 {
@@ -45,7 +46,8 @@ namespace ControldeCambios.Controllers
         {
             if (!revisarPermisos("Consultar Usuarios"))
             {
-                return RedirectToAction("Index", "Home"); // To do: mensaje de toastr 
+                this.AddToastMessage("Acceso Denegado", "No tienes permiso para consultar Usuarios!", ToastType.Warning);
+                return RedirectToAction("Index", "Home");
             }
             UsuariosModelo modelo = new UsuariosModelo();
             modelo.roles = context.Roles.ToList();
@@ -62,7 +64,8 @@ namespace ControldeCambios.Controllers
 
             if(!revisarPermisos("Detalles Usuarios"))
             {
-                return RedirectToAction("Index", "Home"); // To do: mensaje de toastr 
+                this.AddToastMessage("Acceso Denegado", "No tienes permiso para ver detalles de usuarios!", ToastType.Warning);
+                return RedirectToAction("Index", "Home");
             }
 
             if (String.IsNullOrEmpty(id))
@@ -115,6 +118,7 @@ namespace ControldeCambios.Controllers
             var aspUser = await UserManager.FindByIdAsync(model.identityUsuario.Id);
             await UserManager.DeleteAsync(aspUser);
 
+            this.AddToastMessage("Usuario Borrado", "El usuario "+ model.usuario.nombre +" se ha borrado correctamente.", ToastType.Success);
             return RedirectToAction("Index", "Usuarios");
         }
 
@@ -174,6 +178,7 @@ namespace ControldeCambios.Controllers
                 UserManager.RemoveFromRole(model.identityUsuario.Id, nombreRolViejo);
                 UserManager.AddToRole(model.identityUsuario.Id, model.rol.Name);
 
+                this.AddToastMessage("Usuario Modificado", "El usuario " + model.usuario.nombre + " se ha actualizado correctamente.", ToastType.Success);
                 return RedirectToAction("Index", "Usuarios");
 
             }
@@ -188,10 +193,10 @@ namespace ControldeCambios.Controllers
         {
             if (!revisarPermisos("Crear Usuarios"))
             {
-                return RedirectToAction("Index", "Home"); // To do: mensaje de toastr 
+                this.AddToastMessage("Acceso Denegado", "No tienes permiso para crear usuarios!", ToastType.Warning);
+                return RedirectToAction("Index", "Home");
             }
-            ViewBag.Name = new SelectList(context.Roles
-                                .ToList(), "Name", "Name");
+            ViewBag.Name = new SelectList(context.Roles.ToList(), "Name", "Name");
             return View();
         }
 
@@ -241,9 +246,6 @@ namespace ControldeCambios.Controllers
 
                     db.SaveChanges();
 
-
-
-
                     // Para obtener más información sobre cómo habilitar la confirmación de cuenta y el restablecimiento de contraseña, visite http://go.microsoft.com/fwlink/?LinkID=320771
                     // Enviar correo electrónico con este vínculo
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
@@ -251,7 +253,7 @@ namespace ControldeCambios.Controllers
                     // await UserManager.SendEmailAsync(user.Id, "Confirmar cuenta", "Para confirmar la cuenta, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
 
                     await this.UserManager.AddToRoleAsync(user.Id, model.UserRoles);
-
+                    this.AddToastMessage("Usuario Creado", "El usuario " + model.Nombre + " se ha creado correctamente.", ToastType.Success);
                     return RedirectToAction("Crear", "Usuarios");
                 }
 
@@ -262,9 +264,9 @@ namespace ControldeCambios.Controllers
             }
 
 
-            ViewBag.Name = new SelectList(context.Roles
-                    .ToList(), "Name", "Name");
+            ViewBag.Name = new SelectList(context.Roles.ToList(), "Name", "Name");
             // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
+            this.AddToastMessage("Error", "Ha ocurrido un error al crear al usuario " + model.Nombre + ".", ToastType.Error);
             return View(model);
         }
 

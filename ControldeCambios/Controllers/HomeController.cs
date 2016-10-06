@@ -11,7 +11,6 @@ namespace ControldeCambios.Controllers
     {
         public ActionResult Index()
         {
-            this.AddToastMessage("Bienvenido", "You made it all the way here!", ToastType.Success);
             return View();
         }
 

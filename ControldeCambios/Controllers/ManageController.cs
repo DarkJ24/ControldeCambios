@@ -11,7 +11,7 @@ using ControldeCambios.Models;
 namespace ControldeCambios.Controllers
 {
     [Authorize]
-    public class ManageController : Controller
+    public class ManageController : ToastrController
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
