@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Web.Mvc;
 using ControldeCambios.Models;
 using System.Net;
@@ -75,6 +75,7 @@ namespace ControldeCambios.Controllers
             {
                 return HttpNotFound();
             }
+            modelo.nombreUsuario = modelo.usuario.nombre;
             modelo.identityUsuario = context.Users.Find(modelo.usuario.id);
             if (modelo.identityUsuario == null)
             {
@@ -83,15 +84,15 @@ namespace ControldeCambios.Controllers
             modelo.telefonos = baseDatos.Usuarios_Telefonos.Where(a => a.usuario == modelo.usuario.cedula).ToList();
             if (modelo.telefonos != null && modelo.telefonos.Count > 0)
             {
-                modelo.tel1 = modelo.telefonos.ElementAt(0);
+                modelo.tel1 = modelo.telefonos.ElementAt(0).telefono;
             }
             if (modelo.telefonos.Count > 1)
             {
-                modelo.tel2 = modelo.telefonos.ElementAt(1);
+                modelo.tel2 = modelo.telefonos.ElementAt(1).telefono;
             }
-            if(modelo.telefonos.Count > 2)
+            if (modelo.telefonos.Count > 2)
             {
-                modelo.tel3 = modelo.telefonos.ElementAt(2);
+                modelo.tel3 = modelo.telefonos.ElementAt(2).telefono;
             }
 
             modelo.eliminarUsuario = revisarPermisos("Eliminar Usuarios");
@@ -122,56 +123,62 @@ namespace ControldeCambios.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Detalles(UsuariosModelo model)
         {
-            var telefonos_viejos = baseDatos.Usuarios_Telefonos.Where(m => m.usuario == model.usuario.cedula);
-
-            foreach (Usuarios_Telefonos telefono in telefonos_viejos)
+            if (ModelState.IsValid)
             {
-                baseDatos.Entry(telefono).State = System.Data.Entity.EntityState.Deleted;
+                var telefonos_viejos = baseDatos.Usuarios_Telefonos.Where(m => m.usuario == model.usuario.cedula);
+
+                foreach (Usuarios_Telefonos telefono in telefonos_viejos)
+                {
+                    baseDatos.Entry(telefono).State = System.Data.Entity.EntityState.Deleted;
+                }
+                baseDatos.SaveChanges();
+
+                var telefonoEntry = new Usuarios_Telefonos();
+                telefonoEntry.telefono = model.tel1;
+                telefonoEntry.usuario = model.usuario.cedula;
+
+                baseDatos.Usuarios_Telefonos.Add(telefonoEntry);
+
+                if (model.tel2 != null)
+                {
+                    var telefonoEntry2 = new Usuarios_Telefonos();
+                    telefonoEntry2.telefono = model.tel2;
+                    telefonoEntry2.usuario = model.usuario.cedula;
+                    baseDatos.Usuarios_Telefonos.Add(telefonoEntry2);
+                }
+
+                if (model.tel3 != null)
+                {
+                    var telefonoEntry3 = new Usuarios_Telefonos();
+                    telefonoEntry3.telefono = model.tel3;
+                    telefonoEntry3.usuario = model.usuario.cedula;
+                    baseDatos.Usuarios_Telefonos.Add(telefonoEntry3);
+                }
+
+                baseDatos.SaveChanges();
+
+                var usuario = baseDatos.Usuarios.Find(model.usuario.cedula);
+                usuario.nombre = model.nombreUsuario;
+
+                baseDatos.Entry(usuario).State = System.Data.Entity.EntityState.Modified;
+                baseDatos.SaveChanges();
+
+                var aspUser = UserManager.FindById(model.identityUsuario.Id);
+                aspUser.UserName = model.identityUsuario.Email;
+                aspUser.Email = model.identityUsuario.Email;
+
+                UserManager.Update(aspUser);
+
+                var rolViejo = aspUser.Roles.SingleOrDefault().RoleId;
+                var nombreRolViejo = context.Roles.SingleOrDefault(m => m.Id == rolViejo).Name;
+                UserManager.RemoveFromRole(model.identityUsuario.Id, nombreRolViejo);
+                UserManager.AddToRole(model.identityUsuario.Id, model.rol.Name);
+
+                return RedirectToAction("Index", "Usuarios");
+
             }
-            baseDatos.SaveChanges();
 
-            var telefonoEntry = new Usuarios_Telefonos();
-            telefonoEntry.telefono = model.tel1.telefono;
-            telefonoEntry.usuario = model.usuario.cedula;
-
-            baseDatos.Usuarios_Telefonos.Add(telefonoEntry);
-
-            if (model.tel2.telefono != null)
-            {
-                var telefonoEntry2 = new Usuarios_Telefonos();
-                telefonoEntry2.telefono = model.tel2.telefono;
-                telefonoEntry2.usuario = model.usuario.cedula;
-                baseDatos.Usuarios_Telefonos.Add(telefonoEntry2);
-            }
-
-            if (model.tel3.telefono != null)
-            {
-                var telefonoEntry3 = new Usuarios_Telefonos();
-                telefonoEntry3.telefono = model.tel3.telefono;
-                telefonoEntry3.usuario = model.usuario.cedula;
-                baseDatos.Usuarios_Telefonos.Add(telefonoEntry3);
-            }
-
-            baseDatos.SaveChanges();
-
-            var usuario = baseDatos.Usuarios.Find(model.usuario.cedula);
-            usuario.nombre = model.usuario.nombre;
-
-            baseDatos.Entry(usuario).State = System.Data.Entity.EntityState.Modified;
-            baseDatos.SaveChanges();
-
-            var aspUser = UserManager.FindById(model.identityUsuario.Id);
-            aspUser.UserName = model.identityUsuario.Email;
-            aspUser.Email = model.identityUsuario.Email;
-
-            UserManager.Update(aspUser);
-
-            var rolViejo = aspUser.Roles.SingleOrDefault().RoleId;
-            var nombreRolViejo = context.Roles.SingleOrDefault(m => m.Id == rolViejo).Name;
-            UserManager.RemoveFromRole(model.identityUsuario.Id, nombreRolViejo);
-            UserManager.AddToRole(model.identityUsuario.Id, model.rol.Name);
-
-            return RedirectToAction("Index", "Usuarios");
+            return View(model);
         }
 
 
