@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using ControldeCambios.App_Start;
 
 namespace ControldeCambios.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : ToastrController
     {
         public ActionResult Index()
         {
+            this.AddToastMessage("Bienvenido", "You made it all the way here!", ToastType.Success);
             return View();
         }
 
