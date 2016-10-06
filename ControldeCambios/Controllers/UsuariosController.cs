@@ -245,7 +245,7 @@ namespace ControldeCambios.Controllers
 
                     await this.UserManager.AddToRoleAsync(user.Id, model.UserRoles);
 
-                    return RedirectToAction("Index", "Usuarios");
+                    return RedirectToAction("Crear", "Usuarios");
                 }
 
                 foreach (var error in result.Errors)
