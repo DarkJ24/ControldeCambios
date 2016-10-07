@@ -13,9 +13,14 @@ namespace ControldeCambios.Models
         public ApplicationUser identityUsuario { get; set; }
         public IdentityRole rol { get; set; }
 
+        [Required(ErrorMessage = "El campo Email es requerido.")]
+        [EmailAddress]
+        [Display(Name = "Email")]
+        public string email { get; set; }
+
         [Required(ErrorMessage = "El nombre es un campo requerido.")]
         [Display(Name = "Nombre")]
-        [RegularExpression(@"^[A-Za-z]+$", ErrorMessage = "El nombre solo debe contener letras.")]
+        [RegularExpression(@"^[A-Za-z\s]+$", ErrorMessage = "El nombre solo debe contener letras.")]
         public string nombreUsuario { get; set; }
 
         [StringLength(8), MinLength(8)]

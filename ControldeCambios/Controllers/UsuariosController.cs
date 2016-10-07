@@ -84,6 +84,7 @@ namespace ControldeCambios.Controllers
             {
                 return HttpNotFound();
             }
+            modelo.email = modelo.identityUsuario.Email;
             modelo.telefonos = baseDatos.Usuarios_Telefonos.Where(a => a.usuario == modelo.usuario.cedula).ToList();
             if (modelo.telefonos != null && modelo.telefonos.Count > 0)
             {
@@ -168,8 +169,8 @@ namespace ControldeCambios.Controllers
                 baseDatos.SaveChanges();
 
                 var aspUser = UserManager.FindById(model.identityUsuario.Id);
-                aspUser.UserName = model.identityUsuario.Email;
-                aspUser.Email = model.identityUsuario.Email;
+                aspUser.UserName = model.email;
+                aspUser.Email = model.email;
 
                 UserManager.Update(aspUser);
 
