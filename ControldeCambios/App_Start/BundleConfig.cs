@@ -32,6 +32,10 @@ namespace ControldeCambios
 
             bundles.Add(new ScriptBundle("~/bundles/toastr", "http://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js")
             .Include("~/Scripts/toastr.js"));
+
+            //Font Awesome
+            bundles.Add(new StyleBundle("~/content/font-awesome", "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css")
+            .Include("~/Content/font-awesome.css"));
         }
     }
 }

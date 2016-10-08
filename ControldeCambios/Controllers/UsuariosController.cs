@@ -98,8 +98,14 @@ namespace ControldeCambios.Controllers
             {
                 modelo.tel3 = modelo.telefonos.ElementAt(2).telefono;
             }
-
-            modelo.eliminarUsuario = revisarPermisos("Eliminar Usuarios");
+            String currentUser = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            if (modelo.identityUsuario.Id != currentUser)
+            {
+                modelo.eliminarUsuario = revisarPermisos("Eliminar Usuarios");
+            } else
+            {
+                modelo.eliminarUsuario = false;
+            }
             modelo.modificarUsuario = revisarPermisos("Modificar Usuarios");
 
             modelo.rol = context.Roles.Find(modelo.identityUsuario.Roles.First().RoleId);
