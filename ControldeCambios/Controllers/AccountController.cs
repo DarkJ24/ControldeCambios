@@ -81,7 +81,7 @@ namespace ControldeCambios.Controllers
                 if (!await UserManager.IsEmailConfirmedAsync(user.Id))
                 {
                     string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account-Resend");
-                    
+                    //METER LINK AQUI
                     ViewBag.errorMessage = "Debe tener un correo electrónico de confirmación para iniciar la sesión.";
                     return View("Error");
                 }
@@ -185,7 +185,7 @@ namespace ControldeCambios.Controllers
                     // TempData["ViewBagLink"] = callbackUrl;
 
                     ViewBag.Message = "Revisa tu correo electronico y confirma tu cuenta, tienes que confirmar antes que puedas iniciar sesion";
-
+                    //meter link aqui
                     return View("Info");
                     //return RedirectToAction("Index", "Home");
                 }

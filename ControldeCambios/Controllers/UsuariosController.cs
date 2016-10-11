@@ -8,6 +8,8 @@ using Microsoft.AspNet.Identity.Owin;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using ControldeCambios.App_Start;
+using System.Web.Security;
+using System.Data.SqlClient;
 
 namespace ControldeCambios.Controllers
 {
@@ -210,64 +212,91 @@ namespace ControldeCambios.Controllers
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await UserManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
+                try
                 {
+                    
+                    string generatedPassword = Membership.GeneratePassword(12, 2);
+                    var result = await UserManager.CreateAsync(user, generatedPassword);
 
-                    var userEntry = new Usuario();
-                    userEntry.cedula = model.Cedula;
-                    userEntry.nombre = model.Nombre;
-                    userEntry.id = context.Users.Where(u => u.Email == model.Email).FirstOrDefault().Id;
-
-                    db.Usuarios.Add(userEntry);
-                    db.SaveChanges();
-
-                    var telefonoEntry = new Usuarios_Telefonos();
-                    telefonoEntry.telefono = model.Telefono;
-                    telefonoEntry.usuario = model.Cedula;
-
-                    db.Usuarios_Telefonos.Add(telefonoEntry);
-
-                    if (model.Telefono2 != null)
+                    if (result.Succeeded)
                     {
-                        var telefonoEntry2 = new Usuarios_Telefonos();
-                        telefonoEntry2.telefono = model.Telefono2;
-                        telefonoEntry2.usuario = model.Cedula;
-                        db.Usuarios_Telefonos.Add(telefonoEntry2);
+
+                        var userEntry = new Usuario();
+                        userEntry.cedula = model.Cedula;
+                        userEntry.nombre = model.Nombre;
+                        userEntry.id = context.Users.Where(u => u.Email == model.Email).FirstOrDefault().Id;
+
+                        db.Usuarios.Add(userEntry);
+                        db.SaveChanges();
+
+                        var telefonoEntry = new Usuarios_Telefonos();
+                        telefonoEntry.telefono = model.Telefono;
+                        telefonoEntry.usuario = model.Cedula;
+
+                        db.Usuarios_Telefonos.Add(telefonoEntry);
+
+                        if (model.Telefono2 != null)
+                        {
+                            var telefonoEntry2 = new Usuarios_Telefonos();
+                            telefonoEntry2.telefono = model.Telefono2;
+                            telefonoEntry2.usuario = model.Cedula;
+                            db.Usuarios_Telefonos.Add(telefonoEntry2);
+                        }
+
+                        if (model.Telefono3 != null)
+                        {
+                            var telefonoEntry3 = new Usuarios_Telefonos();
+                            telefonoEntry3.telefono = model.Telefono3;
+                            telefonoEntry3.usuario = model.Cedula;
+                            db.Usuarios_Telefonos.Add(telefonoEntry3);
+                        }
+
+                        db.SaveChanges();
+
+                        string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account", model.Nombre, generatedPassword);
+
+                        await this.UserManager.AddToRoleAsync(user.Id, model.UserRoles);
+                        this.AddToastMessage("Usuario Creado", "El usuario " + model.Nombre + " se ha creado correctamente. Se envió un correo electronico de confirmación al usuario", ToastType.Success);
+                        return RedirectToAction("Crear", "Usuarios");
+
+
                     }
 
-                    if (model.Telefono3 != null)
+                    foreach (var error in result.Errors)
                     {
-                        var telefonoEntry3 = new Usuarios_Telefonos();
-                        telefonoEntry3.telefono = model.Telefono3;
-                        telefonoEntry3.usuario = model.Cedula;
-                        db.Usuarios_Telefonos.Add(telefonoEntry3);
+                        ModelState.AddModelError("", error);
                     }
 
-                    db.SaveChanges();
+                    await UserManager.DeleteAsync(user);
+                    ViewBag.Name = new SelectList(context.Roles.ToList(), "Name", "Name");
+                    // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
 
-                    // Para obtener más información sobre cómo habilitar la confirmación de cuenta y el restablecimiento de contraseña, visite http://go.microsoft.com/fwlink/?LinkID=320771
-                    // Enviar correo electrónico con este vínculo
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Confirmar cuenta", "Para confirmar la cuenta, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
-
-                    await this.UserManager.AddToRoleAsync(user.Id, model.UserRoles);
-                    this.AddToastMessage("Usuario Creado", "El usuario " + model.Nombre + " se ha creado correctamente.", ToastType.Success);
-                    return RedirectToAction("Crear", "Usuarios");
+                    this.AddToastMessage("Error", "Ha ocurrido un error al crear al usuario " + model.Nombre + ".", ToastType.Error);
+                    return View(model);
                 }
-
-                foreach (var error in result.Errors)
+                catch (Exception ex)
                 {
-                    ModelState.AddModelError("", error);
-                }
+                    return View("Error", new HandleErrorInfo(ex, "UsuariosController", "Crear"));
+                }               
+                              
             }
-
-
-            ViewBag.Name = new SelectList(context.Roles.ToList(), "Name", "Name");
-            // Si llegamos a este punto, es que se ha producido un error y volvemos a mostrar el formulario
-            this.AddToastMessage("Error", "Ha ocurrido un error al crear al usuario " + model.Nombre + ".", ToastType.Error);
             return View(model);
+
+            
+        }
+
+        private async Task<string> SendEmailConfirmationTokenAsync(string userID, string subject, string usrName , string userPassword)
+        {
+            
+            string code = await UserManager.GenerateEmailConfirmationTokenAsync(userID);
+            var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = userID, code = code }, protocol: Request.Url.Scheme);
+            await UserManager.SendEmailAsync(userID, subject, "Hola. <br><br>"
+                + "Se ha creado el usuario "+ usrName + " en nuestro Sistema de Control de Cambios.<br>"
+                + "Su contraseña provisional es: &quot" + userPassword + "&quot."
+                + "<br><b>Por favor cambia tu contraseña.</b><br>"
+                + "<br>Para confirmar la cuenta, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
+
+            return callbackUrl;
         }
 
 
