@@ -2,42 +2,62 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Control de Cambios</title>
     @Styles.Render("~/Content/css")
     @Styles.Render("~/Content/toastr")
+    @Styles.Render("~/Content/font-awesome")
     @Scripts.Render("~/bundles/modernizr")
+    <style>
+        .side-nav {
+            position: fixed;
+            top: 51px;
+            left: 0px;
+            margin-left: 0px;
+            border: none;
+            border-radius: 0;
+            overflow: hidden;
+            background-color: #222;
+            min-height: 100%;
+        }
+        .side-li {
+            color:#999999 !important;
+        }
+        .side-li:hover {
+            color:#FFFFFF !important;
+        }
+        .inlineText {
+            display: inline-block !important;
+        }
+        .fa-lg {
+            margin-left: 10px;
+        }
+    </style>
 
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Control de Cambios", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    @if (Request.IsAuthenticated)
-                    {
-                    <li>@Html.ActionLink("Usuarios", "Index", "Usuarios")</li>
-                    <li>@Html.ActionLink("Roles", "Index", "Roles_Permisos")</li>
-                    }
-                </ul>
-                @Html.Partial("_LoginPartial")
-            </div>
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".side-nav" style="float:left;display:block;margin-left:20px;">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            @Html.ActionLink("Control de Cambios", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
         </div>
+        @Html.Partial("_LoginPartial")
+        <ul class="nav navbar-nav side-nav collapse">
+            <li class="side-li"><i class="fa fa-user fa-lg"></i>@Html.ActionLink("Usuarios", "Index", "Usuarios", new { }, new { @class= "inlineText" })</li>
+            <hr/>
+            <li class="side-li"><i class="fa fa-list-alt fa-lg"></i>@Html.ActionLink("Roles", "Index", "Roles_Permisos", new { }, new { @class = "inlineText" })</li>
+        </ul>
     </div>
     <div class="container body-content">
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - Mi aplicación ASP.NET</p>
+            <p>&copy; @DateTime.Now.Year - Control de Cambios</p>
         </footer>
     </div>
 

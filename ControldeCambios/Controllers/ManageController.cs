@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using ControldeCambios.Models;
+using ControldeCambios.App_Start;
 
 namespace ControldeCambios.Controllers
 {
@@ -238,9 +239,10 @@ namespace ControldeCambios.Controllers
                 {
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                 }
-                return RedirectToAction("Index", new { Message = ManageMessageId.ChangePasswordSuccess });
+                this.AddToastMessage("Constraseña Cambiada", "Tu contraseña ha sido cambiada con éxito!", ToastType.Success);
+                return RedirectToAction("Index");
             }
-            AddErrors(result);
+            this.AddToastMessage("Error al Cambiar Contraseña", result.ToString(), ToastType.Error);
             return View(model);
         }
 
@@ -267,9 +269,11 @@ namespace ControldeCambios.Controllers
                     {
                         await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                     }
-                    return RedirectToAction("Index", new { Message = ManageMessageId.SetPasswordSuccess });
+                    this.AddToastMessage("Constraseña Creada", "Tu contraseña ha sido creada con éxito!", ToastType.Success);
+                    return RedirectToAction("Index");
                 }
-                AddErrors(result);
+                //AddErrors(result);
+                this.AddToastMessage("Error al Crear Contraseña", result.ToString(), ToastType.Error);
             }
 
             // Si llegamos a este punto, es que se ha producido un error, volvemos a mostrar el formulario
