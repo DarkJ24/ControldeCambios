@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using ControldeCambios.Helpers
+
+<!DOCTYPE html>
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
@@ -22,16 +24,22 @@
             min-height: 100%;
         }
         .side-li {
-            color:#999999 !important;
+            color: #999999 !important;
+        }
+        .side-li a{
+            width: 120px;
         }
         .side-li:hover {
+            color:#FFFFFF !important;
+        }
+        .active {
             color:#FFFFFF !important;
         }
         .inlineText {
             display: inline-block !important;
         }
         .fa-lg {
-            margin-left: 10px;
+            margin-right: 10px;
         }
     </style>
 
@@ -48,9 +56,12 @@
         </div>
         @Html.Partial("_LoginPartial")
         <ul class="nav navbar-nav side-nav collapse">
-            <li class="side-li"><i class="fa fa-user fa-lg"></i>@Html.ActionLink("Usuarios", "Index", "Usuarios", new { }, new { @class= "inlineText" })</li>
-            <hr/>
-            <li class="side-li"><i class="fa fa-list-alt fa-lg"></i>@Html.ActionLink("Roles", "Index", "Roles_Permisos", new { }, new { @class = "inlineText" })</li>
+            @if (Request.IsAuthenticated)
+            {
+                <li class="side-li @Html.IsSelected(actions: "Index,Crear,Detalles", controllers: "Usuarios")"><a href="@Url.Action("Index", "Usuarios")" class = "inlineText"><i class='fa fa-user fa-lg'></i>Usuarios</a></li>
+                <hr/>
+                <li class="side-li @Html.IsSelected(actions: "Index", controllers: "Roles_Permisos")"><a href="@Url.Action("Index", "Roles_Permisos")" class="inlineText"><i class='fa fa-list-alt fa-lg'></i>Roles</a></li>
+            }
         </ul>
     </div>
     <div class="container body-content">

@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using ControldeCambios.App_Start;
 using System.Web.Security;
-using System.Data.SqlClient;
+using PagedList;
+using System.Collections.Generic;
 
 namespace ControldeCambios.Controllers
 {
@@ -44,7 +45,7 @@ namespace ControldeCambios.Controllers
         }
 
         // GET: Usuarios
-        public ActionResult Index()
+        public ActionResult Index(int ? page)
         {
             if (!revisarPermisos("Consultar Usuarios"))
             {
@@ -55,8 +56,36 @@ namespace ControldeCambios.Controllers
             modelo.roles = context.Roles.ToList();
             modelo.usuarios = baseDatos.Usuarios.ToList();
             modelo.identityUsuarios = context.Users.ToList();
+            modelo.indexUserInfoList = new List<UsuariosModelo.userInfo>();
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
+            int lastElement = (modelo.usuarios.Count < pageSize * pageNumber) ? modelo.usuarios.Count : pageSize * pageNumber;
+            for (int i = (pageNumber-1)*pageSize; i < lastElement; i++)
+            {
+                UsuariosModelo.userInfo user = new UsuariosModelo.userInfo();
+                user.cedula = modelo.usuarios.ElementAt(i).cedula;
+                user.nombre = modelo.usuarios.ElementAt(i).nombre;
+                user.identityId = modelo.usuarios.ElementAt(i).id;
+                for (int j = 0; j < modelo.identityUsuarios.Count; j++)
+                {
+                    if (modelo.usuarios.ElementAt(i).id.Equals(modelo.identityUsuarios.ElementAt(j).Id))
+                    {
+                        user.correo = modelo.identityUsuarios.ElementAt(j).Email;
+                        for (int k = 0; k < modelo.roles.Count; k++)
+                        {
+                            if (modelo.roles.ElementAt(k).Id.Equals(modelo.identityUsuarios.ElementAt(j).Roles.First().RoleId))
+                            {
+                                user.rol = modelo.roles.ElementAt(k).Name;
+                            }
+                        }
+                    }
+                }
+                modelo.indexUserInfoList.Add(user);
+            }
             modelo.crearUsuario = revisarPermisos("Crear Usuarios");
             modelo.detallesUsuario = revisarPermisos("Detalles Usuarios");
+            var usersAsIPagedList = new StaticPagedList<UsuariosModelo.userInfo>(modelo.indexUserInfoList, pageNumber, pageSize, modelo.usuarios.Count);
+            ViewBag.OnePageOfUsers = usersAsIPagedList;
             return View(modelo);
         }
 
@@ -283,7 +312,9 @@ namespace ControldeCambios.Controllers
                 }
                 catch (Exception ex)
                 {
-                    return View("Error", new HandleErrorInfo(ex, "UsuariosController", "Crear"));
+                    this.AddToastMessage("Error", "Ha ocurrido un error al crear al usuario " + model.Nombre + ".", ToastType.Error);
+                    ViewBag.Name = new SelectList(context.Roles.ToList(), "Name", "Name");
+                    return View(model);
                 }               
                               
             }

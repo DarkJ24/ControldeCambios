@@ -8,6 +8,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using ControldeCambios.Models;
 using ControldeCambios.App_Start;
+using System.Net;
 
 namespace ControldeCambios.Controllers
 {
@@ -16,6 +17,8 @@ namespace ControldeCambios.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        Entities baseDatos = new Entities();
+        ApplicationDbContext context = new ApplicationDbContext();
 
         public ManageController()
         {
@@ -53,27 +56,43 @@ namespace ControldeCambios.Controllers
 
         //
         // GET: /Manage/Index
-        public async Task<ActionResult> Index(ManageMessageId? message)
+        public ActionResult Index(ManageMessageId? message)
         {
-            ViewBag.StatusMessage =
-                message == ManageMessageId.ChangePasswordSuccess ? "Su contraseña se ha cambiado."
-                : message == ManageMessageId.SetPasswordSuccess ? "Su contraseña se ha establecido."
-                : message == ManageMessageId.SetTwoFactorSuccess ? "Su proveedor de autenticación de dos factores se ha establecido."
-                : message == ManageMessageId.Error ? "Se ha producido un error."
-                : message == ManageMessageId.AddPhoneSuccess ? "Se ha agregado su número de teléfono."
-                : message == ManageMessageId.RemovePhoneSuccess ? "Se ha quitado su número de teléfono."
-                : "";
-
-            var userId = User.Identity.GetUserId();
-            var model = new IndexViewModel
+            String userID = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            if (String.IsNullOrEmpty(userID))
             {
-                HasPassword = HasPassword(),
-                PhoneNumber = await UserManager.GetPhoneNumberAsync(userId),
-                TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId),
-                Logins = await UserManager.GetLoginsAsync(userId),
-                BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId)
-            };
-            return View(model);
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            UsuariosModelo modelo = new UsuariosModelo();
+            modelo.usuario = baseDatos.Usuarios.Where(m => m.id == userID).First();
+            if (modelo.usuario == null)
+            {
+                return HttpNotFound();
+            }
+            modelo.nombreUsuario = modelo.usuario.nombre;
+            modelo.identityUsuario = context.Users.Find(modelo.usuario.id);
+            if (modelo.identityUsuario == null)
+            {
+                return HttpNotFound();
+            }
+            modelo.email = modelo.identityUsuario.Email;
+            modelo.telefonos = baseDatos.Usuarios_Telefonos.Where(a => a.usuario == modelo.usuario.cedula).ToList();
+            if (modelo.telefonos != null && modelo.telefonos.Count > 0)
+            {
+                modelo.tel1 = modelo.telefonos.ElementAt(0).telefono;
+            }
+            if (modelo.telefonos.Count > 1)
+            {
+                modelo.tel2 = modelo.telefonos.ElementAt(1).telefono;
+            }
+            if (modelo.telefonos.Count > 2)
+            {
+                modelo.tel3 = modelo.telefonos.ElementAt(2).telefono;
+            }
+            String currentUser = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            modelo.rol = context.Roles.Find(modelo.identityUsuario.Roles.First().RoleId);
+            ViewBag.Name = new SelectList(context.Roles.ToList(), "Name", "Name", modelo.rol);
+            return View(modelo);
         }
 
         //

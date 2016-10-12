@@ -6,7 +6,9 @@
 
 }
 
-<h2>Index</h2>
+<h2>Gestión de Roles</h2>
+<h4>Administrar Permisos</h4>
+<hr/>
 @using (Html.BeginForm())
 {
 <table class="table">
@@ -22,7 +24,6 @@ Model.roles.ElementAt(i).Name)
             </th>
         }
     </tr>
-
     @Html.AntiForgeryToken()
     @for (int i = 0; i < Model.permisos.Count; i++)
     {
@@ -38,15 +39,13 @@ Model.permisos.ElementAt(i).nombre)
                         @Html.HiddenFor(m => m.rolPermisoId[i + Model.permisos.Count * j].permiso)
                         @Html.HiddenFor(m => m.rolPermisoId[i + Model.permisos.Count * j].rol)
                         @Html.CheckBoxFor(m => m.rolPermisoId[i + Model.permisos.Count * j].valor)
-                        
-
                 </th>
             }
         </tr>
     }
 </table>
 <div>
-    <input type="submit" class="btn btn-success" value="Guardar Cambios"/>
-    <a href="@Url.Action("Index", "Home")" type="button" class="btn btn-default">Cancelar</a>
+    <input type="submit" class="btn btn-success" value="Aceptar"/>
+    <button type="button" class="btn btn-default" onclick="location.reload()">Cancelar</button>
 </div>
 }

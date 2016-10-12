@@ -3,14 +3,13 @@
     ViewBag.Title = "Crear Usuario";
 }
 
-
-
-<h2>@ViewBag.Title.</h2>
+<h2>Gestión de Usuarios</h2>
+<h4 id="subtitle">Crear Usuario</h4>
+<hr />
 
 @using (Html.BeginForm("Crear", "Usuarios", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
-    <hr/>
     <div class="form-group">
         @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label required" })
         <div class="col-md-10">
@@ -18,21 +17,6 @@
             @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
         </div>
     </div>
-    @*<div class="form-group">
-        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label required" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label required" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
-        </div>
-    </div>*@
-
     <div class="form-group">
         @Html.LabelFor(m => m.Nombre, new { @class = "col-md-2 control-label required" })
         <div class="col-md-10">
@@ -76,8 +60,7 @@
     <div class="form-group">
         @Html.Label("Rol", new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @*@Html.DropDownList("Name")*@
-            @Html.DropDownListFor(m => m.UserRoles, (SelectList)ViewBag.Name, new { @class = "col-xs-12", @style = "height:30px;border-radius:4px" })
+            @Html.DropDownListFor(m => m.UserRoles, (SelectList)ViewBag.Name, "Seleccionar Rol", new { @class = "col-xs-12", @style = "height:30px;border-radius:4px" })
             @Html.ValidationMessageFor(model => model.UserRoles, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -87,10 +70,6 @@
             <input type="submit" class="btn btn-success" value="Aceptar" />
             <input type="button" class="btn btn-default" value="Cancelar" onclick="location.reload()" />
         </div>
-    </div>
-
-    <div>
-        @Html.ActionLink("Volver a la lista de usuarios", "Index")
     </div>
 
     <style type="text/css">

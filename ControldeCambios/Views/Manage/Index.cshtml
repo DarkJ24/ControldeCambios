@@ -1,84 +1,50 @@
-﻿@model ControldeCambios.Models.IndexViewModel
+﻿@model ControldeCambios.Models.UsuariosModelo
 @{
     ViewBag.Title = "Gestionar Cuenta";
 }
 
-<h2>@ViewBag.Title.</h2>
-
-<p class="text-success">@ViewBag.StatusMessage</p>
-<div>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>Contraseña:</dt>
-        <dd>
-            @if (Model.HasPassword)
+<h2>@ViewBag.Title</h2>
+<h4>Mis datos</h4>
+<hr />
+@Html.ActionLink("Cambiar contraseña", "ChangePassword", new { }, new { @class = "btn btn-primary" })
+<div class="noEditable" style="margin-top:15px">
+    <div class="row">
+        <label class="col-md-2">Nombre:</label>
+        <span class="col-md-10">
+            @Html.DisplayFor(modelItem =>
+    Model.usuario.nombre)
+        </span>
+    </div>
+    <div class="row">
+        <label class="col-md-2">Cédula:</label>
+        <span class="col-md-10">
+            @Html.DisplayFor(modelItem =>
+    Model.usuario.cedula)
+        </span>
+    </div>
+    <div class="row">
+        <label class="col-md-2">Rol:</label>
+        <span class="col-md-10">
+            @Html.DisplayFor(modelItem =>
+    Model.rol.Name)
+        </span>
+    </div>
+    <div class="row">
+        <label class="col-md-2">Correo:</label>
+        <span class="col-md-10">
+            @Html.DisplayFor(modelItem =>
+    Model.identityUsuario.Email)
+        </span>
+    </div>
+    <div class="row">
+        <label class="col-md-2">Teléfonos:</label>
+        <span class="col-md-10">
+            @for (int j = 0; j < Model.telefonos.Count; j++)
             {
-                @Html.ActionLink("Cambiar la contraseña", "ChangePassword", new { }, new { @class="btn btn-primary"})
+                @Html.DisplayFor(modelItem =>
+    Model.telefonos.ElementAt(j).telefono)
+                @Html.Raw("<br>")
             }
-            else
-            {
-                @Html.ActionLink("Crear", "SetPassword", new { }, new { @class = "btn btn-success" })
-            }
-        </dd>
-        <!--<dt>Inicios de sesión externos:</dt>
-        <dd>
-            @Model.Logins.Count [
-            @Html.ActionLink("Administrar", "ManageLogins") ]
-        </dd>
-        @*
-            Los números de teléfono se pueden usar como un segundo factor de comprobación en un sistema de autenticación en dos fases.
-             
-             Consulte <a href="http://go.microsoft.com/fwlink/?LinkId=403804">este artículo</a>
-                para obtener más información acerca de la configuración de esta aplicación ASP.NET para admitir la autenticación en dos fases con SMS.
-             
-             Quite la marca de comentario del siguiente bloque una vez haya configurado la autenticación en dos fases
-        *@
-        @*  
-            <dt>Número de teléfono:</dt>
-            <dd>
-                @(Model.PhoneNumber ?? "None")
-                @if (Model.PhoneNumber != null)
-                {
-                    <br />
-                    <text>[&nbsp;&nbsp;@Html.ActionLink("Change", "AddPhoneNumber")&nbsp;&nbsp;]</text>
-                    using (Html.BeginForm("RemovePhoneNumber", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-                    {
-                        @Html.AntiForgeryToken()
-                        <text>[<input type="submit" value="Remove" class="btn-link" />]</text>
-                    }
-                }
-                else
-                {
-                    <text>[&nbsp;&nbsp;@Html.ActionLink("Add", "AddPhoneNumber")
-                }
-            </dd>
-        *@
-        <dt>Autenticación de dos factores:</dt>
-        <dd>
-            <p>
-                No hay ningún proveedor de autenticación en dos fases configurado. Consulte <a href="http://go.microsoft.com/fwlink/?LinkId=403804">este artículo</a>
-                para obtener más información acerca de la configuración de esta aplicación ASP.NET para admitir la autenticación en dos fases.
-            </p>
-            @*@if (Model.TwoFactor)
-                {
-                    using (Html.BeginForm("DisableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-                    {
-                        @Html.AntiForgeryToken()
-                        <text>Habilitado
-                        <input type="submit" value="Deshabilitar" class="btn btn-link" />
-                        </text>
-                    }
-                }
-                else
-                {
-                    using (Html.BeginForm("EnableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-                    {
-                        @Html.AntiForgeryToken()
-                        <text>Deshabilitado
-                        <input type="submit" value="Habilitar" class="btn btn-link" />
-                        </text>
-                    }
-                }*@
-        </dd>-->
-    </dl>
+        </span>
+    </div>
 </div>

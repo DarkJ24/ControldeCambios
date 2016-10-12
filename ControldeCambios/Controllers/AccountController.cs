@@ -154,7 +154,8 @@ namespace ControldeCambios.Controllers
         [AllowAnonymous]
         public ActionResult Register()
         {
-            return View();
+            this.AddToastMessage("Acceso Denegado", "No puedes registrarte, solo el Administrador puede registrarte.", ToastType.Warning);
+            return RedirectToAction("Index", "Home");
         }
 
         //

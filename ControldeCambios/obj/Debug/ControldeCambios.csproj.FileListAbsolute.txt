@@ -720,3 +720,7 @@ C:\Users\b11291\Documents\IngeProyecto\ControldeCambios\obj\Debug\ControldeCambi
 \\Mac\Home\Documents\UCR\Inge 1\ControldeCambios\ControldeCambios\bin\es\Microsoft.Owin.Security.Google.resources.dll
 \\Mac\Home\Documents\UCR\Inge 1\ControldeCambios\ControldeCambios\bin\es\Microsoft.Owin.Security.Twitter.resources.dll
 \\Mac\Home\Documents\UCR\Inge 1\ControldeCambios\ControldeCambios\bin\es\Microsoft.Owin.Security.MicrosoftAccount.resources.dll
+\\Mac\Home\Documents\UCR\Inge 1\ControldeCambios\ControldeCambios\bin\PagedList.dll
+\\Mac\Home\Documents\UCR\Inge 1\ControldeCambios\ControldeCambios\bin\PagedList.Mvc.dll
+\\Mac\Home\Documents\UCR\Inge 1\ControldeCambios\ControldeCambios\bin\PagedList.xml
+\\Mac\Home\Documents\UCR\Inge 1\ControldeCambios\ControldeCambios\bin\PagedList.Mvc.xml

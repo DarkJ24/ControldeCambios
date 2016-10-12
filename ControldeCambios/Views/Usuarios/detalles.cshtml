@@ -1,83 +1,38 @@
 ﻿@model ControldeCambios.Models.UsuariosModelo
 @{
-    ViewBag.Title = "detalles";
+    ViewBag.Title = "Consultar Usuario";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <script>
-    function esconderEditable() {
-        $('.editable').hide();
-        $('.noEditable').show();
-    }
-    function esconderNoEditable() {
-        $('.noEditable').hide();
-        $('.editable').show();
+    function habilitarCampos() {
+        $('.editBtns').show();
+        $('.editFields').attr("disabled", false);
+        $('#.subtitle').html("Editar Usuario");
     }
 </script>
 
-<h2>Detalles</h2>
+<h2>Gestión de Usuarios</h2>
+<h4 id="subtitle">Consultar Usuario</h4>
 <hr />
 @if (Model.modificarUsuario)
 {
-<button type="button" class="btn btn-primary" onClick="esconderNoEditable()">Modificar</button>
-<button type="button" class="btn btn-default" onClick="esconderEditable()">Ver Detalles</button>
+<button type="button" class="btn btn-primary" onClick="habilitarCampos()">Modificar</button>
 }
 @if (Model.eliminarUsuario)
 {
 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal">Eliminar</button>
 }
-
-<div class="noEditable" style="margin-top:15px">
-    <div class="row">
-        <label class="col-md-2">Nombre:</label>
-        <span class="col-md-10">
-            @Html.DisplayFor(modelItem =>
-    Model.usuario.nombre)
-        </span>
-    </div>
-    <div class="row">
-        <label class="col-md-2">Cédula:</label>
-        <span class="col-md-10">
-            @Html.DisplayFor(modelItem =>
-    Model.usuario.cedula)
-        </span>
-    </div>
-    <div class="row">
-        <label class="col-md-2">Rol:</label>
-        <span class="col-md-10">
-            @Html.DisplayFor(modelItem =>
-    Model.rol.Name)
-        </span>
-    </div>
-    <div class="row">
-        <label class="col-md-2">Correo:</label>
-        <span class="col-md-10">
-            @Html.DisplayFor(modelItem =>
-    Model.identityUsuario.Email)
-        </span>
-    </div>
-    <div class="row">
-        <label class="col-md-2">Teléfonos:</label>
-        <span class="col-md-10">
-            @for (int j = 0; j < Model.telefonos.Count; j++)
-            {
-                @Html.DisplayFor(modelItem =>
-    Model.telefonos.ElementAt(j).telefono)
-                @Html.Raw("<br>")
-            }
-        </span>
-    </div>
-</div>
 @using (Html.BeginForm())
 {
     if (Model.modificarUsuario)
     {
         @Html.AntiForgeryToken()
-        <div class="form-horizontal editable" style="display:none;margin-top:15px">
+        <div class="form-horizontal" style="margin-top:15px">
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <div class="form-group">
                 <label class="control-label col-md-2 required">Nombre:</label>
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.nombreUsuario, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(model => model.nombreUsuario, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
                     @Html.ValidationMessageFor(model => model.nombreUsuario, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -85,7 +40,7 @@
             <div class="form-group">
                 <label class="control-label col-md-2 required">Cédula:</label>
                 <div class="col-md-10">
-                    @Html.DisplayFor(model => model.usuario.cedula, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.DisplayFor(model => model.usuario.cedula, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
                     @Html.HiddenFor(model => model.usuario.cedula)
                 </div>
             </div>
@@ -93,14 +48,14 @@
             <div class="form-group">
                 <label class="control-label col-md-2 required">Rol:</label>
                 <div class="col-md-10">
-                    @Html.DropDownListFor(model => model.rol.Name, (SelectList)ViewBag.Name, new { @class = "col-xs-12", @style = "height:30px;border-radius:4px" })
+                    @Html.DropDownListFor(model => model.rol.Name, (SelectList)ViewBag.Name, new { @class = "col-xs-12 editFields", @disabled = "disabled", @style = "height:30px;border-radius:4px" })
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="control-label col-md-2 required">Correo:</label>
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.email, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(model => model.email, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
                     @Html.ValidationMessageFor(model => model.email, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -109,7 +64,7 @@
             <div class="form-group">
                 <label class="control-label col-md-2 required">Telefono 1:</label>
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.tel1, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(model => model.tel1, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
                     @Html.ValidationMessageFor(model => model.tel1, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -118,7 +73,7 @@
             <div class="form-group">
                 <label class="control-label col-md-2">Telefono 2:</label>
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.tel2, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(model => model.tel2, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
                     @Html.ValidationMessageFor(model => model.tel2, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -127,26 +82,22 @@
             <div class="form-group">
                 <label class="control-label col-md-2">Telefono 3:</label>
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.tel3, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.EditorFor(model => model.tel3, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
                     @Html.ValidationMessageFor(model => model.tel3, "", new { @class = "text-danger" })
                 </div>
             </div>
 
             @Html.HiddenFor(m => m.identityUsuario.Id)
 
-            <div class="form-group">
+            <div class="form-group editBtns" style="display:none">
                 <div class="col-md-offset-2 col-md-10">
                     <input type="submit" value="Aceptar" class="btn btn-success" />
                     <button type="button" class="btn btn-default" onclick="location.reload()">Cancelar</button>
                 </div>
             </div>
         </div>
+    }
 }
-}
-
-<div>
-    @Html.ActionLink("Volver a la lista de Usuarios", "Index")
-</div>
 @if (Model.eliminarUsuario)
 {
 <!-- Modal -->

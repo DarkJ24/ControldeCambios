@@ -38,6 +38,17 @@ namespace ControldeCambios.Models
         [RegularExpression(@"^[0-9]+$", ErrorMessage = "El teléfono debe ser de 8 dígitos")]
         public string tel3 { get; set; }
 
+        public class userInfo
+        {
+            public string cedula;
+            public string nombre;
+            public string correo;
+            public string rol;
+            public string identityId;
+        }
+
+        public List<userInfo> indexUserInfoList;
+
         public List<Usuario> usuarios { get; set; }
         public List<ApplicationUser> identityUsuarios { get; set; }
         public List<IdentityRole> roles { get; set; }

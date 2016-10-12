@@ -1,15 +1,19 @@
 ﻿@model ControldeCambios.Models.UsuariosModelo
 @{
-    ViewBag.Title = "index";
+    ViewBag.Title = "Gestión de Usuarios";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@using PagedList.Mvc;
+@using PagedList;
 
-<h2>Usuarios</h2>
+<h2>Gestión de Usuarios</h2>
+<h4>Lista de Usuarios</h4>
+<hr />
 
 @if (Model.crearUsuario)
 {
 <p>
-    @Html.ActionLink("Crear nuevo", "Crear")
+    @Html.ActionLink("Crear usuario", "Crear", new { }, new { @class = "btn btn-primary"})
 </p>
 }
 
@@ -30,51 +34,51 @@
         @if (Model.detallesUsuario)
         {
         <th>
-            Detalles
+            Consultar
         </th>
         }
     </tr>
-    @for (int i = 0; i < Model.usuarios.Count; i++)
+    @foreach (var user in Model.indexUserInfoList)
     {
-        <tr id="@(Model.usuarios.ElementAt(i).cedula)">
+        <tr id="@(user.cedula)">
             <td>
                 @Html.DisplayFor(modelItem =>
-Model.usuarios.ElementAt(i).cedula)
+user.cedula)
             </td>
             <td>
                 @Html.DisplayFor(modelItem =>
-Model.usuarios.ElementAt(i).nombre)
+user.nombre)
             </td>
             <td>
-                @for (int j = 0; j < Model.identityUsuarios.Count; j++)
-                {
-                    if (Model.usuarios.ElementAt(i).id.Equals(Model.identityUsuarios.ElementAt(j).Id))
-                    {
-                       @Html.DisplayFor(modelItem =>
-Model.identityUsuarios.ElementAt(j).Email)
-                       @Html.Raw("</td><td>")
-                        for (int k = 0; k < Model.roles.Count; k++)
-                        {
-                            if (Model.roles.ElementAt(k).Id.Equals(Model.identityUsuarios.ElementAt(j).Roles.First().RoleId))
-                            {
-                                @Html.DisplayFor(modelItem =>
-Model.roles.ElementAt(k).Name)
-                            }
-                        }
-                    }
-                }
+                @Html.DisplayFor(modelItem =>
+user.correo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem =>
+user.rol)
             </td>
             @if (Model.detallesUsuario)
             {
             <td>
                 
-                @Html.ActionLink("Detalles", "Detalles", new
+                @Html.ActionLink("Consultar", "Detalles", new
            {
                id =
-     Model.usuarios.ElementAt(i).cedula
+     user.cedula
            })
             </td>
             }
         </tr>
     }
 </table>
+@Html.PagedListPager((IPagedList)ViewBag.OnePageOfUsers, page => Url.Action("Index", new { page }))
+@Html.Raw("Página:")
+ @if (ViewBag.OnePageOfUsers.PageCount < ViewBag.OnePageOfUsers.PageNumber) {
+    @Html.Raw("0")
+        }
+        else
+        {
+            @ViewBag.OnePageOfUsers.PageNumber
+        }
+        @Html.Raw(" de ")
+    @ViewBag.OnePageOfUsers.PageCount
