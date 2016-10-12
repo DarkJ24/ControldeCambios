@@ -330,7 +330,7 @@ namespace ControldeCambios.Controllers
             var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = userID, code = code }, protocol: Request.Url.Scheme);
             await UserManager.SendEmailAsync(userID, subject, "Hola. <br><br>"
                 + "Se ha creado el usuario "+ usrName + " en nuestro Sistema de Control de Cambios.<br>"
-                + "Su contraseña provisional es: &quot" + userPassword + "&quot."
+                + "Su contraseña provisional es: \'" + userPassword + "\'"
                 + "<br><b>Por favor cambia tu contraseña.</b><br>"
                 + "<br>Para confirmar la cuenta, haga clic <a href=\"" + callbackUrl + "\">aquí</a>");
 

@@ -8,35 +8,35 @@
 <hr />
 @Html.ActionLink("Cambiar contraseña", "ChangePassword", new { }, new { @class = "btn btn-primary" })
 <div class="noEditable" style="margin-top:15px">
-    <div class="row">
+    <div class="row" style="margin-bottom:8px;">
         <label class="col-md-2">Nombre:</label>
         <span class="col-md-10">
             @Html.DisplayFor(modelItem =>
     Model.usuario.nombre)
         </span>
     </div>
-    <div class="row">
+    <div class="row" style="margin-bottom:8px;">
         <label class="col-md-2">Cédula:</label>
         <span class="col-md-10">
             @Html.DisplayFor(modelItem =>
     Model.usuario.cedula)
         </span>
     </div>
-    <div class="row">
+    <div class="row" style="margin-bottom:8px;">
         <label class="col-md-2">Rol:</label>
         <span class="col-md-10">
             @Html.DisplayFor(modelItem =>
     Model.rol.Name)
         </span>
     </div>
-    <div class="row">
+    <div class="row" style="margin-bottom:8px;">
         <label class="col-md-2">Correo:</label>
         <span class="col-md-10">
             @Html.DisplayFor(modelItem =>
     Model.identityUsuario.Email)
         </span>
     </div>
-    <div class="row">
+    <div class="row" style="margin-bottom:8px;">
         <label class="col-md-2">Teléfonos:</label>
         <span class="col-md-10">
             @for (int j = 0; j < Model.telefonos.Count; j++)

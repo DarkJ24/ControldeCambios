@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -64,7 +64,7 @@ namespace ControldeCambios.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             UsuariosModelo modelo = new UsuariosModelo();
-            modelo.usuario = baseDatos.Usuarios.Where(m => m.id == userID).First();
+            modelo.usuario = baseDatos.Usuarios.Where(m => m.id == userID).FirstOrDefault();
             if (modelo.usuario == null)
             {
                 return HttpNotFound();
