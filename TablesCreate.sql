@@ -2,10 +2,19 @@ CREATE TABLE Usuarios(
 nombre varchar(25) not null,
 cedula varchar(11) primary key,
 id nvarchar(128) not null,
+updatedAt datetime default getDate(),
 constraint fk_AspUserId foreign key (id) references AspNetUsers(id)
 ON UPDATE CASCADE
 ON DELETE NO ACTION
 );
+
+CREATE TRIGGER trg_Usuarios_UpdatedAt ON Usuarios for UPDATE AS
+BEGIN
+  UPDATE Usuarios
+	SET updatedAt = getDate()
+	FROM Usuarios INNER JOIN Deleted d
+	ON Usuarios.id=d.id
+END
 
 CREATE TABLE Usuarios_Telefonos(
 usuario varchar(11),
@@ -18,7 +27,7 @@ ON DELETE CASCADE
 
 CREATE TABLE Permisos(
 codigo int identity(1,1) primary key,
-nombre varchar(20) not null
+nombre varchar(40) not null
 );
 
 CREATE TABLE Rol_Permisos(
@@ -167,6 +176,20 @@ constraint fk_UserCam foreign key (creadoPor) references Usuarios(cedula)
 ON UPDATE NO ACTION
 ON DELETE NO ACTION
 );
+
+INSERT INTO Permisos
+VALUES('Crear Usuarios'),
+('Consular Lista de Usuarios'),
+('Consultar Detalles de Usuarios'),
+('Eliminar Usuarios'),
+('Modificar Usuarios'),
+('Gestionar Permisos'),
+('Crear Proyectos'),
+('Consultar Proyectos'),
+('Modificar Proyectos'),
+('Eliminar Proyectos');
+
+DROP TRIGGER trg_Usuarios_UpdatedAt;
 
 DROP TABLE CambiosRequerimientos, Sprint_Mod_Req, Requerimiento_Encargados, Requerimientos,
 Estado_Requerimientos, Sprint_Modulo, Modulos, Sprints, Proyecto_Equipo, Tipo_Desarrollador,
