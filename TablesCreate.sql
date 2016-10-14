@@ -42,10 +42,23 @@ ON UPDATE CASCADE
 ON DELETE CASCADE
 );
 
+CREATE TABLE Estado_Proyecto(
+nombre char(24) primary key --Por iniciar, En ejecución, En pausa, Finalizado, Cerrado
+);
+
 CREATE TABLE Proyectos(
 nombre varchar(25) primary key,
 descripcion varchar(80),
 lider varchar(11) not null,
+estado char(24) not null,
+fechaInicio date default getDate(),
+fechaFinal date,
+duracion int,
+cliente varchar(11) not null,
+constraint fk_EstadoProye foreign key (estado) references Estado_Requerimientos(nombre),
+constraint fk_UserProyCliente foreign key (lider) references Usuarios(cedula)
+ON UPDATE NO ACTION
+ON DELETE NO ACTION,
 constraint fk_UserProy foreign key (lider) references Usuarios(cedula)
 ON UPDATE NO ACTION
 ON DELETE NO ACTION,
@@ -102,7 +115,7 @@ ON DELETE NO ACTION
 );
 
 CREATE TABLE Estado_Requerimientos(
-nombre char(13) primary key --Pendiente, En Progreso, En Pruebas, Terminado
+nombre char(24) primary key --Pendiente de asignación, Asignado, En ejecución, Finalizado, Cerrado
 );
 
 CREATE TABLE Requerimientos(
@@ -114,7 +127,7 @@ nombre varchar(25) not null,
 prioridad int not null,
 observaciones varchar(150),
 esfuerzo int default 1,
-estado char(13) not null,
+estado char(24) not null,
 creadoPor varchar(11) not null,
 solicitadoPor varchar(11) not null,
 constraint primarykey_Req primary key (codigo, version),
@@ -185,12 +198,18 @@ VALUES('Crear Usuarios'),
 ('Modificar Usuarios'),
 ('Gestionar Permisos'),
 ('Crear Proyectos'),
-('Consultar Proyectos'),
+('Consultar Lista de Proyectos'),
 ('Modificar Proyectos'),
-('Eliminar Proyectos');
+('Eliminar Proyectos'),
+('Consultar Detalles de Proyectos'),
+('Crear Requerimientos'),
+('Consultar Lista de Requerimientos'),
+('Modificar Requerimientos'),
+('Eliminar Requerimientos'),
+('Consultar Detalles de Requerimiento');
 
 DROP TRIGGER trg_Usuarios_UpdatedAt;
 
 DROP TABLE CambiosRequerimientos, Sprint_Mod_Req, Requerimiento_Encargados, Requerimientos,
 Estado_Requerimientos, Sprint_Modulo, Modulos, Sprints, Proyecto_Equipo, Tipo_Desarrollador,
-Proyectos, Rol_Permisos, Permisos, Usuarios_Telefonos, Usuarios;
+Proyectos, Estado_Proyecto, Rol_Permisos, Permisos, Usuarios_Telefonos, Usuarios;
