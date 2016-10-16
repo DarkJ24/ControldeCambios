@@ -47,14 +47,14 @@ namespace ControldeCambios.Controllers
         // GET: Usuarios
         public ActionResult Index(int ? page)
         {
-            if (!revisarPermisos("Consultar Usuarios"))
+            if (!revisarPermisos("Consular Lista de Usuarios"))
             {
                 this.AddToastMessage("Acceso Denegado", "No tienes permiso para consultar Usuarios!", ToastType.Warning);
                 return RedirectToAction("Index", "Home");
             }
             UsuariosModelo modelo = new UsuariosModelo();
             modelo.roles = context.Roles.ToList();
-            modelo.usuarios = baseDatos.Usuarios.ToList();
+            modelo.usuarios = baseDatos.Usuarios.OrderByDescending(s => s.updatedAt).ToList();
             modelo.identityUsuarios = context.Users.ToList();
             modelo.indexUserInfoList = new List<UsuariosModelo.userInfo>();
             int pageSize = 10;
@@ -83,7 +83,7 @@ namespace ControldeCambios.Controllers
                 modelo.indexUserInfoList.Add(user);
             }
             modelo.crearUsuario = revisarPermisos("Crear Usuarios");
-            modelo.detallesUsuario = revisarPermisos("Detalles Usuarios");
+            modelo.detallesUsuario = revisarPermisos("Consultar Detalles de Usuarios");
             var usersAsIPagedList = new StaticPagedList<UsuariosModelo.userInfo>(modelo.indexUserInfoList, pageNumber, pageSize, modelo.usuarios.Count);
             ViewBag.OnePageOfUsers = usersAsIPagedList;
             return View(modelo);
@@ -93,7 +93,7 @@ namespace ControldeCambios.Controllers
         public ActionResult Detalles(string id)
         {
 
-            if(!revisarPermisos("Detalles Usuarios"))
+            if(!revisarPermisos("Consultar Detalles de Usuarios"))
             {
                 this.AddToastMessage("Acceso Denegado", "No tienes permiso para ver detalles de usuarios!", ToastType.Warning);
                 return RedirectToAction("Index", "Home");
@@ -201,6 +201,7 @@ namespace ControldeCambios.Controllers
 
                 var usuario = baseDatos.Usuarios.Find(model.usuario.cedula);
                 usuario.nombre = model.nombreUsuario;
+                usuario.updatedAt = DateTime.Now;
 
                 baseDatos.Entry(usuario).State = System.Data.Entity.EntityState.Modified;
                 baseDatos.SaveChanges();
@@ -243,7 +244,6 @@ namespace ControldeCambios.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Crear(CrearUsuarioModel model)
         {
-            Entities db = new Entities();
 
             if (ModelState.IsValid)
             {
@@ -261,22 +261,23 @@ namespace ControldeCambios.Controllers
                         userEntry.cedula = model.Cedula;
                         userEntry.nombre = model.Nombre;
                         userEntry.id = context.Users.Where(u => u.Email == model.Email).FirstOrDefault().Id;
+                        userEntry.updatedAt = DateTime.Now;
 
-                        db.Usuarios.Add(userEntry);
-                        db.SaveChanges();
+                        baseDatos.Usuarios.Add(userEntry);
+                        baseDatos.SaveChanges();
 
                         var telefonoEntry = new Usuarios_Telefonos();
                         telefonoEntry.telefono = model.Telefono;
                         telefonoEntry.usuario = model.Cedula;
 
-                        db.Usuarios_Telefonos.Add(telefonoEntry);
+                        baseDatos.Usuarios_Telefonos.Add(telefonoEntry);
 
                         if (model.Telefono2 != null)
                         {
                             var telefonoEntry2 = new Usuarios_Telefonos();
                             telefonoEntry2.telefono = model.Telefono2;
                             telefonoEntry2.usuario = model.Cedula;
-                            db.Usuarios_Telefonos.Add(telefonoEntry2);
+                            baseDatos.Usuarios_Telefonos.Add(telefonoEntry2);
                         }
 
                         if (model.Telefono3 != null)
@@ -284,10 +285,10 @@ namespace ControldeCambios.Controllers
                             var telefonoEntry3 = new Usuarios_Telefonos();
                             telefonoEntry3.telefono = model.Telefono3;
                             telefonoEntry3.usuario = model.Cedula;
-                            db.Usuarios_Telefonos.Add(telefonoEntry3);
+                            baseDatos.Usuarios_Telefonos.Add(telefonoEntry3);
                         }
 
-                        db.SaveChanges();
+                        baseDatos.SaveChanges();
 
                         string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account", model.Nombre, generatedPassword);
 
@@ -312,6 +313,7 @@ namespace ControldeCambios.Controllers
                 }
                 catch (Exception ex)
                 {
+                    Console.WriteLine(ex);
                     this.AddToastMessage("Error", "Ha ocurrido un error al crear al usuario " + model.Nombre + ".", ToastType.Error);
                     ViewBag.Name = new SelectList(context.Roles.ToList(), "Name", "Name");
                     return View(model);

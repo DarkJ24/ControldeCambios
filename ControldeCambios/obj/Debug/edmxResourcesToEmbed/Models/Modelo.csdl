@@ -82,6 +82,11 @@
       <End Role="Sprint_Modulo" EntitySet="Sprint_Modulo" />
       <End Role="Requerimiento" EntitySet="Requerimientos" />
     </AssociationSet>
+    <EntitySet Name="Estado_Proyecto" EntityType="ModeloEntities.Estado_Proyecto" />
+    <AssociationSet Name="fk_EstadoProye" Association="ModeloEntities.fk_EstadoProye">
+      <End Role="Estado_Proyecto" EntitySet="Estado_Proyecto" />
+      <End Role="Proyecto" EntitySet="Proyectos" />
+    </AssociationSet>
   </EntityContainer>
   <EntityType Name="CambiosRequerimiento">
     <Key>
@@ -104,7 +109,7 @@
     <Key>
       <PropertyRef Name="nombre" />
     </Key>
-    <Property Name="nombre" Type="String" Nullable="false" MaxLength="13" FixedLength="true" Unicode="false" />
+    <Property Name="nombre" Type="String" Nullable="false" MaxLength="24" FixedLength="true" Unicode="false" />
     <NavigationProperty Name="Requerimientos" Relationship="ModeloEntities.fk_EstadoReq" FromRole="Estado_Requerimientos" ToRole="Requerimiento" />
   </EntityType>
   <EntityType Name="Modulo">
@@ -121,7 +126,7 @@
       <PropertyRef Name="codigo" />
     </Key>
     <Property Name="codigo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="nombre" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="nombre" Type="String" Nullable="false" MaxLength="40" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="Rol_Permisos" Relationship="ModeloEntities.fk_Permiso" FromRole="Permiso" ToRole="Rol_Permisos" />
   </EntityType>
   <EntityType Name="Proyecto_Equipo">
@@ -146,6 +151,12 @@
     <NavigationProperty Name="Proyecto_Equipo" Relationship="ModeloEntities.fk_Proy" FromRole="Proyecto" ToRole="Proyecto_Equipo" />
     <NavigationProperty Name="Usuario" Relationship="ModeloEntities.fk_UserProy" FromRole="Proyecto" ToRole="Usuario" />
     <NavigationProperty Name="Sprints" Relationship="ModeloEntities.fk_UserSprint" FromRole="Proyecto" ToRole="Sprint" />
+    <Property Name="estado" Type="String" Nullable="false" MaxLength="24" FixedLength="true" Unicode="false" />
+    <Property Name="fechaInicio" Type="DateTime" Precision="0" />
+    <Property Name="fechaFinal" Type="DateTime" Precision="0" />
+    <Property Name="duracion" Type="Int32" />
+    <Property Name="cliente" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Estado_Proyecto" Relationship="ModeloEntities.fk_EstadoProye" FromRole="Proyecto" ToRole="Estado_Proyecto" />
   </EntityType>
   <EntityType Name="Requerimiento">
     <Key>
@@ -160,7 +171,7 @@
     <Property Name="prioridad" Type="Int32" Nullable="false" />
     <Property Name="observaciones" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
     <Property Name="esfuerzo" Type="Int32" />
-    <Property Name="estado" Type="String" Nullable="false" MaxLength="13" FixedLength="true" Unicode="false" />
+    <Property Name="estado" Type="String" Nullable="false" MaxLength="24" FixedLength="true" Unicode="false" />
     <Property Name="creadoPor" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="false" />
     <Property Name="solicitadoPor" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="CambiosRequerimientos" Relationship="ModeloEntities.fk_ReqCam" FromRole="Requerimiento" ToRole="CambiosRequerimiento" />
@@ -226,6 +237,7 @@
     <NavigationProperty Name="Requerimientos1" Relationship="ModeloEntities.fk_ReqUserSol" FromRole="Usuario" ToRole="Requerimiento" />
     <NavigationProperty Name="Usuarios_Telefonos" Relationship="ModeloEntities.fk_User" FromRole="Usuario" ToRole="Usuarios_Telefonos" />
     <NavigationProperty Name="Requerimientos2" Relationship="ModeloEntities.Requerimiento_Encargados" FromRole="Usuario" ToRole="Requerimiento" />
+    <Property Name="updatedAt" Type="DateTime" Precision="3" />
   </EntityType>
   <EntityType Name="Usuarios_Telefonos">
     <Key>
@@ -433,5 +445,24 @@
   <Association Name="Sprint_Mod_Req">
     <End Type="ModeloEntities.Sprint_Modulo" Role="Sprint_Modulo" Multiplicity="*" />
     <End Type="ModeloEntities.Requerimiento" Role="Requerimiento" Multiplicity="*" />
+  </Association>
+  <EntityType Name="Estado_Proyecto">
+    <Key>
+      <PropertyRef Name="nombre" />
+    </Key>
+    <Property Name="nombre" Type="String" Nullable="false" MaxLength="24" FixedLength="true" Unicode="false" />
+    <NavigationProperty Name="Proyectos" Relationship="ModeloEntities.fk_EstadoProye" FromRole="Estado_Proyecto" ToRole="Proyecto" />
+  </EntityType>
+  <Association Name="fk_EstadoProye">
+    <End Type="ModeloEntities.Estado_Proyecto" Role="Estado_Proyecto" Multiplicity="1" />
+    <End Type="ModeloEntities.Proyecto" Role="Proyecto" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Estado_Proyecto">
+        <PropertyRef Name="nombre" />
+      </Principal>
+      <Dependent Role="Proyecto">
+        <PropertyRef Name="estado" />
+      </Dependent>
+    </ReferentialConstraint>
   </Association>
 </Schema>

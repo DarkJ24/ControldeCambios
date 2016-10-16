@@ -75,22 +75,38 @@ namespace ControldeCambios.Controllers
         public ActionResult Index(Roles_Permisos model)
         {
             var rol_permisos = baseDatos.Rol_Permisos.ToList();
+            
+            //Role y Permiso de Admin y Gestionar Permisos
+            int permisoID = baseDatos.Permisos.Where(m => m.nombre == "Gestionar Permisos").First().codigo;
+            string roleID = context.Roles.Where(m => m.Name == "Admin").First().Id;
 
             foreach (var rol_permiso in rol_permisos)
             {
- 
+                if ((rol_permiso.permiso != permisoID) || (rol_permiso.rol != roleID))
+                {
                     baseDatos.Entry(rol_permiso).State = System.Data.Entity.EntityState.Deleted;
+                }
             }
             baseDatos.SaveChanges();
 
-            foreach(var relacion_rol_permiso in model.rolPermisoId)
+            foreach (var relacion_rol_permiso in model.rolPermisoId)
             {
-                if(relacion_rol_permiso.valor)
+                if (relacion_rol_permiso.valor)
                 {
-                    var rolPermisosEntry = new Rol_Permisos();
-                    rolPermisosEntry.permiso = relacion_rol_permiso.permiso;
-                    rolPermisosEntry.rol = relacion_rol_permiso.rol;
-                    baseDatos.Rol_Permisos.Add(rolPermisosEntry);
+                    if ((relacion_rol_permiso.rol != roleID) || (relacion_rol_permiso.permiso != permisoID))
+                    {
+                        var rolPermisosEntry = new Rol_Permisos();
+                        rolPermisosEntry.permiso = relacion_rol_permiso.permiso;
+                        rolPermisosEntry.rol = relacion_rol_permiso.rol;
+                        baseDatos.Rol_Permisos.Add(rolPermisosEntry);
+                    }
+                }
+                else
+                {
+                    if ((relacion_rol_permiso.rol == roleID) && (relacion_rol_permiso.permiso == permisoID))
+                    {
+                        this.AddToastMessage("Advertencia", "No se puede quitar gestionar permisos al administrador! Por lo tanto no se quitó.", ToastType.Warning);
+                    }
                 }
             }
             baseDatos.SaveChanges();

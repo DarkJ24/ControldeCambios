@@ -3,6 +3,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin;
 using Owin;
+using System;
 
 [assembly: OwinStartupAttribute(typeof(ControldeCambios.Startup))]
 namespace ControldeCambios
@@ -17,6 +18,7 @@ namespace ControldeCambios
         private void createRolesandUsers()
         {
             ApplicationDbContext context = new ApplicationDbContext();
+            Entities baseDatos = new Entities();
 
             var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
             var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
@@ -26,27 +28,40 @@ namespace ControldeCambios
             if (!roleManager.RoleExists("Admin"))
             {
 
-                // first we create Admin rool   
+                // first we create Admin Role  
                 var role = new IdentityRole();
                 role.Name = "Admin";
                 roleManager.Create(role);
 
-                //Here we create a Admin super user who will maintain the website                  
+                // Then we add all Permisos to Role (16 Permisos)
+                for (int i = 1; i <= 16; i++)
+                {
+                    var rolPermisosEntry = new Rol_Permisos();
+                    rolPermisosEntry.permiso = i;
+                    rolPermisosEntry.rol = role.Id;
+                    baseDatos.Rol_Permisos.Add(rolPermisosEntry);
+                }
 
+                //Here we create a Admin super user who will maintain the website   
                 var user = new ApplicationUser();
-                user.UserName = "admin";
-                user.Email = "admin@example.com";
-
-                string userPWD = "admin";
-
+                user.UserName = "admin@admin.com";
+                user.Email = "admin@admin.com";
+                string userPWD = "Admin.123";
                 var chkUser = UserManager.Create(user, userPWD);
 
                 //Add default User to Role Admin   
                 if (chkUser.Succeeded)
                 {
                     var result1 = UserManager.AddToRole(user.Id, "Admin");
-
+                    //Create User
+                    var userEntry = new Usuario();
+                    userEntry.cedula = "000000000";
+                    userEntry.nombre = "Administrador";
+                    userEntry.id = user.Id;
+                    userEntry.updatedAt = DateTime.Now;
+                    baseDatos.Usuarios.Add(userEntry);
                 }
+                baseDatos.SaveChanges();
             }
 
             // creating Creating Desarrollador role    
@@ -55,7 +70,6 @@ namespace ControldeCambios
                 var role = new IdentityRole();
                 role.Name = "Desarrollador";
                 roleManager.Create(role);
-
             }
 
             // creating Creating Cliente role    
@@ -64,7 +78,6 @@ namespace ControldeCambios
                 var role = new IdentityRole();
                 role.Name = "Cliente";
                 roleManager.Create(role);
-
             }
         }
     }

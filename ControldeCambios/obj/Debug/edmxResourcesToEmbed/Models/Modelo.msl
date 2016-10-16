@@ -50,6 +50,11 @@
     <EntitySetMapping Name="Proyectos">
       <EntityTypeMapping TypeName="ModeloEntities.Proyecto">
         <MappingFragment StoreEntitySet="Proyectos">
+          <ScalarProperty Name="cliente" ColumnName="cliente" />
+          <ScalarProperty Name="duracion" ColumnName="duracion" />
+          <ScalarProperty Name="fechaFinal" ColumnName="fechaFinal" />
+          <ScalarProperty Name="fechaInicio" ColumnName="fechaInicio" />
+          <ScalarProperty Name="estado" ColumnName="estado" />
           <ScalarProperty Name="lider" ColumnName="lider" />
           <ScalarProperty Name="descripcion" ColumnName="descripcion" />
           <ScalarProperty Name="nombre" ColumnName="nombre" />
@@ -110,6 +115,7 @@
     <EntitySetMapping Name="Usuarios">
       <EntityTypeMapping TypeName="ModeloEntities.Usuario">
         <MappingFragment StoreEntitySet="Usuarios">
+          <ScalarProperty Name="updatedAt" ColumnName="updatedAt" />
           <ScalarProperty Name="id" ColumnName="id" />
           <ScalarProperty Name="cedula" ColumnName="cedula" />
           <ScalarProperty Name="nombre" ColumnName="nombre" />
@@ -144,5 +150,12 @@
         <ScalarProperty Name="proyecto" ColumnName="proyecto" />
       </EndProperty>
     </AssociationSetMapping>
+    <EntitySetMapping Name="Estado_Proyecto">
+      <EntityTypeMapping TypeName="ModeloEntities.Estado_Proyecto">
+        <MappingFragment StoreEntitySet="Estado_Proyecto">
+          <ScalarProperty Name="nombre" ColumnName="nombre" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping>

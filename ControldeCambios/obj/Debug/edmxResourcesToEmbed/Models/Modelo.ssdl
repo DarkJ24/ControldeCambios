@@ -14,11 +14,17 @@
     <Property Name="comentarios" Type="varchar" MaxLength="150" />
     <Property Name="motivo" Type="varchar" MaxLength="80" />
   </EntityType>
+  <EntityType Name="Estado_Proyecto">
+    <Key>
+      <PropertyRef Name="nombre" />
+    </Key>
+    <Property Name="nombre" Type="char" MaxLength="24" Nullable="false" />
+  </EntityType>
   <EntityType Name="Estado_Requerimientos">
     <Key>
       <PropertyRef Name="nombre" />
     </Key>
-    <Property Name="nombre" Type="char" MaxLength="13" Nullable="false" />
+    <Property Name="nombre" Type="char" MaxLength="24" Nullable="false" />
   </EntityType>
   <EntityType Name="Modulos">
     <Key>
@@ -33,7 +39,7 @@
       <PropertyRef Name="codigo" />
     </Key>
     <Property Name="codigo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="nombre" Type="varchar" MaxLength="20" Nullable="false" />
+    <Property Name="nombre" Type="varchar" MaxLength="40" Nullable="false" />
   </EntityType>
   <EntityType Name="Proyecto_Equipo">
     <Key>
@@ -51,6 +57,11 @@
     <Property Name="nombre" Type="varchar" MaxLength="25" Nullable="false" />
     <Property Name="descripcion" Type="varchar" MaxLength="80" />
     <Property Name="lider" Type="varchar" MaxLength="11" Nullable="false" />
+    <Property Name="estado" Type="char" MaxLength="24" Nullable="false" />
+    <Property Name="fechaInicio" Type="date" />
+    <Property Name="fechaFinal" Type="date" />
+    <Property Name="duracion" Type="int" />
+    <Property Name="cliente" Type="varchar" MaxLength="11" Nullable="false" />
   </EntityType>
   <EntityType Name="Requerimiento_Encargados">
     <Key>
@@ -75,7 +86,7 @@
     <Property Name="prioridad" Type="int" Nullable="false" />
     <Property Name="observaciones" Type="varchar" MaxLength="150" />
     <Property Name="esfuerzo" Type="int" />
-    <Property Name="estado" Type="char" MaxLength="13" Nullable="false" />
+    <Property Name="estado" Type="char" MaxLength="24" Nullable="false" />
     <Property Name="creadoPor" Type="varchar" MaxLength="11" Nullable="false" />
     <Property Name="solicitadoPor" Type="varchar" MaxLength="11" Nullable="false" />
   </EntityType>
@@ -134,6 +145,7 @@
     <Property Name="nombre" Type="varchar" MaxLength="25" Nullable="false" />
     <Property Name="cedula" Type="varchar" MaxLength="11" Nullable="false" />
     <Property Name="id" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="updatedAt" Type="datetime" />
   </EntityType>
   <EntityType Name="Usuarios_Telefonos">
     <Key>
@@ -143,6 +155,18 @@
     <Property Name="usuario" Type="varchar" MaxLength="11" Nullable="false" />
     <Property Name="telefono" Type="char" MaxLength="8" Nullable="false" />
   </EntityType>
+  <Association Name="fk_EstadoProye">
+    <End Role="Estado_Proyecto" Type="Self.Estado_Proyecto" Multiplicity="1" />
+    <End Role="Proyectos" Type="Self.Proyectos" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Estado_Proyecto">
+        <PropertyRef Name="nombre" />
+      </Principal>
+      <Dependent Role="Proyectos">
+        <PropertyRef Name="estado" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="fk_EstadoReq">
     <End Role="Estado_Requerimientos" Type="Self.Estado_Requerimientos" Multiplicity="1" />
     <End Role="Requerimientos" Type="Self.Requerimientos" Multiplicity="*" />
@@ -365,6 +389,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="fk_UserProyCliente">
+    <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="1" />
+    <End Role="Proyectos" Type="Self.Proyectos" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuarios">
+        <PropertyRef Name="cedula" />
+      </Principal>
+      <Dependent Role="Proyectos">
+        <PropertyRef Name="lider" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="fk_UserSprint">
     <End Role="Proyectos" Type="Self.Proyectos" Multiplicity="1" />
     <End Role="Sprints" Type="Self.Sprints" Multiplicity="*" />
@@ -391,6 +427,7 @@
   </Association>
   <EntityContainer Name="ModeloEntitiesStoreContainer">
     <EntitySet Name="CambiosRequerimientos" EntityType="Self.CambiosRequerimientos" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Estado_Proyecto" EntityType="Self.Estado_Proyecto" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Estado_Requerimientos" EntityType="Self.Estado_Requerimientos" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Modulos" EntityType="Self.Modulos" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Permisos" EntityType="Self.Permisos" Schema="dbo" store:Type="Tables" />
@@ -405,6 +442,10 @@
     <EntitySet Name="Tipo_Desarrollador" EntityType="Self.Tipo_Desarrollador" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Usuarios" EntityType="Self.Usuarios" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Usuarios_Telefonos" EntityType="Self.Usuarios_Telefonos" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="fk_EstadoProye" Association="Self.fk_EstadoProye">
+      <End Role="Estado_Proyecto" EntitySet="Estado_Proyecto" />
+      <End Role="Proyectos" EntitySet="Proyectos" />
+    </AssociationSet>
     <AssociationSet Name="fk_EstadoReq" Association="Self.fk_EstadoReq">
       <End Role="Estado_Requerimientos" EntitySet="Estado_Requerimientos" />
       <End Role="Requerimientos" EntitySet="Requerimientos" />
@@ -470,6 +511,10 @@
       <End Role="Proyecto_Equipo" EntitySet="Proyecto_Equipo" />
     </AssociationSet>
     <AssociationSet Name="fk_UserProy" Association="Self.fk_UserProy">
+      <End Role="Usuarios" EntitySet="Usuarios" />
+      <End Role="Proyectos" EntitySet="Proyectos" />
+    </AssociationSet>
+    <AssociationSet Name="fk_UserProyCliente" Association="Self.fk_UserProyCliente">
       <End Role="Usuarios" EntitySet="Usuarios" />
       <End Role="Proyectos" EntitySet="Proyectos" />
     </AssociationSet>

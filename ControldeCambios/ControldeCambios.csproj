@@ -238,6 +238,9 @@
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CrearUsuarioModel.cs" />
+    <Compile Include="Models\Estado_Proyecto.cs">
+      <DependentUpon>Modelo.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Estado_Requerimientos.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>

@@ -62,7 +62,7 @@
     <div class="form-group">
         @Html.Label("Rol", new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.DropDownListFor(m => m.UserRoles, (SelectList)ViewBag.Name, "Seleccionar Rol", new { @class = "col-xs-12", @style = "height:30px;border-radius:4px" })
+            @Html.DropDownListFor(m => m.UserRoles, (SelectList)ViewBag.Name, "Seleccionar Rol", new { @class = "col-xs-12 form-control", @style = "height:30px;border-radius:4px" })
             @Html.ValidationMessageFor(model => model.UserRoles, "", new { @class = "text-danger" })
         </div>
     </div>

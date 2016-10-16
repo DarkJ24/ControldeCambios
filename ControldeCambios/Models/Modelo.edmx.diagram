@@ -35,6 +35,8 @@
         <AssociationConnector Association="ModeloEntities.fk_User" />
         <AssociationConnector Association="ModeloEntities.Requerimiento_Encargados" />
         <AssociationConnector Association="ModeloEntities.Sprint_Mod_Req" />
+        <EntityTypeShape EntityType="ModeloEntities.Estado_Proyecto" Width="1.5" PointX="7.5" PointY="6.375" />
+        <AssociationConnector Association="ModeloEntities.fk_EstadoProye" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

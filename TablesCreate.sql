@@ -1,3 +1,5 @@
+--Primero se ejecuta esto:
+
 CREATE TABLE Usuarios(
 nombre varchar(25) not null,
 cedula varchar(11) primary key,
@@ -7,14 +9,6 @@ constraint fk_AspUserId foreign key (id) references AspNetUsers(id)
 ON UPDATE CASCADE
 ON DELETE NO ACTION
 );
-
-CREATE TRIGGER trg_Usuarios_UpdatedAt ON Usuarios for UPDATE AS
-BEGIN
-  UPDATE Usuarios
-	SET updatedAt = getDate()
-	FROM Usuarios INNER JOIN Deleted d
-	ON Usuarios.id=d.id
-END
 
 CREATE TABLE Usuarios_Telefonos(
 usuario varchar(11),
@@ -55,7 +49,7 @@ fechaInicio date default getDate(),
 fechaFinal date,
 duracion int,
 cliente varchar(11) not null,
-constraint fk_EstadoProye foreign key (estado) references Estado_Requerimientos(nombre),
+constraint fk_EstadoProye foreign key (estado) references Estado_Proyecto(nombre),
 constraint fk_UserProyCliente foreign key (lider) references Usuarios(cedula)
 ON UPDATE NO ACTION
 ON DELETE NO ACTION,
@@ -208,8 +202,31 @@ VALUES('Crear Usuarios'),
 ('Eliminar Requerimientos'),
 ('Consultar Detalles de Requerimiento');
 
+--Segundo se ejecuta esto:
+
+CREATE TRIGGER trg_Usuarios_UpdatedAt ON Usuarios for UPDATE AS
+BEGIN
+  UPDATE Usuarios
+	SET updatedAt = getDate()
+	FROM Usuarios INNER JOIN Deleted d
+	ON Usuarios.id=d.id
+END
+
+--Correr Visual y luego ejecutar este tercero
+UPDATE AspNetUsers
+SET EmailConfirmed = 1
+WHERE Email = 'admin@admin.com';
+
+--Para borrar todo:
+
 DROP TRIGGER trg_Usuarios_UpdatedAt;
 
 DROP TABLE CambiosRequerimientos, Sprint_Mod_Req, Requerimiento_Encargados, Requerimientos,
 Estado_Requerimientos, Sprint_Modulo, Modulos, Sprints, Proyecto_Equipo, Tipo_Desarrollador,
 Proyectos, Estado_Proyecto, Rol_Permisos, Permisos, Usuarios_Telefonos, Usuarios;
+
+DELETE FROM AspNetUserClaims;
+DELETE FROM AspNetUserLogins;
+DELETE FROM AspNetUserRoles;
+DELETE FROM AspNetUsers;
+DELETE FROM AspNetRoles;
