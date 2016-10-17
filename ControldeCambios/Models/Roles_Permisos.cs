@@ -3,6 +3,9 @@ using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace ControldeCambios.Models
 {
+    /// <summary>
+    /// Provee modelado para los objetos de tipo Rol_Permiso
+    /// </summary>
     public class Roles_Permisos
     {
         public class Relacion_Rol_Permiso

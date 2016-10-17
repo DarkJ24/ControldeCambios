@@ -7,6 +7,9 @@ using System.Web.Mvc;
 
 namespace ControldeCambios.Models
 {
+    /// <summary>
+    /// Provee modelado para los objetos de tipo Usuario
+    /// </summary>
     public class CrearUsuarioModel
     {
         [Display(Name = "UserRoles")]
