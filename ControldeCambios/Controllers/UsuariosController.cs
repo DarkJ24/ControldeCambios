@@ -14,12 +14,16 @@ using System.Collections.Generic;
 
 namespace ControldeCambios.Controllers
 {
+    /// <summary>
+    /// Provee funcionalidad para la ruta /Usuarios/
+    /// </summary>
     public class UsuariosController : ToastrController
     {
         Entities baseDatos = new Entities();
         ApplicationDbContext context = new ApplicationDbContext();
 
         private ApplicationUserManager _userManager;
+
 
         public ApplicationUserManager UserManager
         {
@@ -33,6 +37,12 @@ namespace ControldeCambios.Controllers
             }
         }
 
+        /// <summary>
+        /// Se utiliza para revisar que el rol del usuario que intenta acceder a alguna
+        /// caracteristica tenga los permisos correspondientes.
+        /// </summary>
+        /// <param name="permiso"> Nombre del permiso que se intenta revisar.</param>
+        /// <returns>Pagina de Index</returns>
         private bool revisarPermisos(string permiso)
         {
             String userID = System.Web.HttpContext.Current.User.Identity.GetUserId();
@@ -44,6 +54,11 @@ namespace ControldeCambios.Controllers
             return userRol;
         }
 
+        /// <summary>
+        /// Despliega la pagina index.
+        /// </summary>
+        /// <param name="page"> Parametro opcional que indica el numero de pagina para mostrar.</param>
+        /// <returns>Pagina de Index</returns>
         // GET: Usuarios
         public ActionResult Index(int ? page)
         {
@@ -52,6 +67,7 @@ namespace ControldeCambios.Controllers
                 this.AddToastMessage("Acceso Denegado", "No tienes permiso para consultar Usuarios!", ToastType.Warning);
                 return RedirectToAction("Index", "Home");
             }
+            //se obtiene la informacion del modelo de usuarios
             UsuariosModelo modelo = new UsuariosModelo();
             modelo.roles = context.Roles.ToList();
             modelo.usuarios = baseDatos.Usuarios.OrderByDescending(s => s.updatedAt).ToList();
@@ -60,17 +76,23 @@ namespace ControldeCambios.Controllers
             int pageSize = 10;
             int pageNumber = (page ?? 1);
             int lastElement = (modelo.usuarios.Count < pageSize * pageNumber) ? modelo.usuarios.Count : pageSize * pageNumber;
+            
+            //despliega la informacion de los usuarios por paginas
             for (int i = (pageNumber-1)*pageSize; i < lastElement; i++)
             {
+
                 UsuariosModelo.userInfo user = new UsuariosModelo.userInfo();
                 user.cedula = modelo.usuarios.ElementAt(i).cedula;
                 user.nombre = modelo.usuarios.ElementAt(i).nombre;
                 user.identityId = modelo.usuarios.ElementAt(i).id;
+
+
                 for (int j = 0; j < modelo.identityUsuarios.Count; j++)
                 {
                     if (modelo.usuarios.ElementAt(i).id.Equals(modelo.identityUsuarios.ElementAt(j).Id))
                     {
                         user.correo = modelo.identityUsuarios.ElementAt(j).Email;
+                        
                         for (int k = 0; k < modelo.roles.Count; k++)
                         {
                             if (modelo.roles.ElementAt(k).Id.Equals(modelo.identityUsuarios.ElementAt(j).Roles.First().RoleId))
@@ -89,6 +111,11 @@ namespace ControldeCambios.Controllers
             return View(modelo);
         }
 
+        /// <summary>
+        /// Despliega la pagina Detalles.
+        /// </summary>
+        /// <param name="id"> Parametro que indica el id del usuario a consultar los detalles.</param>
+        /// <returns>Pagina de Detalles</returns>
         // GET: Detalles
         public ActionResult Detalles(string id)
         {
@@ -117,6 +144,8 @@ namespace ControldeCambios.Controllers
             }
             modelo.email = modelo.identityUsuario.Email;
             modelo.telefonos = baseDatos.Usuarios_Telefonos.Where(a => a.usuario == modelo.usuario.cedula).ToList();
+
+            //Valida que la informacion del modelo sea correcta
             if (modelo.telefonos != null && modelo.telefonos.Count > 0)
             {
                 modelo.tel1 = modelo.telefonos.ElementAt(0).telefono;
@@ -129,6 +158,9 @@ namespace ControldeCambios.Controllers
             {
                 modelo.tel3 = modelo.telefonos.ElementAt(2).telefono;
             }
+
+            // obtiene el usuario que esta autentificado para validar los permisos
+            // segun su rol
             String currentUser = System.Web.HttpContext.Current.User.Identity.GetUserId();
             if (modelo.identityUsuario.Id != currentUser)
             {
@@ -144,11 +176,18 @@ namespace ControldeCambios.Controllers
             return View(modelo);
         }
 
+
+        /// <summary>
+        /// Funcionalidad de borrar Usuario.
+        /// </summary>
+        /// <returns>Pagina de Index</returns>
+        /// <param name="model"> Modelo con la informacion del Usuario a borrar.</param>
         //POST: Delete
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Borrar(UsuariosModelo model)
         {
+            //obtiene el usuario a borrar de la base de datos
             var user = await baseDatos.Usuarios.FindAsync(model.usuario.cedula);
             baseDatos.Entry(user).State = System.Data.Entity.EntityState.Deleted;
             baseDatos.SaveChanges();
@@ -160,6 +199,11 @@ namespace ControldeCambios.Controllers
             return RedirectToAction("Index", "Usuarios");
         }
 
+        /// <summary>
+        /// Despliega la pagina Detalles.
+        /// </summary>
+        /// <param name="id"> Modelo con la informacion del Usuario a consultar los detalles.</param>
+        /// <returns>Pagina de Detalles</returns>
         // POST: Detalles
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -226,12 +270,16 @@ namespace ControldeCambios.Controllers
         }
 
 
-
+        /// <summary>
+        /// Funcionalidad para crear Usuario.
+        /// </summary>
+        /// <returns>Pagina de Index</returns>
         // GET: /Usuarios/Crear
         public ActionResult Crear()
         {
             if (!revisarPermisos("Crear Usuarios"))
             {
+                //despliega mensaje en caso de no poder crear un usuario
                 this.AddToastMessage("Acceso Denegado", "No tienes permiso para crear usuarios!", ToastType.Warning);
                 return RedirectToAction("Index", "Home");
             }
@@ -239,6 +287,11 @@ namespace ControldeCambios.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Funcionalidad para crear Usuario.
+        /// </summary>
+        /// <param name="model"> Modelo con la informacion del Usuario a crear.</param>
+        /// <returns>Pagina de Index</returns>
         // POST: /Usuarios/Crear
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -251,12 +304,14 @@ namespace ControldeCambios.Controllers
                 try
                 {
                     
+                    //generacion de contraseña provisional
                     string generatedPassword = Membership.GeneratePassword(12, 2);
+                    //crea el usuario en la tabla de AspNetUsers
                     var result = await UserManager.CreateAsync(user, generatedPassword);
 
                     if (result.Succeeded)
                     {
-
+                        // Crea el usuario en las tabla de Usuario
                         var userEntry = new Usuario();
                         userEntry.cedula = model.Cedula;
                         userEntry.nombre = model.Nombre;
@@ -272,6 +327,7 @@ namespace ControldeCambios.Controllers
 
                         baseDatos.Usuarios_Telefonos.Add(telefonoEntry);
 
+                        // valida los datos recibidos del modelo
                         if (model.Telefono2 != null)
                         {
                             var telefonoEntry2 = new Usuarios_Telefonos();
@@ -292,6 +348,7 @@ namespace ControldeCambios.Controllers
 
                         string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account", model.Nombre, generatedPassword);
 
+                        //crea la relacion del usuario con el rol
                         await this.UserManager.AddToRoleAsync(user.Id, model.UserRoles);
                         this.AddToastMessage("Usuario Creado", "El usuario " + model.Nombre + " se ha creado correctamente. Se envió un correo electronico de confirmación al usuario", ToastType.Success);
                         return RedirectToAction("Crear", "Usuarios");
@@ -325,10 +382,22 @@ namespace ControldeCambios.Controllers
             
         }
 
+
+        /// <summary>
+        /// Metodo usado para enviar el email de confirmacion y activacion de cuenta
+        /// para un usuario nuevo.
+        /// </summary>
+        /// <param name="userID"> Identificador del usuario.</param>
+        /// <param name="subject"> Asunto del email.</param>
+        /// <param name="usrName"> Nombre del usuario.</param>
+        /// <param name="userPassword"> Contraseña provisional usada para la creacion de cuentas.</param>
+        /// <returns>Pagina de Index</returns>
         private async Task<string> SendEmailConfirmationTokenAsync(string userID, string subject, string usrName , string userPassword)
         {
             
             string code = await UserManager.GenerateEmailConfirmationTokenAsync(userID);
+
+            // Construye y envia el mensaje de confirmacion
             var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = userID, code = code }, protocol: Request.Url.Scheme);
             await UserManager.SendEmailAsync(userID, subject, "Hola. <br><br>"
                 + "Se ha creado el usuario "+ usrName + " en nuestro Sistema de Control de Cambios.<br>"

@@ -5,6 +5,9 @@ using System.ComponentModel.DataAnnotations;
 namespace ControldeCambios.Models
 {
 
+    /// <summary>
+    /// Provee modelado para los objetos de tipo Usuario
+    /// </summary>
     public class UsuariosModelo
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]

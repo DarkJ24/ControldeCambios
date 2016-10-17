@@ -7,18 +7,31 @@ using ControldeCambios.App_Start;
 
 namespace ControldeCambios.Controllers
 {
-
+    /// <summary>
+    /// Provee funcionalidad administrar los permisos asociados a los roles
+    /// </summary>
     public class Roles_PermisosController : ToastrController
     {
         ApplicationDbContext context;
         Entities baseDatos;
 
+
+        /// <summary>
+        /// Constructor del controlador de Roles_Permisos
+        /// </summary>
+        /// <returns>Pagina de Index</returns>
         public Roles_PermisosController()
         {
             context = new ApplicationDbContext();
             baseDatos = new Entities();
         }
 
+        /// <summary>
+        /// Se utiliza para revisar que el rol del usuario que intenta acceder a alguna
+        /// caracteristica tenga los permisos correspondientes.
+        /// </summary>
+        /// <param name="permiso"> Nombre del permiso que se intenta revisar.</param>
+        /// <returns>Pagina de Index</returns>
         private bool revisarPermisos(string permiso)
         {
             string userID = System.Web.HttpContext.Current.User.Identity.GetUserId();
@@ -30,6 +43,10 @@ namespace ControldeCambios.Controllers
             return userRol;
         }
 
+        /// <summary>
+        /// Despliega la pagina index.
+        /// </summary>
+        /// <returns>Pagina de Index</returns>
         // GET: Roles_Permisos
         public ActionResult Index()
         {
@@ -69,6 +86,11 @@ namespace ControldeCambios.Controllers
             return View(modelo);
         }
 
+        /// <summary>
+        /// Despliega la pagina index.
+        /// </summary>
+        /// <param name="model"> Modelo con la informacion de los roles a desplegar </param>
+        /// <returns>Pagina de Index</returns>
         //POST: Roles_Permisos
         [HttpPost]
         [ValidateAntiForgeryToken]
