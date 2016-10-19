@@ -36,6 +36,13 @@ namespace ControldeCambios
             //Font Awesome
             bundles.Add(new StyleBundle("~/content/font-awesome", "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css")
             .Include("~/Content/font-awesome.css"));
+
+            //Multiselect
+            bundles.Add(new StyleBundle("~/content/multi-select")
+            .Include("~/Content/multi-select.css"));
+
+            bundles.Add(new ScriptBundle("~/bundles/jquery.multi-select")
+            .Include("~/Scripts/jquery.multi-select.js"));
         }
     }
 }

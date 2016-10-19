@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace ControldeCambios.Models
 {
@@ -22,15 +23,19 @@ namespace ControldeCambios.Models
         [Display(Name = "Descripción")]
         public string descripcion { get; set; }
 
+        [Display(Name = "Descripción")]
         public DateTime fechaInicio { get; set; }
 
+        [Display(Name = "Descripción")]
         public DateTime fechaFinal { get; set; }
 
+        [Display(Name = "Líder")]
         public Usuario lider { get; set; }
 
+        [Display(Name = "Cliente")]
         public Usuario cliente { get; set; }
 
-        public List<Usuario> equipo { get; set; }
+        public List<SelectListItem> equipo { get; set; }
 
     }
 }
