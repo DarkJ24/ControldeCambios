@@ -125,7 +125,7 @@ nombre char(24) primary key --Pendiente de asignación, Asignado, En ejecución, F
 
 CREATE TABLE Requerimientos(
 codigo char(15),
-version int,
+version int default 1,
 creadoEn date not null,
 descripcion varchar(120),
 nombre varchar(25) not null,
