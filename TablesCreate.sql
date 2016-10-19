@@ -95,7 +95,7 @@ sprintProyecto varchar(25) not null,
 sprintNumero int not null,
 puntos int not null,
 constraint pk_ProgSprint primary key (fecha, sprintProyecto, sprintNumero),
-constraint fk_ProgSprint foreign key (sprintProyecto,sprintNumero) references Proyectos(proyecto, numero)
+constraint fk_ProgSprint foreign key (sprintProyecto,sprintNumero) references Sprints(proyecto, numero)
 ON UPDATE CASCADE
 ON DELETE CASCADE
 );
@@ -152,8 +152,8 @@ CREATE TABLE Requerimientos_Cri_Acep(
 reqCodigo char(15),
 reqVersion int,
 criterio varchar(120),
-constraint pk_ReqCriAcep primary key (reqCodigo, reqVersion, criterio)
-constraint fk_EstadoReq foreign key (reqCodigo, reqVersion) references Requerimientos(codigo, version)
+constraint pk_ReqCriAcep primary key (reqCodigo, reqVersion, criterio),
+constraint fk_ReqCriAcp foreign key (reqCodigo, reqVersion) references Requerimientos(codigo, version)
 ON UPDATE CASCADE
 ON DELETE CASCADE,
 );
