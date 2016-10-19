@@ -80,13 +80,24 @@ ON DELETE NO ACTION
 
 CREATE TABLE Sprints(
 proyecto varchar(25),
-numero int identity(1,1),
+numero int,
 fechaInicio date not null,
 fechaFinal date not null,
 constraint pk_ReqSprint primary key (proyecto, numero),
 constraint fk_UserSprint foreign key (proyecto) references Proyectos(nombre)
 ON UPDATE CASCADE
 ON DELETE NO ACTION
+);
+
+CREATE TABLE Progreso_Sprint(
+fecha date not null,
+sprintProyecto varchar(25) not null,
+sprintNumero int not null,
+puntos int not null,
+constraint pk_ProgSprint primary key (fecha, sprintProyecto, sprintNumero),
+constraint fk_ProgSprint foreign key (sprintProyecto,sprintNumero) references Proyectos(proyecto, numero)
+ON UPDATE CASCADE
+ON DELETE CASCADE
 );
 
 CREATE TABLE Modulos(
@@ -124,6 +135,7 @@ esfuerzo int default 1,
 estado char(24) not null,
 creadoPor varchar(11) not null,
 solicitadoPor varchar(11) not null,
+imagen varbinary(MAX),
 constraint primarykey_Req primary key (codigo, version),
 constraint fk_EstadoReq foreign key (estado) references Estado_Requerimientos(nombre)
 ON UPDATE CASCADE
@@ -134,6 +146,16 @@ ON DELETE NO ACTION,
 constraint fk_ReqUserSol foreign key (solicitadoPor) references Usuarios(cedula)
 ON UPDATE NO ACTION
 ON DELETE NO ACTION
+);
+
+CREATE TABLE Requerimientos_Cri_Acep(
+reqCodigo char(15),
+reqVersion int,
+criterio varchar(120),
+constraint pk_ReqCriAcep primary key (reqCodigo, reqVersion, criterio)
+constraint fk_EstadoReq foreign key (reqCodigo, reqVersion) references Requerimientos(codigo, version)
+ON UPDATE CASCADE
+ON DELETE CASCADE,
 );
 
 CREATE TABLE Requerimiento_Encargados(
@@ -221,8 +243,8 @@ WHERE Email = 'admin@admin.com';
 
 DROP TRIGGER trg_Usuarios_UpdatedAt;
 
-DROP TABLE CambiosRequerimientos, Sprint_Mod_Req, Requerimiento_Encargados, Requerimientos,
-Estado_Requerimientos, Sprint_Modulo, Modulos, Sprints, Proyecto_Equipo, Tipo_Desarrollador,
+DROP TABLE CambiosRequerimientos, Sprint_Mod_Req, Requerimiento_Encargados, Requerimientos_Cri_Acep, Requerimientos,
+Estado_Requerimientos, Sprint_Modulo, Modulos, Progreso_Sprint, Sprints, Proyecto_Equipo, Tipo_Desarrollador,
 Proyectos, Estado_Proyecto, Rol_Permisos, Permisos, Usuarios_Telefonos, Usuarios;
 
 DELETE FROM AspNetUserClaims;
