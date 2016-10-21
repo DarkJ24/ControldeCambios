@@ -43,6 +43,13 @@ namespace ControldeCambios
 
             bundles.Add(new ScriptBundle("~/bundles/jquery.multi-select")
             .Include("~/Scripts/jquery.multi-select.js"));
+
+            //jQuery UI
+            bundles.Add(new ScriptBundle("~/bundles/jqueryui").Include(
+            "~/Scripts/jquery-ui-{version}.js"));
+
+            bundles.Add(new StyleBundle("~/Content/themes/base/css").Include(
+              "~/Content/themes/base/all.css"));
         }
     }
 }

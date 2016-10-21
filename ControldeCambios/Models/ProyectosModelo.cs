@@ -23,11 +23,12 @@ namespace ControldeCambios.Models
         [Display(Name = "Descripción")]
         public string descripcion { get; set; }
 
-        [Display(Name = "Descripción")]
-        public DateTime fechaInicio { get; set; }
-
-        [Display(Name = "Descripción")]
-        public DateTime fechaFinal { get; set; }
+        [Required(ErrorMessage = "La fecha de inicio es un campo requerido.")]
+        [Display(Name = "Fecha de Inicio")]
+        public string fechaInicio { get; set; }
+        
+        [Display(Name = "Fecha Final")]
+        public string fechaFinal { get; set; }
 
         [Display(Name = "Líder")]
         public Usuario lider { get; set; }
