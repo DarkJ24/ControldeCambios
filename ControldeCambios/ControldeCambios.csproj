@@ -280,6 +280,8 @@
     <Compile Include="Models\Requerimiento.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\RequerimientosModelo.cs" />
+    <Compile Include="Models\Requerimientos_Cri_Acep.cs" />
     <Compile Include="Models\Roles_Permisos.cs" />
     <Compile Include="Models\Rol_Permisos.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
