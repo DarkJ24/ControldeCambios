@@ -1,0 +1,81 @@
+﻿@model ControldeCambios.Models.SprintModelo
+
+@{
+    ViewBag.Title = "Crear Sprint";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Gestión de Proyectos</h2>
+<h4>@ViewBag.Title</h4>
+<hr />
+
+@using (Html.BeginForm("Crear", "Sprint", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.numero, new { @class = "col-md-2 control-label required" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.numero, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.numero, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Proyecto", new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(m => m.proyecto, (SelectList)ViewBag.Proyectos, "Seleccionar Proyecto", new { @class = "col-xs-12 form-control", @style = "height:30px;border-radius:4px" })
+            @Html.ValidationMessageFor(model => model.proyecto, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.fechaInicio, new { @class = "col-md-2 control-label required" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.fechaInicio, new { @class = "form-control datePicker" })
+            @Html.ValidationMessageFor(model => model.fechaInicio, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.fechaFinal, new { @class = "col-md-2 control-label required" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.fechaFinal, new { @class = "form-control datePicker" })
+            @Html.ValidationMessageFor(model => model.fechaFinal, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Requerimientos", new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.ListBoxFor(m => m.requerimientos, new MultiSelectList(ViewBag.Requerimientos, "codigo", "nombre"), new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;" })
+            @Html.ValidationMessageFor(model => model.requerimientos, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-success" value="Aceptar" />
+            <input type="button" class="btn btn-default" value="Cancelar" onclick="location.reload()" />
+        </div>
+    </div>
+
+    <style type="text/css">
+        .required:after {
+            content: "*";
+            font-weight: bold;
+            color: red;
+        }
+    </style>
+    <script>
+        window.onload = function() {
+            $('#list2').multiSelect();
+            $('.datePicker').datepicker();
+        };
+    </script>
+
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
