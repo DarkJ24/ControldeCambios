@@ -229,6 +229,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\ProyectosController.cs" />
+    <Compile Include="Controllers\RequerimientosController.cs" />
     <Compile Include="Controllers\Roles_PermisosController.cs" />
     <Compile Include="Controllers\ToastrController.cs" />
     <Compile Include="Controllers\UsuariosController.cs" />
@@ -404,6 +405,7 @@
     <Content Include="Views\Shared\Info.cshtml" />
     <Content Include="Views\Shared\_Toastr.cshtml" />
     <Content Include="Views\Proyectos\crear.cshtml" />
+    <Content Include="Views\Requerimientos\index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
