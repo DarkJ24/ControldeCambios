@@ -1,0 +1,46 @@
+﻿@model ControldeCambios.Models.RequerimientosModelo
+@{
+    ViewBag.Title = "Crear Requerimiento";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Gestión de Requerimientos</h2>
+<h4>@ViewBag.Title</h4>
+<hr />
+@using (Html.BeginForm("Crear", "Requerimientos", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+     <div class="form-group">
+        @Html.LabelFor(m => m.codigo, new { @class = "col-md-2 control-label required" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.codigo, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.codigo, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.nombre, new { @class = "col-md-2 control-label required" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.nombre, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.descripcion, new { @class = "col-md-2 control-label required" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.descripcion, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    /*<div class="form-group">
+        @Html.Label("Solicitado Por", new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(m => m.solicitadoPor, (SelectList)ViewBag.Desarrolladores, "Seleccionar Solicitante ", new { @class = "col-xs-12 form-control", @style = "height:30px;border-radius:4px" })
+            @Html.ValidationMessageFor(model => model.solicitadoPor, "", new { @class = "text-danger" })
+        </div>
+    </div>*/
+
+}
