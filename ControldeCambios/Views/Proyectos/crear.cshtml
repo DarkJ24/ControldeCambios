@@ -27,7 +27,7 @@
     </div>
 
     <div class="form-group">
-        @Html.Label("Líder", new { @class = "col-md-2 control-label" })
+        @Html.Label("Líder", new { @class = "col-md-2 control-label required" })
         <div class="col-md-10">
             @Html.DropDownListFor(m => m.lider, (SelectList)ViewBag.Desarrolladores, "Seleccionar Líder", new { @class = "col-xs-12 form-control", @style = "height:30px;border-radius:4px" })
             @Html.ValidationMessageFor(model => model.lider, "", new { @class = "text-danger" })
@@ -35,7 +35,7 @@
     </div>
 
     <div class="form-group">
-        @Html.Label("Cliente", new { @class = "col-md-2 control-label" })
+        @Html.Label("Cliente", new { @class = "col-md-2 control-label required" })
         <div class="col-md-10">
             @Html.DropDownListFor(m => m.cliente, (SelectList)ViewBag.Clientes, "Seleccionar Cliente", new { @class = "col-xs-12 form-control", @style = "height:30px;border-radius:4px" })
             @Html.ValidationMessageFor(model => model.cliente, "", new { @class = "text-danger" })
@@ -59,9 +59,10 @@
     </div>
 
     <div class="form-group">
-        @Html.Label("Equipo", new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.ListBoxFor(m => m.equipo, new MultiSelectList(ViewBag.Usuarios, "cedula","nombre"), new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;" })
+        @Html.Label("Disponibles", new { @class = "col-md-offset-2 col-md-2 control-label", @style="text-align:center;margin-left:195px;" })
+        @Html.Label("Equipo", new { @class = "col-md-offset-2  col-md-2 control-label required", @style="text-align:center;margin-left:10px;margin-bottom:10px"})
+        <div class="col-md-offset-2 col-md-10" style="margin-bottom:25px">
+            @Html.ListBoxFor(m => m.equipo, new MultiSelectList(ViewBag.DesarrolladoresDisp, "cedula","nombre"), new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;" })
             @Html.ValidationMessageFor(model => model.cliente, "", new { @class = "text-danger" })
         </div>
     </div>

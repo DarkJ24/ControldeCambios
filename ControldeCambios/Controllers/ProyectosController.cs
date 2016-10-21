@@ -1,6 +1,7 @@
 ﻿using ControldeCambios.App_Start;
 using ControldeCambios.Models;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,9 +46,26 @@ namespace ControldeCambios.Controllers
                 this.AddToastMessage("Acceso Denegado", "No tienes permiso para crear proyectos!", ToastType.Warning);
                 return RedirectToAction("Index", "Home");
             }
-            ViewBag.Desarrolladores = new SelectList(baseDatos.Usuarios.ToList(), "cedula", "nombre");
-            ViewBag.Clientes = new SelectList(baseDatos.Usuarios.ToList(), "cedula", "nombre");
-            ViewBag.Usuarios = baseDatos.Usuarios.ToList();
+            List<Usuario> listaDesarrolladores = new List<Usuario>();
+            List<Usuario> listaClientes = new List<Usuario>();
+            string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
+            string desarrolladorRol = context.Roles.Where(m => m.Name == "Desarrollador").First().Id;
+            foreach (var user in context.Users.ToArray())
+            {
+                if (user.Roles.First().RoleId.Equals(clienteRol))
+                {
+                    listaClientes.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
+                } else
+                {
+                    if (user.Roles.First().RoleId.Equals(desarrolladorRol))
+                    {
+                        listaDesarrolladores.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
+                    }
+                }
+            }
+            ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
+            ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");
+            ViewBag.DesarrolladoresDisp = listaDesarrolladores;
             return View();
         }
     }
