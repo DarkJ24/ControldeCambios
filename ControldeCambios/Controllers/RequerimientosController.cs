@@ -16,12 +16,7 @@ namespace ControldeCambios.Controllers
 {
     public class RequerimientosController : Controller
     {
-        // GET: Requerimientos
-        public ActionResult Index()
-        {
-            return View();
-        }
-
+        Entities baseDatos = new Entities();
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -31,6 +26,34 @@ namespace ControldeCambios.Controllers
             {
 
             }
+
+            return View(model);
+        }
+
+        public ActionResult Index(string id)
+        {
+            var proyecto = baseDatos.Proyectos.Find(id);
+            var model = new RequerimientosIndexModel();
+
+            model.titulo = proyecto.nombre;
+            model.descripcion = proyecto.descripcion;
+            model.cliente = proyecto.cliente;
+            model.lider = proyecto.lider;
+
+            var sprints = baseDatos.Sprints.Where(m => m.proyecto == id).ToList();
+
+            var numeros_sprints = sprints.Select(m => m.numero);
+            var sprint_modulos = baseDatos.Sprint_Modulo.Where(m => numeros_sprints.Contains(m.sprint) && m.proyecto == id).ToList();
+            var sprint_modulo_requerimientos = sprint_modulos.Select(m => m.Requerimientos.ToList());
+
+            if (sprint_modulo_requerimientos.Any())
+            {
+                model.reqs = sprint_modulo_requerimientos.Aggregate((acc, x) => acc.Concat(x).ToList());
+            } else {
+                model.reqs = new List<Requerimiento>();
+            }
+
+
 
             return View(model);
         }
