@@ -60,6 +60,10 @@ public partial class Entities : DbContext
 
     public virtual DbSet<Estado_Proyecto> Estado_Proyecto { get; set; }
 
+    public virtual DbSet<Progreso_Sprint> Progreso_Sprint { get; set; }
+
+    public virtual DbSet<Requerimientos_Cri_Acep> Requerimientos_Cri_Acep { get; set; }
+
 }
 
 }

@@ -30,6 +30,8 @@ public partial class Requerimiento
 
         this.Sprint_Modulo = new HashSet<Sprint_Modulo>();
 
+        this.Requerimientos_Cri_Acep = new HashSet<Requerimientos_Cri_Acep>();
+
     }
 
 
@@ -55,6 +57,8 @@ public partial class Requerimiento
 
     public string solicitadoPor { get; set; }
 
+    public byte[] imagen { get; set; }
+
 
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -78,6 +82,10 @@ public partial class Requerimiento
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
     public virtual ICollection<Sprint_Modulo> Sprint_Modulo { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+
+    public virtual ICollection<Requerimientos_Cri_Acep> Requerimientos_Cri_Acep { get; set; }
 
 }
 

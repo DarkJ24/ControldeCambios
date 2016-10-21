@@ -24,6 +24,8 @@ public partial class Sprint
 
         this.Sprint_Modulo = new HashSet<Sprint_Modulo>();
 
+        this.Progreso_Sprint = new HashSet<Progreso_Sprint>();
+
     }
 
 
@@ -42,6 +44,10 @@ public partial class Sprint
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
     public virtual ICollection<Sprint_Modulo> Sprint_Modulo { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+
+    public virtual ICollection<Progreso_Sprint> Progreso_Sprint { get; set; }
 
 }
 

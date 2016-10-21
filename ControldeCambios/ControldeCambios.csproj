@@ -231,6 +231,7 @@
     <Compile Include="Controllers\ProyectosController.cs" />
     <Compile Include="Controllers\RequerimientosController.cs" />
     <Compile Include="Controllers\Roles_PermisosController.cs" />
+    <Compile Include="Controllers\SprintController.cs" />
     <Compile Include="Controllers\ToastrController.cs" />
     <Compile Include="Controllers\UsuariosController.cs" />
     <Compile Include="Global.asax.cs">
@@ -270,6 +271,9 @@
     <Compile Include="Models\Permiso.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Progreso_Sprint.cs">
+      <DependentUpon>Modelo.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Proyecto.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
@@ -281,7 +285,9 @@
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\RequerimientosModelo.cs" />
-    <Compile Include="Models\Requerimientos_Cri_Acep.cs" />
+    <Compile Include="Models\Requerimientos_Cri_Acep.cs">
+      <DependentUpon>Modelo.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Roles_Permisos.cs" />
     <Compile Include="Models\Rol_Permisos.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
@@ -289,6 +295,7 @@
     <Compile Include="Models\Sprint.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\SprintModelo.cs" />
     <Compile Include="Models\Sprint_Modulo.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
@@ -452,6 +459,8 @@
     <Content Include="Views\Shared\_Toastr.cshtml" />
     <Content Include="Views\Proyectos\crear.cshtml" />
     <Content Include="Views\Requerimientos\index.cshtml" />
+    <Content Include="Views\Requerimientos\crear.cshtml" />
+    <Content Include="Views\Sprint\Crear.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
