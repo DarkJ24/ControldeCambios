@@ -50,10 +50,10 @@ namespace ControldeCambios.Models
         public string esfuerzo { get; set; }
 
 
-        public DateTime fechaInicial { get; set; }
+        public string fechaInicial { get; set; }
 
 
-        public DateTime fechaFinal { get; set; }
+        public string fechaFinal { get; set; }
 
 
         public List<Estado_Requerimientos> estado { get; set; }
