@@ -1,8 +1,73 @@
-﻿
+﻿@model ControldeCambios.Models.RequerimientosIndexModel
 @{
     ViewBag.Title = "index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>index</h2>
+
+<h1>
+    @Html.DisplayFor(m => m.titulo)
+</h1>
+
+@Html.DisplayFor(m => m.descripcion)
+<div class="row">
+    <div class="col-md-6">
+        @Html.LabelFor(m => m.lider)
+        @Html.DisplayFor(m => m.lider)
+    </div>
+    <div class="col-md-6">
+        @Html.LabelFor(m => m.cliente)
+        @Html.DisplayFor(m => m.cliente)
+    </div>
+</div>
+
+<table class="table">
+    <tr>
+        <th>
+            Titulo
+        </th>
+        <th>
+            Reponsable
+        </th>
+        <th>
+            Valor
+        </th>
+        <th>
+            Completado
+        </th>
+        <th>
+            Consultar
+        </th>
+    </tr>
+    @foreach (var req in Model.reqs)
+    {
+        <tr id="@(req.codigo)">
+            <td>
+                @Html.DisplayFor(modelItem =>
+req.nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem =>
+req.creadoPor)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem =>
+req.esfuerzo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem =>
+req.estado)
+            </td>
+                <td>
+
+                    @Html.ActionLink("Consultar", "Detalles", new
+           {
+               id = req.codigo
+           })
+                </td>
+        </tr>
+    }
+</table>
+
 

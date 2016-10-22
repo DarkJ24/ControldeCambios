@@ -87,6 +87,16 @@
       <End Role="Estado_Proyecto" EntitySet="Estado_Proyecto" />
       <End Role="Proyecto" EntitySet="Proyectos" />
     </AssociationSet>
+    <EntitySet Name="Progreso_Sprint" EntityType="ModeloEntities.Progreso_Sprint" />
+    <EntitySet Name="Requerimientos_Cri_Acep" EntityType="ModeloEntities.Requerimientos_Cri_Acep" />
+    <AssociationSet Name="fk_ProgSprint" Association="ModeloEntities.fk_ProgSprint">
+      <End Role="Sprint" EntitySet="Sprints" />
+      <End Role="Progreso_Sprint" EntitySet="Progreso_Sprint" />
+    </AssociationSet>
+    <AssociationSet Name="fk_ReqCriAcp" Association="ModeloEntities.fk_ReqCriAcp">
+      <End Role="Requerimiento" EntitySet="Requerimientos" />
+      <End Role="Requerimientos_Cri_Acep" EntitySet="Requerimientos_Cri_Acep" />
+    </AssociationSet>
   </EntityContainer>
   <EntityType Name="CambiosRequerimiento">
     <Key>
@@ -181,6 +191,8 @@
     <NavigationProperty Name="Usuario1" Relationship="ModeloEntities.fk_ReqUserSol" FromRole="Requerimiento" ToRole="Usuario" />
     <NavigationProperty Name="Usuarios" Relationship="ModeloEntities.Requerimiento_Encargados" FromRole="Requerimiento" ToRole="Usuario" />
     <NavigationProperty Name="Sprint_Modulo" Relationship="ModeloEntities.Sprint_Mod_Req" FromRole="Requerimiento" ToRole="Sprint_Modulo" />
+    <Property Name="imagen" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <NavigationProperty Name="Requerimientos_Cri_Acep" Relationship="ModeloEntities.fk_ReqCriAcp" FromRole="Requerimiento" ToRole="Requerimientos_Cri_Acep" />
   </EntityType>
   <EntityType Name="Rol_Permisos">
     <Key>
@@ -215,6 +227,7 @@
     <Property Name="fechaFinal" Type="DateTime" Nullable="false" Precision="0" />
     <NavigationProperty Name="Proyecto1" Relationship="ModeloEntities.fk_UserSprint" FromRole="Sprint" ToRole="Proyecto" />
     <NavigationProperty Name="Sprint_Modulo" Relationship="ModeloEntities.fk_SpMod" FromRole="Sprint" ToRole="Sprint_Modulo" />
+    <NavigationProperty Name="Progreso_Sprint" Relationship="ModeloEntities.fk_ProgSprint" FromRole="Sprint" ToRole="Progreso_Sprint" />
   </EntityType>
   <EntityType Name="Tipo_Desarrollador">
     <Key>
@@ -462,6 +475,61 @@
       </Principal>
       <Dependent Role="Proyecto">
         <PropertyRef Name="estado" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Progreso_Sprint">
+    <Key>
+      <PropertyRef Name="fecha" />
+      <PropertyRef Name="sprintProyecto" />
+      <PropertyRef Name="sprintNumero" />
+    </Key>
+    <Property Name="fecha" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="sprintProyecto" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
+    <Property Name="sprintNumero" Type="Int32" Nullable="false" />
+    <Property Name="puntos" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Sprint" Relationship="ModeloEntities.fk_ProgSprint" FromRole="Progreso_Sprint" ToRole="Sprint" />
+  </EntityType>
+  <EntityType Name="Requerimientos_Cri_Acep">
+    <Key>
+      <PropertyRef Name="reqCodigo" />
+      <PropertyRef Name="reqVersion" />
+      <PropertyRef Name="criterio" />
+    </Key>
+    <Property Name="reqCodigo" Type="String" Nullable="false" MaxLength="15" FixedLength="true" Unicode="false" />
+    <Property Name="reqVersion" Type="Int32" Nullable="false" />
+    <Property Name="criterio" Type="String" Nullable="false" MaxLength="120" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Requerimiento" Relationship="ModeloEntities.fk_ReqCriAcp" FromRole="Requerimientos_Cri_Acep" ToRole="Requerimiento" />
+  </EntityType>
+  <Association Name="fk_ProgSprint">
+    <End Type="ModeloEntities.Sprint" Role="Sprint" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="ModeloEntities.Progreso_Sprint" Role="Progreso_Sprint" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Sprint">
+        <PropertyRef Name="proyecto" />
+        <PropertyRef Name="numero" />
+      </Principal>
+      <Dependent Role="Progreso_Sprint">
+        <PropertyRef Name="sprintProyecto" />
+        <PropertyRef Name="sprintNumero" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_ReqCriAcp">
+    <End Type="ModeloEntities.Requerimiento" Role="Requerimiento" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="ModeloEntities.Requerimientos_Cri_Acep" Role="Requerimientos_Cri_Acep" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Requerimiento">
+        <PropertyRef Name="codigo" />
+        <PropertyRef Name="version" />
+      </Principal>
+      <Dependent Role="Requerimientos_Cri_Acep">
+        <PropertyRef Name="reqCodigo" />
+        <PropertyRef Name="reqVersion" />
       </Dependent>
     </ReferentialConstraint>
   </Association>

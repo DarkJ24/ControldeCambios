@@ -41,6 +41,17 @@
     <Property Name="codigo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="nombre" Type="varchar" MaxLength="40" Nullable="false" />
   </EntityType>
+  <EntityType Name="Progreso_Sprint">
+    <Key>
+      <PropertyRef Name="fecha" />
+      <PropertyRef Name="sprintProyecto" />
+      <PropertyRef Name="sprintNumero" />
+    </Key>
+    <Property Name="fecha" Type="date" Nullable="false" />
+    <Property Name="sprintProyecto" Type="varchar" MaxLength="25" Nullable="false" />
+    <Property Name="sprintNumero" Type="int" Nullable="false" />
+    <Property Name="puntos" Type="int" Nullable="false" />
+  </EntityType>
   <EntityType Name="Proyecto_Equipo">
     <Key>
       <PropertyRef Name="usuario" />
@@ -89,6 +100,17 @@
     <Property Name="estado" Type="char" MaxLength="24" Nullable="false" />
     <Property Name="creadoPor" Type="varchar" MaxLength="11" Nullable="false" />
     <Property Name="solicitadoPor" Type="varchar" MaxLength="11" Nullable="false" />
+    <Property Name="imagen" Type="varbinary(max)" />
+  </EntityType>
+  <EntityType Name="Requerimientos_Cri_Acep">
+    <Key>
+      <PropertyRef Name="reqCodigo" />
+      <PropertyRef Name="reqVersion" />
+      <PropertyRef Name="criterio" />
+    </Key>
+    <Property Name="reqCodigo" Type="char" MaxLength="15" Nullable="false" />
+    <Property Name="reqVersion" Type="int" Nullable="false" />
+    <Property Name="criterio" Type="varchar" MaxLength="120" Nullable="false" />
   </EntityType>
   <EntityType Name="Rol_Permisos">
     <Key>
@@ -128,7 +150,7 @@
       <PropertyRef Name="numero" />
     </Key>
     <Property Name="proyecto" Type="varchar" MaxLength="25" Nullable="false" />
-    <Property Name="numero" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="numero" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
     <Property Name="fechaInicio" Type="date" Nullable="false" />
     <Property Name="fechaFinal" Type="date" Nullable="false" />
   </EntityType>
@@ -193,6 +215,22 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="fk_ProgSprint">
+    <End Role="Sprints" Type="Self.Sprints" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Progreso_Sprint" Type="Self.Progreso_Sprint" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Sprints">
+        <PropertyRef Name="proyecto" />
+        <PropertyRef Name="numero" />
+      </Principal>
+      <Dependent Role="Progreso_Sprint">
+        <PropertyRef Name="sprintProyecto" />
+        <PropertyRef Name="sprintNumero" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="fk_Proy">
     <End Role="Proyectos" Type="Self.Proyectos" Multiplicity="1" />
     <End Role="Proyecto_Equipo" Type="Self.Proyecto_Equipo" Multiplicity="*" />
@@ -230,6 +268,22 @@
       <Dependent Role="CambiosRequerimientos">
         <PropertyRef Name="requerimiento" />
         <PropertyRef Name="versionReqNueva" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_ReqCriAcp">
+    <End Role="Requerimientos" Type="Self.Requerimientos" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="Requerimientos_Cri_Acep" Type="Self.Requerimientos_Cri_Acep" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Requerimientos">
+        <PropertyRef Name="codigo" />
+        <PropertyRef Name="version" />
+      </Principal>
+      <Dependent Role="Requerimientos_Cri_Acep">
+        <PropertyRef Name="reqCodigo" />
+        <PropertyRef Name="reqVersion" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -431,10 +485,12 @@
     <EntitySet Name="Estado_Requerimientos" EntityType="Self.Estado_Requerimientos" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Modulos" EntityType="Self.Modulos" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Permisos" EntityType="Self.Permisos" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Progreso_Sprint" EntityType="Self.Progreso_Sprint" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Proyecto_Equipo" EntityType="Self.Proyecto_Equipo" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Proyectos" EntityType="Self.Proyectos" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Requerimiento_Encargados" EntityType="Self.Requerimiento_Encargados" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Requerimientos" EntityType="Self.Requerimientos" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Requerimientos_Cri_Acep" EntityType="Self.Requerimientos_Cri_Acep" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Rol_Permisos" EntityType="Self.Rol_Permisos" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Sprint_Mod_Req" EntityType="Self.Sprint_Mod_Req" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Sprint_Modulo" EntityType="Self.Sprint_Modulo" Schema="dbo" store:Type="Tables" />
@@ -454,6 +510,10 @@
       <End Role="Permisos" EntitySet="Permisos" />
       <End Role="Rol_Permisos" EntitySet="Rol_Permisos" />
     </AssociationSet>
+    <AssociationSet Name="fk_ProgSprint" Association="Self.fk_ProgSprint">
+      <End Role="Sprints" EntitySet="Sprints" />
+      <End Role="Progreso_Sprint" EntitySet="Progreso_Sprint" />
+    </AssociationSet>
     <AssociationSet Name="fk_Proy" Association="Self.fk_Proy">
       <End Role="Proyectos" EntitySet="Proyectos" />
       <End Role="Proyecto_Equipo" EntitySet="Proyecto_Equipo" />
@@ -465,6 +525,10 @@
     <AssociationSet Name="fk_ReqCam2" Association="Self.fk_ReqCam2">
       <End Role="Requerimientos" EntitySet="Requerimientos" />
       <End Role="CambiosRequerimientos" EntitySet="CambiosRequerimientos" />
+    </AssociationSet>
+    <AssociationSet Name="fk_ReqCriAcp" Association="Self.fk_ReqCriAcp">
+      <End Role="Requerimientos" EntitySet="Requerimientos" />
+      <End Role="Requerimientos_Cri_Acep" EntitySet="Requerimientos_Cri_Acep" />
     </AssociationSet>
     <AssociationSet Name="fk_ReqResReq" Association="Self.fk_ReqResReq">
       <End Role="Requerimientos" EntitySet="Requerimientos" />
