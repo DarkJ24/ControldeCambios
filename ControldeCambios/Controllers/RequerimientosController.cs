@@ -11,6 +11,8 @@ using ControldeCambios.App_Start;
 using System.Web.Security;
 using PagedList;
 using System.Collections.Generic;
+using Chart.Mvc;
+using Chart.Mvc.ComplexChart;
 
 namespace ControldeCambios.Controllers
 {
@@ -47,6 +49,14 @@ namespace ControldeCambios.Controllers
             {
                 model.reqs = new List<Requerimiento>();
             }
+
+            //charts
+            DateTime start = proyecto.fechaInicio ?? default(DateTime);
+            DateTime end = proyecto.fechaFinal ?? default(DateTime);
+
+            ViewBag.dias = Enumerable.Range(0, 1 + end.Subtract(start).Days).Select(offset => start.AddDays(offset).ToString("dd/MM/yy")).ToArray();
+
+
 
             return View(model);
         }
