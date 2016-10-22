@@ -284,6 +284,7 @@
     <Compile Include="Models\Requerimiento.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\RequerimientosIndexModel.cs" />
     <Compile Include="Models\RequerimientosModelo.cs" />
     <Compile Include="Models\Requerimientos_Cri_Acep.cs">
       <DependentUpon>Modelo.tt</DependentUpon>

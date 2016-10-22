@@ -64,6 +64,7 @@
     <EntitySetMapping Name="Requerimientos">
       <EntityTypeMapping TypeName="ModeloEntities.Requerimiento">
         <MappingFragment StoreEntitySet="Requerimientos">
+          <ScalarProperty Name="imagen" ColumnName="imagen" />
           <ScalarProperty Name="solicitadoPor" ColumnName="solicitadoPor" />
           <ScalarProperty Name="creadoPor" ColumnName="creadoPor" />
           <ScalarProperty Name="estado" ColumnName="estado" />
@@ -154,6 +155,25 @@
       <EntityTypeMapping TypeName="ModeloEntities.Estado_Proyecto">
         <MappingFragment StoreEntitySet="Estado_Proyecto">
           <ScalarProperty Name="nombre" ColumnName="nombre" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Progreso_Sprint">
+      <EntityTypeMapping TypeName="ModeloEntities.Progreso_Sprint">
+        <MappingFragment StoreEntitySet="Progreso_Sprint">
+          <ScalarProperty Name="puntos" ColumnName="puntos" />
+          <ScalarProperty Name="sprintNumero" ColumnName="sprintNumero" />
+          <ScalarProperty Name="sprintProyecto" ColumnName="sprintProyecto" />
+          <ScalarProperty Name="fecha" ColumnName="fecha" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Requerimientos_Cri_Acep">
+      <EntityTypeMapping TypeName="ModeloEntities.Requerimientos_Cri_Acep">
+        <MappingFragment StoreEntitySet="Requerimientos_Cri_Acep">
+          <ScalarProperty Name="criterio" ColumnName="criterio" />
+          <ScalarProperty Name="reqVersion" ColumnName="reqVersion" />
+          <ScalarProperty Name="reqCodigo" ColumnName="reqCodigo" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
