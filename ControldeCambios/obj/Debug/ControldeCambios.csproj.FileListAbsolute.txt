@@ -725,3 +725,6 @@ C:\Users\b11291\Documents\IngeProyecto\ControldeCambios\obj\Debug\ControldeCambi
 \\Mac\Home\Documents\UCR\Inge 1\ControldeCambios\ControldeCambios\bin\PagedList.xml
 \\Mac\Home\Documents\UCR\Inge 1\ControldeCambios\ControldeCambios\bin\PagedList.Mvc.xml
 \\Mac\Home\Documents\UCR\Inge 1\ControldeCambios\ControldeCambios\bin\ControldeCambios.XML
+\\Mac\Home\Documents\UCR\Inge 1\ControldeCambios\ControldeCambios\bin\Chart.Mvc.dll
+\\Mac\Home\Documents\UCR\Inge 1\ControldeCambios\ControldeCambios\bin\Chart.Mvc.pdb
+\\Mac\Home\Documents\UCR\Inge 1\ControldeCambios\ControldeCambios\bin\Chart.Mvc.xml
