@@ -1,31 +1,53 @@
 ﻿@model ControldeCambios.Models.RequerimientosIndexModel
 @using Chart.Mvc.ComplexChart;
 @using Chart.Mvc.Extensions;
-
+@using PagedList;
+@using PagedList.Mvc;
 @{
     ViewBag.Title = "index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.1.1/Chart.js"></script>
+<script src="~/Scripts/Chart.js"></script>
 
-<h2>index</h2>
+<h1>Gestión de proyecto</h1>
 
 <h1>
     @Html.DisplayFor(m => m.titulo)
 </h1>
 
-@Html.DisplayFor(m => m.descripcion)
-<div class="row">
-    <div class="col-md-6">
-        @Html.LabelFor(m => m.lider)
-        @Html.DisplayFor(m => m.lider)
-    </div>
-    <div class="col-md-6">
-        @Html.LabelFor(m => m.cliente)
-        @Html.DisplayFor(m => m.cliente)
-    </div>
+<div id="row">
+    <b> Sprint </b>
+    @foreach (var spr in Model.sprints)
+    {
+        if (spr == Model.sprint)
+        {
+            @Html.Label(spr.ToString());
+        }
+        else
+        {
+            @Html.ActionLink(spr.ToString(), "Index", new { proyecto = Model.id, sprint = spr }, null)
+        }
+
+        @Html.Raw("  ")
+    }
 </div>
+
+<center>
+    @Html.DisplayFor(m => m.descripcion)
+    <div class="row">
+        <div class="col-md-6">
+            @Html.LabelFor(m => m.lider)
+            @Html.DisplayFor(m => m.lider)
+        </div>
+        <div class="col-md-6">
+            @Html.LabelFor(m => m.cliente)
+            @Html.DisplayFor(m => m.cliente)
+        </div>
+    </div>
+</center>
+
+<h3>Gráfico de Quema</h3>
 
 @{
     var lineChart = new LineChart();
@@ -34,7 +56,7 @@
                            {
                               new ComplexDataset
                                   {
-                                      Data = new List<double> { 65, 59, 80, 81, 56, 55, 40 },
+                                      Data = ViewBag.esfuerzo_real,
                                       Label = "My First dataset",
                                       FillColor = "rgba(220,220,220,0.2)",
                                       StrokeColor = "rgba(220,220,220,1)",
@@ -45,7 +67,7 @@
                                   },
                               new ComplexDataset
                                   {
-                                      Data = new List<double> { 28, 48, 40, 19, 86, 27, 90 },
+                                      Data = ViewBag.esfuerzo_ideal,
                                       Label = "My Second dataset",
                                       FillColor = "rgba(151,187,205,0.2)",
                                       StrokeColor = "rgba(151,187,205,1)",
@@ -57,8 +79,12 @@
                           });
 }
 
-<canvas id="myCanvas" width="800" height="400"></canvas>
-@Html.CreateChart("myCanvas", lineChart)
+<center>
+    <canvas id="myCanvas" width="800" height="400"></canvas>
+    @Html.CreateChart("myCanvas", lineChart)
+</center>
+
+<h3>Product Backlog</h3>
 
 <table class="table">
     <tr>
@@ -108,4 +134,15 @@ req.estado)
     }
 </table>
 
-
+@Html.PagedListPager((IPagedList)ViewBag.OnePageOfReqs, page => Url.Action("Index", new { page }))
+@Html.Raw("Página:")
+@if (ViewBag.OnePageOfReqs.PageCount < ViewBag.OnePageOfReqs.PageNumber)
+{
+    @Html.Raw("0")
+}
+else
+{
+    @ViewBag.OnePageOfReqs.PageNumber
+}
+@Html.Raw(" de ")
+@ViewBag.OnePageOfReqs.PageCount
