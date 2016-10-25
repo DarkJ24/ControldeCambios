@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace ControldeCambios.Models
 {
@@ -32,8 +33,8 @@ namespace ControldeCambios.Models
         [Display(Name = "Descripción")]
         public string descripcion { get; set; }
 
-
-        public List<Usuario> solicitadoPor { get; set; }
+        
+        public Usuario solicitadoPor { get; set; }
 
 
         public List<Modulo> modulo { get; set; }
@@ -50,9 +51,11 @@ namespace ControldeCambios.Models
         public string esfuerzo { get; set; }
 
 
+        [Display(Name = "Fecha de Inicio")]
         public string fechaInicial { get; set; }
 
 
+        [Display(Name = "Fecha Final")]
         public string fechaFinal { get; set; }
 
 
@@ -71,6 +74,6 @@ namespace ControldeCambios.Models
 
 
         //AGREGAR EQUIPO
-
-    }
+        public List<SelectListItem> equipo { get; set; }
+        }
 }
