@@ -29,7 +29,7 @@
     <div class="form-group">
         @Html.Label("Líder", new { @class = "col-md-2 control-label required" })
         <div class="col-md-10">
-            @Html.DropDownListFor(m => m.lider, (SelectList)ViewBag.Desarrolladores, "Seleccionar Líder", new { @class = "col-xs-12 form-control", @style = "height:30px;border-radius:4px" })
+            @Html.DropDownListFor(m => m.lider.cedula, (SelectList)ViewBag.Desarrolladores, "Seleccionar Líder", new { @class = "col-xs-12 form-control", @style = "height:30px;border-radius:4px" })
             @Html.ValidationMessageFor(model => model.lider, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -37,7 +37,7 @@
     <div class="form-group">
         @Html.Label("Cliente", new { @class = "col-md-2 control-label required" })
         <div class="col-md-10">
-            @Html.DropDownListFor(m => m.cliente, (SelectList)ViewBag.Clientes, "Seleccionar Cliente", new { @class = "col-xs-12 form-control", @style = "height:30px;border-radius:4px" })
+            @Html.DropDownListFor(m => m.cliente.cedula, (SelectList)ViewBag.Clientes, "Seleccionar Cliente", new { @class = "col-xs-12 form-control", @style = "height:30px;border-radius:4px" })
             @Html.ValidationMessageFor(model => model.cliente, "", new { @class = "text-danger" })
         </div>
     </div>

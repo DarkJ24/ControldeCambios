@@ -224,6 +224,25 @@ VALUES('Crear Usuarios'),
 ('Eliminar Requerimientos'),
 ('Consultar Detalles de Requerimiento');
 
+INSERT INTO Estado_Proyecto
+VALUES('Por iniciar'), 
+('En ejecución'),
+('En pausa'),
+('Finalizado'),
+('Cerrado');
+
+INSERT INTO Tipo_Desarrollador
+VALUES('Tester'),
+('Diseñador'),
+('Programador');
+
+INSERT INTO Estado_Requerimientos
+VALUES('Pendiente de asignación'), 
+('Asignado'),
+('En ejecución'),
+('Finalizado'),
+('Cerrado');
+
 --Segundo se ejecuta esto:
 
 CREATE TRIGGER trg_Usuarios_UpdatedAt ON Usuarios for UPDATE AS
