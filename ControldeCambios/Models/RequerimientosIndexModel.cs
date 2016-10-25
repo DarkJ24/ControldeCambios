@@ -12,5 +12,8 @@ namespace ControldeCambios.Models
         public string lider { get; set; }
         public string cliente { get; set; }
         public List<Requerimiento> reqs { get; set; }
+        public List<int> sprints { get; set; }
+        public string id { get; set; }
+        public int sprint { get; set; }
     }
 }
