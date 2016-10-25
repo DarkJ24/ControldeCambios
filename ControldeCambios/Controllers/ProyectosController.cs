@@ -68,5 +68,45 @@ namespace ControldeCambios.Controllers
             ViewBag.DesarrolladoresDisp = listaDesarrolladores;
             return View();
         }
+
+        public ActionResult Detalles(string id)
+        {
+            ProyectosModelo model = new ProyectosModelo();
+
+            var proyecto = baseDatos.Proyectos.Find(id);
+
+            model.cliente = baseDatos.Usuarios.Find(proyecto.cliente);
+            model.lider = baseDatos.Usuarios.Find(proyecto.lider);
+            model.descripcion = proyecto.descripcion;
+            model.fechaInicio = ((proyecto.fechaInicio) ?? default(DateTime)).ToString("MM/dd/yyyy");
+            model.fechaFinal = (proyecto.fechaFinal ?? default(DateTime)).ToString("MM/dd/yyyy");
+            model.nombre = proyecto.nombre;
+            model.equipo = proyecto.Proyecto_Equipo.Select(m => new SelectListItem(m.usuario, baseDatos.Usuarios.Find(m.usuario)));
+
+            List<Usuario> listaDesarrolladores = new List<Usuario>();
+            List<Usuario> listaClientes = new List<Usuario>();
+            string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
+            string desarrolladorRol = context.Roles.Where(m => m.Name == "Desarrollador").First().Id;
+            foreach (var user in context.Users.ToArray())
+            {
+                if (user.Roles.First().RoleId.Equals(clienteRol))
+                {
+                    listaClientes.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
+                }
+                else
+                {
+                    if (user.Roles.First().RoleId.Equals(desarrolladorRol))
+                    {
+                        listaDesarrolladores.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
+                    }
+                }
+            }
+            ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
+            
+            ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");
+            ViewBag.DesarrolladoresDisp = listaDesarrolladores;
+
+            return View(model);
+        }
     }
 }
