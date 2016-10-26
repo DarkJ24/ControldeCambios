@@ -211,25 +211,31 @@ namespace ControldeCambios.Controllers
         /// <param name="model"> Modelo con la informacion del Requerimiento a crear.</param>
         /// <returns>Pagina de Index</returns>
         // POST: /Requerimientos/Crear
-        /*[HttpPost]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Crear(RequerimientosModelo model)
         {
             if (ModelState.IsValid)
             {
                 var requerimiento = new Requerimiento();
-
                 requerimiento.codigo = model.codigo;
                 requerimiento.nombre = model.nombre;
                 requerimiento.descripcion = model.descripcion;
-                requerimiento.solicitadoPor = model.solicitadoPor.ToString();
-
+                requerimiento.prioridad = model.prioridad;
+                requerimiento.esfuerzo = model.esfuerzo;
+                requerimiento.creadoEn = Convert.ToDateTime(model.fechaInicial);
+                //requerimiento.fechaFinal = Convert.ToDateTime(model.fechaFinal);
+                requerimiento.observaciones = model.observaciones;
+                requerimiento.Usuarios = model.equipo.Select(x => baseDatos.Usuarios.Find(x.Value)).ToList();
 
                 baseDatos.Requerimientos.Add(requerimiento);
+
                 baseDatos.SaveChanges();
+                this.AddToastMessage("Requerimiento Creado", "El requerimiento " + model.nombre + " se ha creado correctamente.", ToastType.Success);
+                return RedirectToAction("Crear", "Requerimiento");
             }
 
             return View(model);
-        }*/
+        }
     }
 }
