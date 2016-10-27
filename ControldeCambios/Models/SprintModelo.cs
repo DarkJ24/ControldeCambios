@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace ControldeCambios.Models
 {
     public class SprintModelo
     {
-        public Sprint sprint { get; set; }
-        
+          
         [Display(Name = "Proyecto")]
         public string proyecto { get; set; }
 
@@ -23,7 +23,7 @@ namespace ControldeCambios.Models
         public string fechaFinal { get; set; }
 
 
-        public List<Requerimiento> requerimientos { get; set; }
+        public List<string> requerimientos { get; set; }
          
     }
 }

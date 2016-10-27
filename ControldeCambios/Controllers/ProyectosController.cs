@@ -33,8 +33,26 @@ namespace ControldeCambios.Controllers
         }
 
         // GET: Proyectos
-        public ActionResult Index()
+        public ActionResult Index(int? page)
         {
+            if (!revisarPermisos("Consultar Lista de Proyectos"))
+            {
+                this.AddToastMessage("Acceso Denegado", "No tienes permiso para consultar Usuarios!", ToastType.Warning);
+                return RedirectToAction("Index", "Home");
+            }
+
+            ProyectosModelo modelo = new ProyectosModelo();
+
+            /*modelo.nombre = context;
+            modelo.proyecto;
+            modelo.cliente;
+            modelo.descripcion;
+            modelo.equipo;
+            modelo.fechaFinal;
+            modelo.fechaInicio;
+            modelo.lider;*/
+            
+
             return View();
         }
         // GET: Crear
