@@ -101,20 +101,24 @@ ON DELETE CASCADE
 );
 
 CREATE TABLE Modulos(
-id int identity(1,1) primary key,
-numero int not null,
-nombre varchar(25) not null
+proyecto varchar(25),
+numero int,
+nombre varchar(25) not null,
+constraint pk_ReqModulo1 primary key (proyecto, numero),
+constraint fk_ProyectoModulo1 foreign key (proyecto) references Proyectos(nombre)
+ON UPDATE CASCADE
+ON DELETE NO ACTION
 );
 
 CREATE TABLE Sprint_Modulo(
 proyecto varchar(25),
-sprint int not null,
-modulo int not null,
+sprint int,
+modulo int,
 constraint pk_SpMod primary key (proyecto, sprint, modulo),
 constraint fk_SpMod foreign key (proyecto, sprint) references Sprints(proyecto, numero)
 ON UPDATE CASCADE
 ON DELETE NO ACTION,
-constraint fk_UserSprintMod foreign key (modulo) references Modulos(id)
+constraint fk_UserSprintMod foreign key (proyecto, modulo) references Modulos(proyecto, numero)
 ON UPDATE CASCADE
 ON DELETE NO ACTION
 );
