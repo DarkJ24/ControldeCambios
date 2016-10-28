@@ -4,6 +4,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -104,8 +105,8 @@ namespace ControldeCambios.Controllers
                 var proyecto = new Proyecto();
                 proyecto.cliente = model.cliente.cedula;
                 proyecto.lider = model.lider.cedula;
-                proyecto.fechaInicio = Convert.ToDateTime(model.fechaInicio);
-                proyecto.fechaFinal = Convert.ToDateTime(model.fechaFinal);
+                proyecto.fechaInicio = DateTime.ParseExact(model.fechaInicio, "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                proyecto.fechaFinal = DateTime.ParseExact(model.fechaFinal, "MM/dd/yyyy", CultureInfo.InvariantCulture);
                 proyecto.descripcion = model.descripcion;
                 proyecto.nombre = model.nombre;
                 proyecto.estado = "Por iniciar";
