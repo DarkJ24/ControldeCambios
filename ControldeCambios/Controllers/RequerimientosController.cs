@@ -221,8 +221,8 @@ namespace ControldeCambios.Controllers
                 requerimiento.codigo = model.codigo;
                 requerimiento.nombre = model.nombre;
                 requerimiento.descripcion = model.descripcion;
-                requerimiento.prioridad = model.prioridad;
-                requerimiento.esfuerzo = model.esfuerzo;
+                requerimiento.prioridad = Int32.Parse(model.prioridad);
+                requerimiento.esfuerzo = Int32.Parse(model.esfuerzo);
                 requerimiento.creadoEn = Convert.ToDateTime(model.fechaInicial);
                 //requerimiento.fechaFinal = Convert.ToDateTime(model.fechaFinal);
                 requerimiento.observaciones = model.observaciones;

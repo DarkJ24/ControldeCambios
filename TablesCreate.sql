@@ -45,8 +45,8 @@ nombre varchar(25) primary key,
 descripcion varchar(80),
 lider varchar(11) not null,
 estado char(24) not null,
-fechaInicio date default getDate(),
-fechaFinal date,
+fechaInicio date not null default getDate(),
+fechaFinal date not null,
 duracion int,
 cliente varchar(11) not null,
 constraint fk_EstadoProye foreign key (estado) references Estado_Proyecto(nombre),
@@ -119,7 +119,7 @@ constraint fk_SpMod foreign key (proyecto, sprint) references Sprints(proyecto, 
 ON UPDATE CASCADE
 ON DELETE NO ACTION,
 constraint fk_UserSprintMod foreign key (proyecto, modulo) references Modulos(proyecto, numero)
-ON UPDATE CASCADE
+ON UPDATE NO ACTION
 ON DELETE NO ACTION
 );
 
@@ -131,6 +131,7 @@ CREATE TABLE Requerimientos(
 codigo char(15),
 version int default 1,
 creadoEn date not null,
+finalizaEn date,
 descripcion varchar(120),
 nombre varchar(25) not null,
 prioridad int not null,

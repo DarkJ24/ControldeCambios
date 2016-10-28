@@ -36,8 +36,6 @@ public partial class Entities : DbContext
 
     public virtual DbSet<Estado_Requerimientos> Estado_Requerimientos { get; set; }
 
-    public virtual DbSet<Modulo> Modulos { get; set; }
-
     public virtual DbSet<Permiso> Permisos { get; set; }
 
     public virtual DbSet<Proyecto_Equipo> Proyecto_Equipo { get; set; }
@@ -47,8 +45,6 @@ public partial class Entities : DbContext
     public virtual DbSet<Requerimiento> Requerimientos { get; set; }
 
     public virtual DbSet<Rol_Permisos> Rol_Permisos { get; set; }
-
-    public virtual DbSet<Sprint_Modulo> Sprint_Modulo { get; set; }
 
     public virtual DbSet<Sprint> Sprints { get; set; }
 
@@ -63,6 +59,10 @@ public partial class Entities : DbContext
     public virtual DbSet<Progreso_Sprint> Progreso_Sprint { get; set; }
 
     public virtual DbSet<Requerimientos_Cri_Acep> Requerimientos_Cri_Acep { get; set; }
+
+    public virtual DbSet<Modulo> Modulos { get; set; }
+
+    public virtual DbSet<Sprint_Modulo> Sprint_Modulo { get; set; }
 
 }
 

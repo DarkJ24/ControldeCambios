@@ -3,13 +3,11 @@
   <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="CambiosRequerimientos" EntityType="ModeloEntities.CambiosRequerimiento" />
     <EntitySet Name="Estado_Requerimientos" EntityType="ModeloEntities.Estado_Requerimientos" />
-    <EntitySet Name="Modulos" EntityType="ModeloEntities.Modulo" />
     <EntitySet Name="Permisos" EntityType="ModeloEntities.Permiso" />
     <EntitySet Name="Proyecto_Equipo" EntityType="ModeloEntities.Proyecto_Equipo" />
     <EntitySet Name="Proyectos" EntityType="ModeloEntities.Proyecto" />
     <EntitySet Name="Requerimientos" EntityType="ModeloEntities.Requerimiento" />
     <EntitySet Name="Rol_Permisos" EntityType="ModeloEntities.Rol_Permisos" />
-    <EntitySet Name="Sprint_Modulo" EntityType="ModeloEntities.Sprint_Modulo" />
     <EntitySet Name="Sprints" EntityType="ModeloEntities.Sprint" />
     <EntitySet Name="Tipo_Desarrollador" EntityType="ModeloEntities.Tipo_Desarrollador" />
     <EntitySet Name="Usuarios" EntityType="ModeloEntities.Usuario" />
@@ -29,10 +27,6 @@
     <AssociationSet Name="fk_EstadoReq" Association="ModeloEntities.fk_EstadoReq">
       <End Role="Estado_Requerimientos" EntitySet="Estado_Requerimientos" />
       <End Role="Requerimiento" EntitySet="Requerimientos" />
-    </AssociationSet>
-    <AssociationSet Name="fk_UserSprintMod" Association="ModeloEntities.fk_UserSprintMod">
-      <End Role="Modulo" EntitySet="Modulos" />
-      <End Role="Sprint_Modulo" EntitySet="Sprint_Modulo" />
     </AssociationSet>
     <AssociationSet Name="fk_Permiso" Association="ModeloEntities.fk_Permiso">
       <End Role="Permiso" EntitySet="Permisos" />
@@ -66,10 +60,6 @@
       <End Role="Usuario" EntitySet="Usuarios" />
       <End Role="Requerimiento" EntitySet="Requerimientos" />
     </AssociationSet>
-    <AssociationSet Name="fk_SpMod" Association="ModeloEntities.fk_SpMod">
-      <End Role="Sprint" EntitySet="Sprints" />
-      <End Role="Sprint_Modulo" EntitySet="Sprint_Modulo" />
-    </AssociationSet>
     <AssociationSet Name="fk_User" Association="ModeloEntities.fk_User">
       <End Role="Usuario" EntitySet="Usuarios" />
       <End Role="Usuarios_Telefonos" EntitySet="Usuarios_Telefonos" />
@@ -77,10 +67,6 @@
     <AssociationSet Name="Requerimiento_Encargados" Association="ModeloEntities.Requerimiento_Encargados">
       <End Role="Requerimiento" EntitySet="Requerimientos" />
       <End Role="Usuario" EntitySet="Usuarios" />
-    </AssociationSet>
-    <AssociationSet Name="Sprint_Mod_Req" Association="ModeloEntities.Sprint_Mod_Req">
-      <End Role="Sprint_Modulo" EntitySet="Sprint_Modulo" />
-      <End Role="Requerimiento" EntitySet="Requerimientos" />
     </AssociationSet>
     <EntitySet Name="Estado_Proyecto" EntityType="ModeloEntities.Estado_Proyecto" />
     <AssociationSet Name="fk_EstadoProye" Association="ModeloEntities.fk_EstadoProye">
@@ -96,6 +82,24 @@
     <AssociationSet Name="fk_ReqCriAcp" Association="ModeloEntities.fk_ReqCriAcp">
       <End Role="Requerimiento" EntitySet="Requerimientos" />
       <End Role="Requerimientos_Cri_Acep" EntitySet="Requerimientos_Cri_Acep" />
+    </AssociationSet>
+    <EntitySet Name="Modulos" EntityType="ModeloEntities.Modulo" />
+    <EntitySet Name="Sprint_Modulo" EntityType="ModeloEntities.Sprint_Modulo" />
+    <AssociationSet Name="fk_ProyectoModulo1" Association="ModeloEntities.fk_ProyectoModulo1">
+      <End Role="Proyecto" EntitySet="Proyectos" />
+      <End Role="Modulo" EntitySet="Modulos" />
+    </AssociationSet>
+    <AssociationSet Name="fk_UserSprintMod" Association="ModeloEntities.fk_UserSprintMod">
+      <End Role="Modulo" EntitySet="Modulos" />
+      <End Role="Sprint_Modulo" EntitySet="Sprint_Modulo" />
+    </AssociationSet>
+    <AssociationSet Name="fk_SpMod" Association="ModeloEntities.fk_SpMod">
+      <End Role="Sprint" EntitySet="Sprints" />
+      <End Role="Sprint_Modulo" EntitySet="Sprint_Modulo" />
+    </AssociationSet>
+    <AssociationSet Name="Sprint_Mod_Req" Association="ModeloEntities.Sprint_Mod_Req">
+      <End Role="Sprint_Modulo" EntitySet="Sprint_Modulo" />
+      <End Role="Requerimiento" EntitySet="Requerimientos" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="CambiosRequerimiento">
@@ -121,15 +125,6 @@
     </Key>
     <Property Name="nombre" Type="String" Nullable="false" MaxLength="24" FixedLength="true" Unicode="false" />
     <NavigationProperty Name="Requerimientos" Relationship="ModeloEntities.fk_EstadoReq" FromRole="Estado_Requerimientos" ToRole="Requerimiento" />
-  </EntityType>
-  <EntityType Name="Modulo">
-    <Key>
-      <PropertyRef Name="id" />
-    </Key>
-    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="numero" Type="Int32" Nullable="false" />
-    <Property Name="nombre" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
-    <NavigationProperty Name="Sprint_Modulo" Relationship="ModeloEntities.fk_UserSprintMod" FromRole="Modulo" ToRole="Sprint_Modulo" />
   </EntityType>
   <EntityType Name="Permiso">
     <Key>
@@ -162,11 +157,12 @@
     <NavigationProperty Name="Usuario" Relationship="ModeloEntities.fk_UserProy" FromRole="Proyecto" ToRole="Usuario" />
     <NavigationProperty Name="Sprints" Relationship="ModeloEntities.fk_UserSprint" FromRole="Proyecto" ToRole="Sprint" />
     <Property Name="estado" Type="String" Nullable="false" MaxLength="24" FixedLength="true" Unicode="false" />
-    <Property Name="fechaInicio" Type="DateTime" Precision="0" />
-    <Property Name="fechaFinal" Type="DateTime" Precision="0" />
+    <Property Name="fechaInicio" Type="DateTime" Precision="0" Nullable="false" />
+    <Property Name="fechaFinal" Type="DateTime" Precision="0" Nullable="false" />
     <Property Name="duracion" Type="Int32" />
     <Property Name="cliente" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="Estado_Proyecto" Relationship="ModeloEntities.fk_EstadoProye" FromRole="Proyecto" ToRole="Estado_Proyecto" />
+    <NavigationProperty Name="Modulos" Relationship="ModeloEntities.fk_ProyectoModulo1" FromRole="Proyecto" ToRole="Modulo" />
   </EntityType>
   <EntityType Name="Requerimiento">
     <Key>
@@ -190,9 +186,10 @@
     <NavigationProperty Name="Usuario" Relationship="ModeloEntities.fk_ReqUserCre" FromRole="Requerimiento" ToRole="Usuario" />
     <NavigationProperty Name="Usuario1" Relationship="ModeloEntities.fk_ReqUserSol" FromRole="Requerimiento" ToRole="Usuario" />
     <NavigationProperty Name="Usuarios" Relationship="ModeloEntities.Requerimiento_Encargados" FromRole="Requerimiento" ToRole="Usuario" />
-    <NavigationProperty Name="Sprint_Modulo" Relationship="ModeloEntities.Sprint_Mod_Req" FromRole="Requerimiento" ToRole="Sprint_Modulo" />
     <Property Name="imagen" Type="Binary" MaxLength="Max" FixedLength="false" />
     <NavigationProperty Name="Requerimientos_Cri_Acep" Relationship="ModeloEntities.fk_ReqCriAcp" FromRole="Requerimiento" ToRole="Requerimientos_Cri_Acep" />
+    <NavigationProperty Name="Sprint_Modulo" Relationship="ModeloEntities.Sprint_Mod_Req" FromRole="Requerimiento" ToRole="Sprint_Modulo" />
+    <Property Name="finalizaEn" Type="DateTime" Precision="0" />
   </EntityType>
   <EntityType Name="Rol_Permisos">
     <Key>
@@ -202,19 +199,6 @@
     <Property Name="rol" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
     <Property Name="permiso" Type="Int32" Nullable="false" />
     <NavigationProperty Name="Permiso1" Relationship="ModeloEntities.fk_Permiso" FromRole="Rol_Permisos" ToRole="Permiso" />
-  </EntityType>
-  <EntityType Name="Sprint_Modulo">
-    <Key>
-      <PropertyRef Name="proyecto" />
-      <PropertyRef Name="sprint" />
-      <PropertyRef Name="modulo" />
-    </Key>
-    <Property Name="proyecto" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
-    <Property Name="sprint" Type="Int32" Nullable="false" />
-    <Property Name="modulo" Type="Int32" Nullable="false" />
-    <NavigationProperty Name="Modulo1" Relationship="ModeloEntities.fk_UserSprintMod" FromRole="Sprint_Modulo" ToRole="Modulo" />
-    <NavigationProperty Name="Sprint1" Relationship="ModeloEntities.fk_SpMod" FromRole="Sprint_Modulo" ToRole="Sprint" />
-    <NavigationProperty Name="Requerimientos" Relationship="ModeloEntities.Sprint_Mod_Req" FromRole="Sprint_Modulo" ToRole="Requerimiento" />
   </EntityType>
   <EntityType Name="Sprint">
     <Key>
@@ -226,8 +210,8 @@
     <Property Name="fechaInicio" Type="DateTime" Nullable="false" Precision="0" />
     <Property Name="fechaFinal" Type="DateTime" Nullable="false" Precision="0" />
     <NavigationProperty Name="Proyecto1" Relationship="ModeloEntities.fk_UserSprint" FromRole="Sprint" ToRole="Proyecto" />
-    <NavigationProperty Name="Sprint_Modulo" Relationship="ModeloEntities.fk_SpMod" FromRole="Sprint" ToRole="Sprint_Modulo" />
     <NavigationProperty Name="Progreso_Sprint" Relationship="ModeloEntities.fk_ProgSprint" FromRole="Sprint" ToRole="Progreso_Sprint" />
+    <NavigationProperty Name="Sprint_Modulo" Relationship="ModeloEntities.fk_SpMod" FromRole="Sprint" ToRole="Sprint_Modulo" />
   </EntityType>
   <EntityType Name="Tipo_Desarrollador">
     <Key>
@@ -310,18 +294,6 @@
       </Principal>
       <Dependent Role="Requerimiento">
         <PropertyRef Name="estado" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="fk_UserSprintMod">
-    <End Type="ModeloEntities.Modulo" Role="Modulo" Multiplicity="1" />
-    <End Type="ModeloEntities.Sprint_Modulo" Role="Sprint_Modulo" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Modulo">
-        <PropertyRef Name="id" />
-      </Principal>
-      <Dependent Role="Sprint_Modulo">
-        <PropertyRef Name="modulo" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -423,20 +395,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_SpMod">
-    <End Type="ModeloEntities.Sprint" Role="Sprint" Multiplicity="1" />
-    <End Type="ModeloEntities.Sprint_Modulo" Role="Sprint_Modulo" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Sprint">
-        <PropertyRef Name="proyecto" />
-        <PropertyRef Name="numero" />
-      </Principal>
-      <Dependent Role="Sprint_Modulo">
-        <PropertyRef Name="proyecto" />
-        <PropertyRef Name="sprint" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="fk_User">
     <End Type="ModeloEntities.Usuario" Role="Usuario" Multiplicity="1">
       <OnDelete Action="Cascade" />
@@ -454,10 +412,6 @@
   <Association Name="Requerimiento_Encargados">
     <End Type="ModeloEntities.Requerimiento" Role="Requerimiento" Multiplicity="*" />
     <End Type="ModeloEntities.Usuario" Role="Usuario" Multiplicity="*" />
-  </Association>
-  <Association Name="Sprint_Mod_Req">
-    <End Type="ModeloEntities.Sprint_Modulo" Role="Sprint_Modulo" Multiplicity="*" />
-    <End Type="ModeloEntities.Requerimiento" Role="Requerimiento" Multiplicity="*" />
   </Association>
   <EntityType Name="Estado_Proyecto">
     <Key>
@@ -532,5 +486,73 @@
         <PropertyRef Name="reqVersion" />
       </Dependent>
     </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Modulo">
+    <Key>
+      <PropertyRef Name="proyecto" />
+      <PropertyRef Name="numero" />
+    </Key>
+    <Property Name="proyecto" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
+    <Property Name="numero" Type="Int32" Nullable="false" />
+    <Property Name="nombre" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Proyecto1" Relationship="ModeloEntities.fk_ProyectoModulo1" FromRole="Modulo" ToRole="Proyecto" />
+    <NavigationProperty Name="Sprint_Modulo" Relationship="ModeloEntities.fk_UserSprintMod" FromRole="Modulo" ToRole="Sprint_Modulo" />
+  </EntityType>
+  <EntityType Name="Sprint_Modulo">
+    <Key>
+      <PropertyRef Name="proyecto" />
+      <PropertyRef Name="sprint" />
+      <PropertyRef Name="modulo" />
+    </Key>
+    <Property Name="proyecto" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
+    <Property Name="sprint" Type="Int32" Nullable="false" />
+    <Property Name="modulo" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Modulo1" Relationship="ModeloEntities.fk_UserSprintMod" FromRole="Sprint_Modulo" ToRole="Modulo" />
+    <NavigationProperty Name="Sprint1" Relationship="ModeloEntities.fk_SpMod" FromRole="Sprint_Modulo" ToRole="Sprint" />
+    <NavigationProperty Name="Requerimientos" Relationship="ModeloEntities.Sprint_Mod_Req" FromRole="Sprint_Modulo" ToRole="Requerimiento" />
+  </EntityType>
+  <Association Name="fk_ProyectoModulo1">
+    <End Type="ModeloEntities.Proyecto" Role="Proyecto" Multiplicity="1" />
+    <End Type="ModeloEntities.Modulo" Role="Modulo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="nombre" />
+      </Principal>
+      <Dependent Role="Modulo">
+        <PropertyRef Name="proyecto" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_UserSprintMod">
+    <End Type="ModeloEntities.Modulo" Role="Modulo" Multiplicity="1" />
+    <End Type="ModeloEntities.Sprint_Modulo" Role="Sprint_Modulo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Modulo">
+        <PropertyRef Name="proyecto" />
+        <PropertyRef Name="numero" />
+      </Principal>
+      <Dependent Role="Sprint_Modulo">
+        <PropertyRef Name="proyecto" />
+        <PropertyRef Name="modulo" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_SpMod">
+    <End Type="ModeloEntities.Sprint" Role="Sprint" Multiplicity="1" />
+    <End Type="ModeloEntities.Sprint_Modulo" Role="Sprint_Modulo" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Sprint">
+        <PropertyRef Name="proyecto" />
+        <PropertyRef Name="numero" />
+      </Principal>
+      <Dependent Role="Sprint_Modulo">
+        <PropertyRef Name="proyecto" />
+        <PropertyRef Name="sprint" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="Sprint_Mod_Req">
+    <End Type="ModeloEntities.Sprint_Modulo" Role="Sprint_Modulo" Multiplicity="*" />
+    <End Type="ModeloEntities.Requerimiento" Role="Requerimiento" Multiplicity="*" />
   </Association>
 </Schema>

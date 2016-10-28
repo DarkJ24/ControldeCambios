@@ -28,9 +28,10 @@
   </EntityType>
   <EntityType Name="Modulos">
     <Key>
-      <PropertyRef Name="id" />
+      <PropertyRef Name="proyecto" />
+      <PropertyRef Name="numero" />
     </Key>
-    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="proyecto" Type="varchar" MaxLength="25" Nullable="false" />
     <Property Name="numero" Type="int" Nullable="false" />
     <Property Name="nombre" Type="varchar" MaxLength="25" Nullable="false" />
   </EntityType>
@@ -69,8 +70,8 @@
     <Property Name="descripcion" Type="varchar" MaxLength="80" />
     <Property Name="lider" Type="varchar" MaxLength="11" Nullable="false" />
     <Property Name="estado" Type="char" MaxLength="24" Nullable="false" />
-    <Property Name="fechaInicio" Type="date" />
-    <Property Name="fechaFinal" Type="date" />
+    <Property Name="fechaInicio" Type="date" Nullable="false" />
+    <Property Name="fechaFinal" Type="date" Nullable="false" />
     <Property Name="duracion" Type="int" />
     <Property Name="cliente" Type="varchar" MaxLength="11" Nullable="false" />
   </EntityType>
@@ -92,6 +93,7 @@
     <Property Name="codigo" Type="char" MaxLength="15" Nullable="false" />
     <Property Name="version" Type="int" Nullable="false" />
     <Property Name="creadoEn" Type="date" Nullable="false" />
+    <Property Name="finalizaEn" Type="date" />
     <Property Name="descripcion" Type="varchar" MaxLength="120" />
     <Property Name="nombre" Type="varchar" MaxLength="25" Nullable="false" />
     <Property Name="prioridad" Type="int" Nullable="false" />
@@ -239,6 +241,18 @@
         <PropertyRef Name="nombre" />
       </Principal>
       <Dependent Role="Proyecto_Equipo">
+        <PropertyRef Name="proyecto" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_ProyectoModulo1">
+    <End Role="Proyectos" Type="Self.Proyectos" Multiplicity="1" />
+    <End Role="Modulos" Type="Self.Modulos" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyectos">
+        <PropertyRef Name="nombre" />
+      </Principal>
+      <Dependent Role="Modulos">
         <PropertyRef Name="proyecto" />
       </Dependent>
     </ReferentialConstraint>
@@ -472,9 +486,11 @@
     <End Role="Sprint_Modulo" Type="Self.Sprint_Modulo" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Modulos">
-        <PropertyRef Name="id" />
+        <PropertyRef Name="proyecto" />
+        <PropertyRef Name="numero" />
       </Principal>
       <Dependent Role="Sprint_Modulo">
+        <PropertyRef Name="proyecto" />
         <PropertyRef Name="modulo" />
       </Dependent>
     </ReferentialConstraint>
@@ -517,6 +533,10 @@
     <AssociationSet Name="fk_Proy" Association="Self.fk_Proy">
       <End Role="Proyectos" EntitySet="Proyectos" />
       <End Role="Proyecto_Equipo" EntitySet="Proyecto_Equipo" />
+    </AssociationSet>
+    <AssociationSet Name="fk_ProyectoModulo1" Association="Self.fk_ProyectoModulo1">
+      <End Role="Proyectos" EntitySet="Proyectos" />
+      <End Role="Modulos" EntitySet="Modulos" />
     </AssociationSet>
     <AssociationSet Name="fk_ReqCam" Association="Self.fk_ReqCam">
       <End Role="Requerimientos" EntitySet="Requerimientos" />

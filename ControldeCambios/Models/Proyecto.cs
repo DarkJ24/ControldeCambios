@@ -26,6 +26,8 @@ public partial class Proyecto
 
         this.Sprints = new HashSet<Sprint>();
 
+        this.Modulos = new HashSet<Modulo>();
+
     }
 
 
@@ -37,9 +39,9 @@ public partial class Proyecto
 
     public string estado { get; set; }
 
-    public Nullable<System.DateTime> fechaInicio { get; set; }
+    public System.DateTime fechaInicio { get; set; }
 
-    public Nullable<System.DateTime> fechaFinal { get; set; }
+    public System.DateTime fechaFinal { get; set; }
 
     public Nullable<int> duracion { get; set; }
 
@@ -58,6 +60,10 @@ public partial class Proyecto
     public virtual ICollection<Sprint> Sprints { get; set; }
 
     public virtual Estado_Proyecto Estado_Proyecto { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+
+    public virtual ICollection<Modulo> Modulos { get; set; }
 
 }
 

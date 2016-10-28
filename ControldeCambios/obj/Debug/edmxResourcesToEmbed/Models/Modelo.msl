@@ -21,15 +21,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="Modulos">
-      <EntityTypeMapping TypeName="ModeloEntities.Modulo">
-        <MappingFragment StoreEntitySet="Modulos">
-          <ScalarProperty Name="nombre" ColumnName="nombre" />
-          <ScalarProperty Name="numero" ColumnName="numero" />
-          <ScalarProperty Name="id" ColumnName="id" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="Permisos">
       <EntityTypeMapping TypeName="ModeloEntities.Permiso">
         <MappingFragment StoreEntitySet="Permisos">
@@ -64,6 +55,7 @@
     <EntitySetMapping Name="Requerimientos">
       <EntityTypeMapping TypeName="ModeloEntities.Requerimiento">
         <MappingFragment StoreEntitySet="Requerimientos">
+          <ScalarProperty Name="finalizaEn" ColumnName="finalizaEn" />
           <ScalarProperty Name="imagen" ColumnName="imagen" />
           <ScalarProperty Name="solicitadoPor" ColumnName="solicitadoPor" />
           <ScalarProperty Name="creadoPor" ColumnName="creadoPor" />
@@ -84,15 +76,6 @@
         <MappingFragment StoreEntitySet="Rol_Permisos">
           <ScalarProperty Name="permiso" ColumnName="permiso" />
           <ScalarProperty Name="rol" ColumnName="rol" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="Sprint_Modulo">
-      <EntityTypeMapping TypeName="ModeloEntities.Sprint_Modulo">
-        <MappingFragment StoreEntitySet="Sprint_Modulo">
-          <ScalarProperty Name="modulo" ColumnName="modulo" />
-          <ScalarProperty Name="sprint" ColumnName="sprint" />
-          <ScalarProperty Name="proyecto" ColumnName="proyecto" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -140,17 +123,6 @@
         <ScalarProperty Name="codigo" ColumnName="requerimiento" />
       </EndProperty>
     </AssociationSetMapping>
-    <AssociationSetMapping Name="Sprint_Mod_Req" TypeName="ModeloEntities.Sprint_Mod_Req" StoreEntitySet="Sprint_Mod_Req">
-      <EndProperty Name="Requerimiento">
-        <ScalarProperty Name="version" ColumnName="version" />
-        <ScalarProperty Name="codigo" ColumnName="requerimiento" />
-      </EndProperty>
-      <EndProperty Name="Sprint_Modulo">
-        <ScalarProperty Name="modulo" ColumnName="modulo" />
-        <ScalarProperty Name="sprint" ColumnName="sprint" />
-        <ScalarProperty Name="proyecto" ColumnName="proyecto" />
-      </EndProperty>
-    </AssociationSetMapping>
     <EntitySetMapping Name="Estado_Proyecto">
       <EntityTypeMapping TypeName="ModeloEntities.Estado_Proyecto">
         <MappingFragment StoreEntitySet="Estado_Proyecto">
@@ -177,5 +149,34 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="Modulos">
+      <EntityTypeMapping TypeName="ModeloEntities.Modulo">
+        <MappingFragment StoreEntitySet="Modulos">
+          <ScalarProperty Name="nombre" ColumnName="nombre" />
+          <ScalarProperty Name="numero" ColumnName="numero" />
+          <ScalarProperty Name="proyecto" ColumnName="proyecto" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Sprint_Modulo">
+      <EntityTypeMapping TypeName="ModeloEntities.Sprint_Modulo">
+        <MappingFragment StoreEntitySet="Sprint_Modulo">
+          <ScalarProperty Name="modulo" ColumnName="modulo" />
+          <ScalarProperty Name="sprint" ColumnName="sprint" />
+          <ScalarProperty Name="proyecto" ColumnName="proyecto" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="Sprint_Mod_Req" TypeName="ModeloEntities.Sprint_Mod_Req" StoreEntitySet="Sprint_Mod_Req">
+      <EndProperty Name="Requerimiento">
+        <ScalarProperty Name="version" ColumnName="version" />
+        <ScalarProperty Name="codigo" ColumnName="requerimiento" />
+      </EndProperty>
+      <EndProperty Name="Sprint_Modulo">
+        <ScalarProperty Name="modulo" ColumnName="modulo" />
+        <ScalarProperty Name="sprint" ColumnName="sprint" />
+        <ScalarProperty Name="proyecto" ColumnName="proyecto" />
+      </EndProperty>
+    </AssociationSetMapping>
   </EntityContainerMapping>
 </Mapping>

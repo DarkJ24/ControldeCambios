@@ -109,7 +109,7 @@ namespace ControldeCambios.Controllers
                 proyecto.descripcion = model.descripcion;
                 proyecto.nombre = model.nombre;
                 proyecto.estado = "Por iniciar";
-                proyecto.duracion = (proyecto.fechaFinal ?? default(DateTime)).Subtract(proyecto.fechaInicio ?? default(DateTime)).Days;
+                proyecto.duracion = proyecto.fechaFinal.Subtract(proyecto.fechaInicio).Days;
                 baseDatos.Proyectos.Add(proyecto);
                 foreach (var desarrollador in model.equipo)
                 {
