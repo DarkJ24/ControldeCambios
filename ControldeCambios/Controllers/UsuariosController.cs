@@ -346,7 +346,8 @@ namespace ControldeCambios.Controllers
 
                         baseDatos.SaveChanges();
 
-                        string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account", model.Nombre, generatedPassword);
+                        //Envio de Correo
+                        //string callbackUrl = await SendEmailConfirmationTokenAsync(user.Id, "Confirm your account", model.Nombre, generatedPassword);
 
                         //crea la relacion del usuario con el rol
                         await this.UserManager.AddToRoleAsync(user.Id, model.UserRoles);
