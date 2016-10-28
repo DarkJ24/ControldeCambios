@@ -3,17 +3,34 @@
     ViewBag.Title = "Crear Proyecto";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+<script>
+    function habilitarCampos() {
+        $('.editBtns').show();
+        $('.editFields').attr("disabled", false);
+        $('.ms-elem-selectable').removeClass('disabled');
+        $('.ms-elem-selection').removeClass('disabled');
+        $('#subtitle').html("Modificar Proyecto");
+    }
+</script>
+
+
 <h2>Gestión de Proyectos</h2>
-<h4>@ViewBag.Title</h4>
+<h4 id="subtitle">@ViewBag.Title</h4>
 <hr />
-@using (Html.BeginForm("Crear", "Proyectos", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+
+<button type="button" class="btn btn-primary" onClick="habilitarCampos()">Modificar</button>
+
+<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal">Eliminar</button>
+
+@using (Html.BeginForm("Crear", "Proyectos", FormMethod.Post, new { @class = "form-horizontal editFields", role = "form" }))
 {
     @Html.AntiForgeryToken()
 
     <div class="form-group">
         @Html.LabelFor(m => m.nombre, new { @class = "col-md-2 control-label required" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.nombre, new { @class = "form-control" })
+            @Html.TextBoxFor(m => m.nombre, new { @class = "form-control editFields", @disabled = "disabled" })
             @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -21,7 +38,7 @@
     <div class="form-group">
         @Html.LabelFor(m => m.descripcion, new { @class = "col-md-2 control-label required" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.descripcion, new { @class = "form-control" })
+            @Html.TextBoxFor(m => m.descripcion, new { @class = "form-control editFields", @disabled = "disabled" })
             @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -29,7 +46,7 @@
     <div class="form-group">
         @Html.Label("Líder", new { @class = "col-md-2 control-label required" })
         <div class="col-md-10">
-            @Html.DropDownListFor(m => m.lider, (SelectList)ViewBag.Desarrolladores, new { @class = "col-xs-12 form-control", @style = "height:30px;border-radius:4px" })
+            @Html.DropDownListFor(m => m.lider, (SelectList)ViewBag.Desarrolladores, new { @class = "col-xs-12 form-control editFields", @style = "height:30px;border-radius:4px", @disabled = "disabled" })
             @Html.ValidationMessageFor(model => model.lider, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -37,7 +54,7 @@
     <div class="form-group">
         @Html.Label("Cliente", new { @class = "col-md-2 control-label required" })
         <div class="col-md-10">
-            @Html.DropDownListFor(m => m.cliente, (SelectList)ViewBag.Clientes, new { @class = "col-xs-12 form-control", @style = "height:30px;border-radius:4px" })
+            @Html.DropDownListFor(m => m.cliente, (SelectList)ViewBag.Clientes, new { @class = "col-xs-12 form-control editFields", @style = "height:30px;border-radius:4px", @disabled = "disabled" })
             @Html.ValidationMessageFor(model => model.cliente, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -45,7 +62,7 @@
     <div class="form-group">
         @Html.LabelFor(m => m.fechaInicio, new { @class = "col-md-2 control-label required" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.fechaInicio, new { @class = "form-control datePicker" })
+            @Html.TextBoxFor(m => m.fechaInicio, new { @class = "form-control datePicker editFields", @disabled = "disabled" })
             @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -53,7 +70,7 @@
     <div class="form-group">
         @Html.LabelFor(m => m.fechaFinal, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.fechaFinal, new { @class = "form-control datePicker" })
+            @Html.TextBoxFor(m => m.fechaFinal, new { @class = "form-control datePicker editFields", @disabled = "disabled" })
             @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -62,12 +79,12 @@
         @Html.Label("Disponibles", new { @class = "col-md-offset-2 col-md-2 control-label", @style = "text-align:center;margin-left:195px;" })
         @Html.Label("Equipo", new { @class = "col-md-offset-2  col-md-2 control-label required", @style = "text-align:center;margin-left:10px;margin-bottom:10px" })
         <div class="col-md-offset-2 col-md-10" style="margin-bottom:25px">
-            @Html.ListBoxFor(m => m.equipo, new MultiSelectList(ViewBag.DesarrolladoresDisp, "cedula", "nombre"), new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;" })
+            @Html.ListBoxFor(m => m.equipo, new MultiSelectList(ViewBag.DesarrolladoresDisp, "cedula", "nombre", Model.equipo), new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;", @disabled = "disabled"})
             @Html.ValidationMessageFor(model => model.cliente, "", new { @class = "text-danger" })
         </div>
     </div>
 
-    <div class="form-group">
+    <div class="form-group editBtns" style="display:none">
         <div class="col-md-offset-2 col-md-10">
             <input type="submit" class="btn btn-success" value="Aceptar" />
             <input type="button" class="btn btn-default" value="Cancelar" onclick="location.reload()" />
@@ -88,6 +105,41 @@
         };
     </script>
 }
+
+<!-- Modal -->
+<div class="modal fade" id="confirmModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:#d61d1d;color:#FFFFFF">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Eliminar Usuario</h4>
+            </div>
+            <div class="modal-body" style="padding-bottom:0px">
+                <p>Seguro que deseas eliminar a @(Model.nombre)?</p>
+                <p style="color:red"><sub>*Esta acción es irreversible</sub></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                @using (Html.BeginForm("Borrar", "Proyectos", FormMethod.Post, new { @class = "form-horizontal", role = "form", style = "display:inline;padding-left:5px;" }))
+                {
+                    @Html.AntiForgeryToken()
+                    //@Html.HiddenFor(m => m.identityUsuario.Id)
+                    //@Html.HiddenFor(m => m.usuario.cedula)
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style type="text/css">
+    .required:after {
+        content: "*";
+        font-weight: bold;
+        color: red;
+    }
+</style>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

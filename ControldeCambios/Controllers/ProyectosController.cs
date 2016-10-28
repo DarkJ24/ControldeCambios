@@ -81,8 +81,12 @@ namespace ControldeCambios.Controllers
             model.fechaInicio = ((proyecto.fechaInicio) ?? default(DateTime)).ToString("MM/dd/yyyy");
             model.fechaFinal = (proyecto.fechaFinal ?? default(DateTime)).ToString("MM/dd/yyyy");
             model.nombre = proyecto.nombre;
-            model.equipo = proyecto.Proyecto_Equipo.Select(m => new SelectListItem(m.usuario, baseDatos.Usuarios.Find(m.usuario)));
-
+            var equipo = proyecto.Proyecto_Equipo.ToList();
+            model.equipo = new List<string>();
+            foreach (var des in equipo)
+            {
+                model.equipo.Add(des.usuario);
+            }
             List<Usuario> listaDesarrolladores = new List<Usuario>();
             List<Usuario> listaClientes = new List<Usuario>();
             string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
@@ -102,7 +106,6 @@ namespace ControldeCambios.Controllers
                 }
             }
             ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
-            
             ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");
             ViewBag.DesarrolladoresDisp = listaDesarrolladores;
 
