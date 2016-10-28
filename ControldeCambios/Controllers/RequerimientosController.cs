@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using Chart.Mvc;
 using Chart.Mvc.ComplexChart;
 using PagedList;
+using System.Globalization;
 
 namespace ControldeCambios.Controllers
 {
@@ -223,9 +224,10 @@ namespace ControldeCambios.Controllers
                 requerimiento.descripcion = model.descripcion;
                 requerimiento.prioridad = Int32.Parse(model.prioridad);
                 requerimiento.esfuerzo = Int32.Parse(model.esfuerzo);
-                requerimiento.creadoEn = Convert.ToDateTime(model.fechaInicial);
-                //requerimiento.fechaFinal = Convert.ToDateTime(model.fechaFinal);
+                requerimiento.creadoEn = DateTime.ParseExact(model.fechaInicial, "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                requerimiento.finalizaEn = DateTime.ParseExact(model.fechaFinal, "MM/dd/yyyy", CultureInfo.InvariantCulture);
                 requerimiento.observaciones = model.observaciones;
+
                 requerimiento.Usuarios = model.equipo.Select(x => baseDatos.Usuarios.Find(x.Value)).ToList();
 
                 baseDatos.Requerimientos.Add(requerimiento);
