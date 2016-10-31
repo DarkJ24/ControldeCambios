@@ -75,7 +75,8 @@ namespace ControldeCambios.Controllers
                 if (user.Roles.First().RoleId.Equals(clienteRol))
                 {
                     listaClientes.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
-                } else
+                }
+                else
                 {
                     if (user.Roles.First().RoleId.Equals(desarrolladorRol))
                     {
@@ -89,6 +90,7 @@ namespace ControldeCambios.Controllers
             return View();
         }
 
+<<<<<<< HEAD
         /// <summary>
         /// Funcionalidad para crear Proyectos.
         /// </summary>
@@ -100,36 +102,26 @@ namespace ControldeCambios.Controllers
         public ActionResult Crear(ProyectosModelo model)
         {
 
-            if (ModelState.IsValid)
+=======
+        // GET: Detalles
+        public ActionResult Detalles(string id)
+        {
+            ModificarProyectoModel model = new ModificarProyectoModel();
+
+            var proyecto = baseDatos.Proyectos.Find(id);
+
+            model.cliente = baseDatos.Usuarios.Find(proyecto.cliente);
+            model.lider = baseDatos.Usuarios.Find(proyecto.lider);
+            model.descripcion = proyecto.descripcion;
+            model.fechaInicio = ((proyecto.fechaInicio) ?? default(DateTime)).ToString("MM/dd/yyyy");
+            model.fechaFinal = (proyecto.fechaFinal ?? default(DateTime)).ToString("MM/dd/yyyy");
+            model.nombre = proyecto.nombre;
+            model.estado = proyecto.estado;
+            var equipo = proyecto.Proyecto_Equipo.ToList();
+            model.equipo = new List<string>();
+            foreach (var des in equipo)
             {
-                var proyecto = new Proyecto();
-                proyecto.cliente = model.cliente.cedula;
-                proyecto.lider = model.lider.cedula;
-                proyecto.fechaInicio = DateTime.ParseExact(model.fechaInicio, "MM/dd/yyyy", CultureInfo.InvariantCulture);
-                proyecto.fechaFinal = DateTime.ParseExact(model.fechaFinal, "MM/dd/yyyy", CultureInfo.InvariantCulture);
-                proyecto.descripcion = model.descripcion;
-                proyecto.nombre = model.nombre;
-                proyecto.estado = "Por iniciar";
-                proyecto.duracion = proyecto.fechaFinal.Subtract(proyecto.fechaInicio).Days;
-                baseDatos.Proyectos.Add(proyecto);
-                foreach (var desarrollador in model.equipo)
-                {
-                    var proyectoDesarrollador = new Proyecto_Equipo();
-                    proyectoDesarrollador.usuario = desarrollador;
-                    proyectoDesarrollador.proyecto = proyecto.nombre;
-                    baseDatos.Proyecto_Equipo.Add(proyectoDesarrollador);
-                }
-                var checkLider = model.equipo.Where(m => m == proyecto.lider);
-                if (checkLider.Count() == 0)
-                {
-                    var proyectoDesarrollador = new Proyecto_Equipo();
-                    proyectoDesarrollador.usuario = proyecto.lider;
-                    proyectoDesarrollador.proyecto = proyecto.nombre;
-                    baseDatos.Proyecto_Equipo.Add(proyectoDesarrollador);
-                }
-                baseDatos.SaveChanges();
-                this.AddToastMessage("Proyecto Creado", "El proyecto " + model.nombre + " se ha creado correctamente.", ToastType.Success);
-                return RedirectToAction("Crear", "Proyectos");
+                model.equipo.Add(des.usuario);
             }
             List<Usuario> listaDesarrolladores = new List<Usuario>();
             List<Usuario> listaClientes = new List<Usuario>();
@@ -152,6 +144,120 @@ namespace ControldeCambios.Controllers
             ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
             ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");
             ViewBag.DesarrolladoresDisp = listaDesarrolladores;
+
+            ViewBag.Estados = new SelectList(baseDatos.Estado_Proyecto.ToList(), "nombre", "nombre");
+
+            return View(model);
+        }
+
+        // POST: Detalles
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Detalles(ModificarProyectoModel model)
+        {
+>>>>>>> 2b3252ce69a728e28b11da2424dee9cc21bb7dc2
+            if (ModelState.IsValid)
+            {
+                var proyecto = new Proyecto();
+                proyecto.cliente = model.cliente.cedula;
+                proyecto.lider = model.lider.cedula;
+                proyecto.fechaInicio = DateTime.ParseExact(model.fechaInicio, "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                proyecto.fechaFinal = DateTime.ParseExact(model.fechaFinal, "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                proyecto.descripcion = model.descripcion;
+                proyecto.nombre = model.nombre;
+<<<<<<< HEAD
+                proyecto.estado = "Por iniciar";
+                proyecto.duracion = proyecto.fechaFinal.Subtract(proyecto.fechaInicio).Days;
+                baseDatos.Proyectos.Add(proyecto);
+                foreach (var desarrollador in model.equipo)
+                {
+                    var proyectoDesarrollador = new Proyecto_Equipo();
+                    proyectoDesarrollador.usuario = desarrollador;
+                    proyectoDesarrollador.proyecto = proyecto.nombre;
+                    baseDatos.Proyecto_Equipo.Add(proyectoDesarrollador);
+                }
+                var checkLider = model.equipo.Where(m => m == proyecto.lider);
+                if (checkLider.Count() == 0)
+=======
+                proyecto.estado = model.estado;
+
+                proyecto.duracion = (proyecto.fechaFinal ?? default(DateTime)).Subtract((proyecto.fechaInicio ?? default(DateTime))).Days;
+                baseDatos.Entry(proyecto).State = System.Data.Entity.EntityState.Modified;
+
+                var equipo_viejo = baseDatos.Proyecto_Equipo.Where(m => m.proyecto == model.nombre).ToList();
+
+                foreach(var usuario in equipo_viejo)
+                {
+                    baseDatos.Entry(usuario).State = System.Data.Entity.EntityState.Deleted;
+                }
+
+                if (model.equipo != null)
+                {
+                    foreach (var desarrollador in model.equipo)
+                    {
+                        var proyectoDesarrollador = new Proyecto_Equipo();
+                        proyectoDesarrollador.usuario = desarrollador;
+                        proyectoDesarrollador.proyecto = proyecto.nombre;
+                        baseDatos.Proyecto_Equipo.Add(proyectoDesarrollador);
+                    }
+
+                    var checkLider = model.equipo.Where(m => m == proyecto.lider);
+                    if (checkLider.Count() == 0)
+                    {
+                        var proyectoDesarrollador = new Proyecto_Equipo();
+                        proyectoDesarrollador.usuario = proyecto.lider;
+                        proyectoDesarrollador.proyecto = proyecto.nombre;
+                        baseDatos.Proyecto_Equipo.Add(proyectoDesarrollador);
+                    }
+                } else
+>>>>>>> 2b3252ce69a728e28b11da2424dee9cc21bb7dc2
+                {
+                    var proyectoDesarrollador = new Proyecto_Equipo();
+                    proyectoDesarrollador.usuario = proyecto.lider;
+                    proyectoDesarrollador.proyecto = proyecto.nombre;
+                    baseDatos.Proyecto_Equipo.Add(proyectoDesarrollador);
+                }
+<<<<<<< HEAD
+                baseDatos.SaveChanges();
+                this.AddToastMessage("Proyecto Creado", "El proyecto " + model.nombre + " se ha creado correctamente.", ToastType.Success);
+                return RedirectToAction("Crear", "Proyectos");
+=======
+
+
+
+
+                baseDatos.SaveChanges();
+                this.AddToastMessage("Proyecto modificado", "El proyecto " + model.nombre + " se ha modificado correctamente.", ToastType.Success);
+                return RedirectToAction("Detalles", "Proyectos");
+>>>>>>> 2b3252ce69a728e28b11da2424dee9cc21bb7dc2
+            }
+            List<Usuario> listaDesarrolladores = new List<Usuario>();
+            List<Usuario> listaClientes = new List<Usuario>();
+            string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
+            string desarrolladorRol = context.Roles.Where(m => m.Name == "Desarrollador").First().Id;
+            foreach (var user in context.Users.ToArray())
+            {
+                if (user.Roles.First().RoleId.Equals(clienteRol))
+                {
+                    listaClientes.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
+                }
+                else
+                {
+                    if (user.Roles.First().RoleId.Equals(desarrolladorRol))
+                    {
+                        listaDesarrolladores.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
+                    }
+                }
+            }
+            ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
+            ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");
+            ViewBag.DesarrolladoresDisp = listaDesarrolladores;
+<<<<<<< HEAD
+=======
+
+            ViewBag.Estados = new SelectList(baseDatos.Estado_Proyecto.ToList(), "nombre", "nombre");
+
+>>>>>>> 2b3252ce69a728e28b11da2424dee9cc21bb7dc2
             return View(model);
         }
     }
