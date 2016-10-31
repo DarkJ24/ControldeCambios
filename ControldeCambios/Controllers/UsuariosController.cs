@@ -125,7 +125,6 @@ namespace ControldeCambios.Controllers
                 this.AddToastMessage("Acceso Denegado", "No tienes permiso para ver detalles de usuarios!", ToastType.Warning);
                 return RedirectToAction("Index", "Home");
             }
-
             if (String.IsNullOrEmpty(id))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);

@@ -1,6 +1,6 @@
 ﻿@model ControldeCambios.Models.ModificarProyectoModel
 @{
-    ViewBag.Title = "Crear Proyecto";
+    ViewBag.Title = "Consultar Proyecto";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -20,7 +20,6 @@
 <hr />
 
 <button type="button" class="btn btn-primary" onClick="habilitarCampos()">Modificar</button>
-
 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal">Eliminar</button>
 
 @using (Html.BeginForm("Detalles", "Proyectos", FormMethod.Post, new { @class = "form-horizontal editFields", role = "form" }))
@@ -69,7 +68,7 @@
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(m => m.fechaFinal, new { @class = "col-md-2 control-label" })
+        @Html.LabelFor(m => m.fechaFinal, new { @class = "col-md-2 control-label required" })
         <div class="col-md-10">
             @Html.TextBoxFor(m => m.fechaFinal, new { @class = "form-control datePicker editFields", @disabled = "disabled" })
             @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
@@ -133,8 +132,6 @@
                 @using (Html.BeginForm("Borrar", "Proyectos", FormMethod.Post, new { @class = "form-horizontal", role = "form", style = "display:inline;padding-left:5px;" }))
                 {
                     @Html.AntiForgeryToken()
-                    //@Html.HiddenFor(m => m.identityUsuario.Id)
-                    //@Html.HiddenFor(m => m.usuario.cedula)
                     <button type="submit" class="btn btn-danger">Eliminar</button>
                 }
             </div>

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -39,30 +40,25 @@ namespace ControldeCambios.Controllers
         {
             if (!revisarPermisos("Consultar Lista de Proyectos"))
             {
-                this.AddToastMessage("Acceso Denegado", "No tienes permiso para consultar Usuarios!", ToastType.Warning);
+                this.AddToastMessage("Acceso Denegado", "No tienes permiso para consultar Proyectos!", ToastType.Warning);
                 return RedirectToAction("Index", "Home");
             }
 
             ProyectosModelo modelo = new ProyectosModelo();
-
-            /*modelo.nombre = context;
-            modelo.proyecto;
-            modelo.cliente;
-            modelo.descripcion;
-            modelo.equipo;
-            modelo.fechaFinal;
-            modelo.fechaInicio;
-            modelo.lider;*/
-            
-
+            //Si es desarrollador, falta revisar pertenencia a proyectos
+            // (solo debe mostrar proyectos a los que pertenezco)
+            //Si es cliente, solo debe mostrar sus proyectos solicitados
+            //Si es admin, mostrar todos
+            modelo.proyectos = baseDatos.Proyectos.ToList();
             return View();
         }
+
         // GET: Crear
         public ActionResult Crear()
         {
             if (!revisarPermisos("Crear Proyectos"))
             {
-                //despliega mensaje en caso de no poder crear un proyecto
+                //Despliega mensaje en caso de no poder crear un proyecto
                 this.AddToastMessage("Acceso Denegado", "No tienes permiso para crear proyectos!", ToastType.Warning);
                 return RedirectToAction("Index", "Home");
             }
@@ -158,10 +154,18 @@ namespace ControldeCambios.Controllers
         // GET: Detalles
         public ActionResult Detalles(string id)
         {
+            if (!revisarPermisos("Modificar Proyectos"))
+            {
+                //Despliega mensaje en caso de no poder modificar un proyecto
+                this.AddToastMessage("Acceso Denegado", "No tienes permiso para modificar proyectos!", ToastType.Warning);
+                return RedirectToAction("Index", "Home");
+            }
+            if (String.IsNullOrEmpty(id))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
             ModificarProyectoModel model = new ModificarProyectoModel();
-
             var proyecto = baseDatos.Proyectos.Find(id);
-
             model.cliente = baseDatos.Usuarios.Find(proyecto.cliente);
             model.lider = baseDatos.Usuarios.Find(proyecto.lider);
             model.descripcion = proyecto.descripcion;
@@ -249,8 +253,8 @@ namespace ControldeCambios.Controllers
                 }
 
                 baseDatos.SaveChanges();
-                this.AddToastMessage("Proyecto modificado", "El proyecto " + model.nombre + " se ha modificado correctamente.", ToastType.Success);
-                return RedirectToAction("Detalles", "Proyectos");
+                this.AddToastMessage("Proyecto Modificado", "El proyecto " + model.nombre + " se ha modificado correctamente.", ToastType.Success);
+                return RedirectToAction("Detalles", "Proyectos", new {id = proyecto.nombre });
 
             }
             List<Usuario> listaDesarrolladores = new List<Usuario>();

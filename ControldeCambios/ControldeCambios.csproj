@@ -232,6 +232,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\ModulosController.cs" />
     <Compile Include="Controllers\ProyectosController.cs" />
     <Compile Include="Controllers\RequerimientosController.cs" />
     <Compile Include="Controllers\Roles_PermisosController.cs" />
@@ -269,9 +270,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Modelo.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\ModificarProyectoModel.cs" />
     <Compile Include="Models\Modulo.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ModulosModel.cs" />
     <Compile Include="Models\Permiso.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
@@ -304,6 +307,7 @@
     <Compile Include="Models\Sprint_Modulo.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\sysdiagram.cs" />
     <Compile Include="Models\Tipo_Desarrollador.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
@@ -467,6 +471,9 @@
     <Content Include="Views\Requerimientos\index.cshtml" />
     <Content Include="Views\Requerimientos\crear.cshtml" />
     <Content Include="Views\Sprint\Crear.cshtml" />
+    <Content Include="Views\Proyectos\detalles.cshtml" />
+    <Content Include="Views\Modulos\Crear.cshtml" />
+    <Content Include="Views\Modulos\Detalles.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -27,16 +27,19 @@ namespace ControldeCambios.Models
         public string fechaInicio { get; set; }
 
         [Display(Name = "Fecha Final")]
+        [Required(ErrorMessage = "La fecha final es un campo requerido.")]
         public string fechaFinal { get; set; }
 
         [Display(Name = "Líder")]
+        [Required(ErrorMessage = "El líder es un campo requerido.")]
         public Usuario lider { get; set; }
 
         [Display(Name = "Cliente")]
+        [Required(ErrorMessage = "El cliente es un campo requerido.")]
         public Usuario cliente { get; set; }
 
         [Display(Name = "Estado")]
-        [Required(ErrorMessage = "Se requiere un estado")]
+        [Required(ErrorMessage = "El estado del proyecto es un campo requerido.")]
         public string estado { get; set; }
 
         [Display(Name = "Equipo")]

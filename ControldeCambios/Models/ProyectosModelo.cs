@@ -12,7 +12,7 @@ namespace ControldeCambios.Models
     /// </summary>
     public class ProyectosModelo
     {
-        public Proyecto proyecto { get; set; }
+        public List<Proyecto> proyectos { get; set; }
 
         [Required(ErrorMessage = "El nombre es un campo requerido.")]
         [StringLength(25, ErrorMessage = "El nombre debe ser de {1} dígitos"), MinLength(1, ErrorMessage = "El nombre debe ser de almenos {1} dígitos")]
