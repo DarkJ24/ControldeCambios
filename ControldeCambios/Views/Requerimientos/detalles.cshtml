@@ -1,0 +1,126 @@
+﻿@model ControldeCambios.Models.RequerimientosModelo
+@{
+    ViewBag.Title = "Consultar Detalles de Requerimientos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    function habilitarCampos() {
+        $('.editBtns').show();
+        $('.editFields').attr("disabled", false);
+        $('#subtitle').html("Modificar Requerimiento");
+    }
+</script>
+
+<h2>Gestión de Requerimiento</h2>
+<h4>@ViewBag.Title</h4>
+<hr />
+@using (Html.BeginForm("Detalles", "Requerimientos", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        <label class="control-label col-md-2 required">Código:</label>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.codigo, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
+            @Html.ValidationMessageFor(model => model.codigo, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2 required">Nombre:</label>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
+            @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2 required">Descripcion:</label>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.descripcion, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
+            @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2 required">Solicitado Por:</label>
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model.solicitadoPor, (SelectList)ViewBag.clientes, new { @class = "col-xs-12 editFields", @disabled = "disabled", @style = "height:30px;border-radius:4px" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2 required">Modulo:</label>
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model.modulo, (SelectList)ViewBag.modulos, new { @class = "col-xs-12 editFields", @disabled = "disabled", @style = "height:30px;border-radius:4px" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2 required">Prioridad:</label>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.prioridad, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
+            @Html.ValidationMessageFor(model => model.prioridad, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2 required">Esfuerzo:</label>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.esfuerzo, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
+            @Html.ValidationMessageFor(model => model.esfuerzo, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2 required">Fecha Inicial:</label>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.fechaInicial, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
+            @Html.ValidationMessageFor(model => model.fechaInicial, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2 required">Fecha Final:</label>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.fechaFinal, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
+            @Html.ValidationMessageFor(model => model.fechaFinal, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2 required">Estado:</label>
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model.estado, (SelectList)ViewBag.estadoRequerimientos, new { @class = "col-xs-12 editFields", @disabled = "disabled", @style = "height:30px;border-radius:4px" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2 required">Observaciones:</label>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.observaciones, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
+            @Html.ValidationMessageFor(model => model.observaciones, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Disponibles", new { @class = "col-md-offset-2 col-md-2 control-label", @style = "text-align:center;margin-left:195px;" })
+        @Html.Label("Equipo", new { @class = "col-md-offset-2  col-md-2 control-label required", @style = "text-align:center;margin-left:10px;margin-bottom:10px" })
+        <div class="col-md-offset-2 col-md-10" style="margin-bottom:25px">
+            @Html.ListBoxFor(m => m.equipo, new MultiSelectList(ViewBag.DesarrolladoresDisp, "cedula", "nombre"), new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;", @disabled = "disabled" })
+            @Html.ValidationMessageFor(model => model.equipo, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            $('#list2').multiSelect();
+            $('.datePicker').datepicker();
+        };
+    </script>
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+
+}

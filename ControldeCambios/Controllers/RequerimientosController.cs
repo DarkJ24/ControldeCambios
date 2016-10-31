@@ -239,5 +239,68 @@ namespace ControldeCambios.Controllers
 
             return View(model);
         }
+
+        /// <summary>
+        /// Funcionalidad para consultar los detalles de los requerimientos con base en un id.
+        /// </summary>
+        /// <returns>Pagina de Index</returns>
+        // GET: /Requerimientos/Detalles
+        public ActionResult Detalles(string requerimiento, int version)
+        {
+            if (!revisarPermisos("Consultar Detalles de Requerimiento"))
+            {
+                //despliega mensaje en caso de no poder crear un requerimiento
+                this.AddToastMessage("Acceso Denegado", "No tienes permiso para consultar detalles de requerimientos!", ToastType.Warning);
+                return RedirectToAction("Index", "Home");
+            }
+
+            if (String.IsNullOrEmpty(requerimiento))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            RequerimientosModelo modeloReq = new RequerimientosModelo();
+            UsuariosModelo modeloUsuario = new UsuariosModelo();
+            List<Usuario> listaDesarrolladores = new List<Usuario>();
+            List<Modulo> listaModulos = new List<Modulo>();
+            List<Estado_Requerimientos> listaEstadoRequerimientos = new List<Estado_Requerimientos>();
+            List<Usuario> listaClientes = new List<Usuario>();
+            modeloReq.requerimiento = baseDatos.Requerimientos.Find(requerimiento, version);
+            if (modeloReq.requerimiento == null)
+            {
+                return HttpNotFound();
+            }
+            modeloReq.codigo = modeloReq.requerimiento.codigo;
+            modeloReq.nombre = modeloReq.requerimiento.nombre;
+            modeloReq.descripcion = modeloReq.requerimiento.descripcion;
+            modeloReq.prioridad = modeloReq.requerimiento.prioridad.ToString();
+            modeloReq.esfuerzo = modeloReq.requerimiento.esfuerzo.ToString();
+            modeloReq.observaciones = modeloReq.requerimiento.observaciones;
+            modeloReq.fechaInicial = modeloReq.requerimiento.creadoEn.ToString("MM/dd/yyyy");
+            modeloReq.solicitadoPor = modeloReq.requerimiento.solicitadoPor;
+            //modeloReq.modulo = 
+            ViewBag.modulos = new SelectList(listaModulos, "cedula", "nombre");
+            ViewBag.estadoRequerimientos = new SelectList(listaEstadoRequerimientos, "cedula", "nombre");
+            string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
+            string desarrolladorRol = context.Roles.Where(m => m.Name == "Desarrollador").First().Id;
+            foreach (var user in context.Users.ToArray())
+            {
+                if (user.Roles.First().RoleId.Equals(clienteRol))
+                {
+                    listaClientes.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
+                }
+                else
+                {
+                    if (user.Roles.First().RoleId.Equals(desarrolladorRol))
+                    {
+                        listaDesarrolladores.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
+                    }
+                }
+            }
+            ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre", modeloReq.solicitadoPor);
+            ViewBag.desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
+            ViewBag.DesarrolladoresDisp = listaDesarrolladores;
+            ViewBag.Usuarios = baseDatos.Usuarios.ToList();
+            return View(modeloReq);
+        }
     }
 }

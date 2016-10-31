@@ -34,7 +34,7 @@ namespace ControldeCambios.Models
         public string descripcion { get; set; }
 
         
-        public Usuario solicitadoPor { get; set; }
+        public string solicitadoPor { get; set; }
 
 
         public List<Modulo> modulo { get; set; }
