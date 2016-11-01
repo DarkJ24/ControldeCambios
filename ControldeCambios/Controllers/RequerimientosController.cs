@@ -168,7 +168,7 @@ namespace ControldeCambios.Controllers
         /// </summary>
         /// <returns>Pagina de Index</returns>
         // GET: /Requerimientos/Crear
-        public ActionResult Crear()
+        public ActionResult Crear(string proyecto)
         {
             if (!revisarPermisos("Crear Requerimientos"))
             {
@@ -178,8 +178,6 @@ namespace ControldeCambios.Controllers
             }
             List<Usuario> listaDesarrolladores = new List<Usuario>();
             List<Usuario> listaClientes = new List<Usuario>();
-            List<Modulo> listaModulos = new List<Modulo>();
-            List<Estado_Requerimientos> listaEstadoRequerimientos = new List<Estado_Requerimientos>();
             string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
             string desarrolladorRol = context.Roles.Where(m => m.Name == "Desarrollador").First().Id;
             foreach (var user in context.Users.ToArray())
@@ -199,10 +197,15 @@ namespace ControldeCambios.Controllers
             ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
             ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");
             ViewBag.DesarrolladoresDisp = listaDesarrolladores;
-            ViewBag.Modulo = new SelectList(listaModulos);
-            ViewBag.EstadoRequerimiento = new SelectList(listaEstadoRequerimientos);
+            var listaModulos = baseDatos.Modulos.Where(m => m.proyecto == proyecto).ToList();
+            ViewBag.Modulo = new SelectList(listaModulos, "numero", "proyecto");
+            ViewBag.EstadoRequerimiento = new SelectList(baseDatos.Estado_Requerimientos.ToList(), "nombre", "nombre");
 
-            return View();
+            RequerimientosModelo model = new RequerimientosModelo();
+
+            model.proyecto = proyecto;
+
+            return View(model);
         }
 
 
@@ -228,7 +231,7 @@ namespace ControldeCambios.Controllers
                 requerimiento.finalizaEn = DateTime.ParseExact(model.fechaFinal, "MM/dd/yyyy", CultureInfo.InvariantCulture);
                 requerimiento.observaciones = model.observaciones;
 
-                requerimiento.Usuarios = model.equipo.Select(x => baseDatos.Usuarios.Find(x.Value)).ToList();
+                requerimiento.Usuarios = model.equipo.Select(x => baseDatos.Usuarios.Find(x)).ToList();
 
                 baseDatos.Requerimientos.Add(requerimiento);
 
@@ -236,6 +239,30 @@ namespace ControldeCambios.Controllers
                 this.AddToastMessage("Requerimiento Creado", "El requerimiento " + model.nombre + " se ha creado correctamente.", ToastType.Success);
                 return RedirectToAction("Crear", "Requerimiento");
             }
+            List<Usuario> listaDesarrolladores = new List<Usuario>();
+            List<Usuario> listaClientes = new List<Usuario>();
+            string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
+            string desarrolladorRol = context.Roles.Where(m => m.Name == "Desarrollador").First().Id;
+            foreach (var user in context.Users.ToArray())
+            {
+                if (user.Roles.First().RoleId.Equals(clienteRol))
+                {
+                    listaClientes.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
+                }
+                else
+                {
+                    if (user.Roles.First().RoleId.Equals(desarrolladorRol))
+                    {
+                        listaDesarrolladores.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
+                    }
+                }
+            }
+            ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
+            ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");
+            ViewBag.DesarrolladoresDisp = listaDesarrolladores;
+            var listaModulos = baseDatos.Modulos.Where(m => m.proyecto == model.proyecto).ToList();
+            ViewBag.Modulo = new SelectList(listaModulos, "numero", "proyecto");
+            ViewBag.EstadoRequerimiento = new SelectList(baseDatos.Estado_Requerimientos.ToList(), "nombre", "nombre");
 
             return View(model);
         }
