@@ -230,6 +230,18 @@ namespace ControldeCambios.Controllers
                 requerimiento.creadoEn = DateTime.ParseExact(model.fechaInicial, "MM/dd/yyyy", CultureInfo.InvariantCulture);
                 requerimiento.finalizaEn = DateTime.ParseExact(model.fechaFinal, "MM/dd/yyyy", CultureInfo.InvariantCulture);
                 requerimiento.observaciones = model.observaciones;
+                requerimiento.solicitadoPor = model.solicitadoPor;
+                requerimiento.creadoPor = model.creadoPor;
+                requerimiento.Sprint_Modulo = new List<Sprint_Modulo>();
+
+                var sm = baseDatos.Sprint_Modulo.Find(model.proyecto, "1", model.modulo);
+                sm.modulo = Int32.Parse(model.modulo);
+                sm.sprint = 1;
+                sm.proyecto = model.proyecto;
+                requerimiento.Sprint_Modulo.Add(sm);
+
+                requerimiento.estado = model.estado;
+                
 
                 requerimiento.Usuarios = model.equipo.Select(x => baseDatos.Usuarios.Find(x)).ToList();
 
@@ -237,7 +249,7 @@ namespace ControldeCambios.Controllers
 
                 baseDatos.SaveChanges();
                 this.AddToastMessage("Requerimiento Creado", "El requerimiento " + model.nombre + " se ha creado correctamente.", ToastType.Success);
-                return RedirectToAction("Crear", "Requerimiento");
+                return RedirectToAction("Crear", "Requerimiento", new { proyecto = model.proyecto });
             }
             List<Usuario> listaDesarrolladores = new List<Usuario>();
             List<Usuario> listaClientes = new List<Usuario>();
