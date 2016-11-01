@@ -66,19 +66,7 @@ namespace ControldeCambios.Controllers
             model.cliente = cliente.nombre;
             model.lider = lider.nombre;
 
-            var sprint_modulos = baseDatos.Sprint_Modulo.Where(m => m.sprint == ssprint && m.proyecto == proyecto).ToList();
-            var sprint_modulo_requerimientos = sprint_modulos.Select(m => m.Requerimientos.ToList());
-
-            List<Requerimiento> reqs;
-
-            if (sprint_modulo_requerimientos.Any())
-            {
-                reqs = sprint_modulo_requerimientos.Aggregate((acc, x) => acc.Concat(x).ToList());
-            }
-            else
-            {
-                reqs = new List<Requerimiento>();
-            }
+            var reqs = baseDatos.Sprints.Find(proyecto, ssprint).Requerimientos;
 
             int pageSize = 10;
             int pageNumber = (page ?? 1);
@@ -105,11 +93,11 @@ namespace ControldeCambios.Controllers
 
             // extrapolar los valores que no se encuentran en la base de datos
             var horas_esfuerzo = baseDatos.Progreso_Sprint.Where(s => s.sprintNumero == ssprint && s.sprintProyecto == proyecto).ToList();
-            var ultimo_dia = horas_esfuerzo.Select(h => h.fecha).Max();
+            
             var esfuerzo_real = new List<double>();
             if (horas_esfuerzo.Any()) {
-
-                for(var dia = start; dia < ultimo_dia.AddDays(1); dia = dia.AddDays(1))
+                var ultimo_dia = horas_esfuerzo.Select(h => h.fecha).Max();
+                for (var dia = start; dia < ultimo_dia.AddDays(1); dia = dia.AddDays(1))
                 {
                     double puntaje;
                     var esfuerzo_actual = horas_esfuerzo.Where(s => s.fecha.Date.Equals(dia.Date)).FirstOrDefault();
@@ -198,7 +186,7 @@ namespace ControldeCambios.Controllers
             ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");
             ViewBag.DesarrolladoresDisp = listaDesarrolladores;
             var listaModulos = baseDatos.Modulos.Where(m => m.proyecto == proyecto).ToList();
-            ViewBag.Modulo = new SelectList(listaModulos, "numero", "proyecto");
+            ViewBag.Modulo = new SelectList(listaModulos, "numero", "nombre");
             ViewBag.EstadoRequerimiento = new SelectList(baseDatos.Estado_Requerimientos.ToList(), "nombre", "nombre");
 
             RequerimientosModelo model = new RequerimientosModelo();
@@ -232,13 +220,7 @@ namespace ControldeCambios.Controllers
                 requerimiento.observaciones = model.observaciones;
                 requerimiento.solicitadoPor = model.solicitadoPor;
                 requerimiento.creadoPor = model.creadoPor;
-                requerimiento.Sprint_Modulo = new List<Sprint_Modulo>();
-
-                var sm = baseDatos.Sprint_Modulo.Find(model.proyecto, "1", model.modulo);
-                sm.modulo = Int32.Parse(model.modulo);
-                sm.sprint = 1;
-                sm.proyecto = model.proyecto;
-                requerimiento.Sprint_Modulo.Add(sm);
+                requerimiento.Modulo = baseDatos.Modulos.Find(model.proyecto, Int32.Parse(model.modulo));
 
                 requerimiento.estado = model.estado;
                 
@@ -249,7 +231,7 @@ namespace ControldeCambios.Controllers
 
                 baseDatos.SaveChanges();
                 this.AddToastMessage("Requerimiento Creado", "El requerimiento " + model.nombre + " se ha creado correctamente.", ToastType.Success);
-                return RedirectToAction("Crear", "Requerimiento", new { proyecto = model.proyecto });
+                return RedirectToAction("Crear", "Requerimientos", new { proyecto = model.proyecto });
             }
             List<Usuario> listaDesarrolladores = new List<Usuario>();
             List<Usuario> listaClientes = new List<Usuario>();
@@ -273,7 +255,8 @@ namespace ControldeCambios.Controllers
             ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");
             ViewBag.DesarrolladoresDisp = listaDesarrolladores;
             var listaModulos = baseDatos.Modulos.Where(m => m.proyecto == model.proyecto).ToList();
-            ViewBag.Modulo = new SelectList(listaModulos, "numero", "proyecto");
+            ViewBag.Modulo = new SelectList(listaModulos, "numero", "nombre");
+            
             ViewBag.EstadoRequerimiento = new SelectList(baseDatos.Estado_Requerimientos.ToList(), "nombre", "nombre");
 
             return View(model);

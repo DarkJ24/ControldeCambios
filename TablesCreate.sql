@@ -110,24 +110,12 @@ ON UPDATE CASCADE
 ON DELETE NO ACTION
 );
 
-CREATE TABLE Sprint_Modulo(
-proyecto varchar(25),
-sprint int,
-modulo int,
-constraint pk_SpMod primary key (proyecto, sprint, modulo),
-constraint fk_SpMod foreign key (proyecto, sprint) references Sprints(proyecto, numero)
-ON UPDATE CASCADE
-ON DELETE NO ACTION,
-constraint fk_UserSprintMod foreign key (proyecto, modulo) references Modulos(proyecto, numero)
-ON UPDATE NO ACTION
-ON DELETE NO ACTION
-);
-
 CREATE TABLE Estado_Requerimientos(
 nombre char(24) primary key --Pendiente de asignación, Asignado, En ejecución, Finalizado, Cerrado
 );
 
 CREATE TABLE Requerimientos(
+id int identity(1,1) primary key,
 codigo char(15),
 version int default 1,
 creadoEn date not null,
@@ -140,8 +128,9 @@ esfuerzo int default 1,
 estado char(24) not null,
 creadoPor varchar(11) not null,
 solicitadoPor varchar(11) not null,
+proyecto varchar(25),
+numeroModulo int,
 imagen varbinary(MAX),
-constraint primarykey_Req primary key (codigo, version),
 constraint fk_EstadoReq foreign key (estado) references Estado_Requerimientos(nombre)
 ON UPDATE CASCADE
 ON DELETE NO ACTION,
@@ -150,64 +139,45 @@ ON UPDATE NO ACTION
 ON DELETE NO ACTION,
 constraint fk_ReqUserSol foreign key (solicitadoPor) references Usuarios(cedula)
 ON UPDATE NO ACTION
+ON DELETE NO ACTION,
+constraint fk_ReqMod foreign key (proyecto, numeroModulo) references Modulos(proyecto, numero)
+ON UPDATE NO ACTION
 ON DELETE NO ACTION
 );
 
+CREATE TABLE Sprint_Requerimiento(
+	idReq int,
+	proyecto varchar(25),
+	numeroSprint int,
+	constraint pk_SprintReq primary key (idReq, proyecto, numeroSprint),
+	constraint fk_SprintReqReq foreign key (idReq) references Requerimientos(id)
+	ON UPDATE CASCADE
+	ON DELETE CASCADE,
+	constraint fk_SprintReqSprint foreign key (proyecto, numeroSprint) references Sprints(proyecto, numero)
+	ON UPDATE CASCADE
+	ON DELETE CASCADE
+);
+
+
+
 CREATE TABLE Requerimientos_Cri_Acep(
-reqCodigo char(15),
-reqVersion int,
+id int identity(1,1) primary key,
+idReq int,
 criterio varchar(120),
-constraint pk_ReqCriAcep primary key (reqCodigo, reqVersion, criterio),
-constraint fk_ReqCriAcp foreign key (reqCodigo, reqVersion) references Requerimientos(codigo, version)
+constraint fk_ReqCriAcp foreign key (idReq) references Requerimientos(id)
 ON UPDATE CASCADE
 ON DELETE CASCADE,
 );
 
 CREATE TABLE Requerimiento_Encargados(
-requerimiento char(15),
-version int,
+idReq int,
 usuario varchar(11),
-constraint pk_Req_User primary key (requerimiento, version, usuario),
+constraint pk_Req_User primary key (idReq, usuario),
 constraint fk_ReqResUser foreign key (usuario) references Usuarios(cedula)
 ON UPDATE NO ACTION
 ON DELETE NO ACTION,
-constraint fk_ReqResReq foreign key (requerimiento,version) references Requerimientos(codigo,version)
+constraint fk_ReqResReq foreign key (idReq) references Requerimientos(id)
 ON UPDATE CASCADE
-ON DELETE NO ACTION
-);
-
-CREATE TABLE Sprint_Mod_Req(
-proyecto varchar(25),
-sprint int,
-modulo int,
-requerimiento char(15),
-version int,
-constraint pk_SpModReq primary key (proyecto, sprint, modulo, requerimiento, version),
-constraint fk_SpModReq foreign key (proyecto, sprint, modulo) references Sprint_Modulo(proyecto, sprint, modulo)
-ON UPDATE CASCADE
-ON DELETE NO ACTION,
-constraint fk_SpModReqReq foreign key (requerimiento, version) references Requerimientos(codigo, version)
-ON UPDATE CASCADE
-ON DELETE NO ACTION
-);
-
-CREATE TABLE CambiosRequerimientos(
-creadoPor varchar(11) not null,
-requerimiento char(15),
-versionReqVieja int,
-versionReqNueva int,
-fecha date default getDate(),
-comentarios varchar(150),
-motivo varchar(80),
-constraint pk_ReqCam primary key (requerimiento, versionReqVieja, versionReqNueva),
-constraint fk_ReqCam foreign key (requerimiento,versionReqVieja) references Requerimientos(codigo,version)
-ON UPDATE CASCADE
-ON DELETE NO ACTION,
-constraint fk_ReqCam2 foreign key (requerimiento,versionReqNueva) references Requerimientos(codigo,version)
-ON UPDATE NO ACTION
-ON DELETE NO ACTION,
-constraint fk_UserCam foreign key (creadoPor) references Usuarios(cedula)
-ON UPDATE NO ACTION
 ON DELETE NO ACTION
 );
 
