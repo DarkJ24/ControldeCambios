@@ -32,7 +32,7 @@ namespace ControldeCambios.Controllers
                 return RedirectToAction("Index", "Home");
             }
             ViewBag.Proyectos = new SelectList(baseDatos.Proyectos.ToList(), "nombre", "nombre");
-            ViewBag.Requerimientos = baseDatos.Requerimientos.ToList();
+            ViewBag.Requerimientos = new MultiSelectList(baseDatos.Requerimientos.ToList(), "id", "nombre");
             
             return View();
         }
@@ -44,7 +44,6 @@ namespace ControldeCambios.Controllers
             if (ModelState.IsValid)
             {
                 var sprint = new Sprint();
-                var sprint_modulo = new Sprint_Modulo();
                 
                 sprint.numero = model.numero;
                 sprint.proyecto = model.proyecto;
@@ -52,19 +51,9 @@ namespace ControldeCambios.Controllers
                 sprint.fechaInicio = DateTime.ParseExact(model.fechaInicio, "MM/dd/yyyy", CultureInfo.InvariantCulture);
                 sprint.fechaFinal = DateTime.ParseExact(model.fechaFinal, "MM/dd/yyyy", CultureInfo.InvariantCulture);
 
-                //model.sprint = sprint;
-
-                sprint_modulo.proyecto = model.proyecto;
-                sprint_modulo.sprint = model.numero;
-
-                foreach (var req in model.requerimientos) {
-                    sprint_modulo.Requerimientos.Add( baseDatos.Requerimientos.Where(m => m.codigo==req).OrderBy(m => m.version).First());
-
-                }
-
+                sprint.Requerimientos = model.requerimientos.Select(m => baseDatos.Requerimientos.Find(Int32.Parse(m))).ToList();
 
                 baseDatos.Sprints.Add(sprint);
-                baseDatos.Sprint_Modulo.Add(sprint_modulo);
                 baseDatos.SaveChanges();
 
 

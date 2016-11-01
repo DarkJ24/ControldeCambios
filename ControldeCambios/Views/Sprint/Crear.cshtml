@@ -48,7 +48,7 @@
     <div class="form-group">
         @Html.Label("Requerimientos", new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.ListBoxFor(m => m.requerimientos, new MultiSelectList(ViewBag.Requerimientos, "codigo", "nombre"), new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;" })
+            @Html.ListBoxFor(m => m.requerimientos, (MultiSelectList) ViewBag.Requerimientos, new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;" })
             @Html.ValidationMessageFor(model => model.requerimientos, "", new { @class = "text-danger" })
         </div>
     </div>
