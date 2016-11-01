@@ -36,6 +36,7 @@ namespace ControldeCambios.Models
         
         public string solicitadoPor { get; set; }
 
+        public string creadoPor { get; set; }
 
         public string modulo { get; set; }
 

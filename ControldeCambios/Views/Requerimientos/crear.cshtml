@@ -76,8 +76,16 @@ function load_all() {
     <div class="form-group">
         @Html.Label("Solicitado Por", new { @class = "col-md-2 control-label required" })
         <div class="col-md-10">
-            @Html.DropDownListFor(m => m.solicitadoPor, (SelectList)ViewBag.Desarrolladores, "Seleccionar Solicitante ", new { @class = "col-xs-12 form-control", @style = "height:30px;border-radius:4px" })
+            @Html.DropDownListFor(m => m.solicitadoPor, (SelectList)ViewBag.Clientes, "Seleccionar Solicitante ", new { @class = "col-xs-12 form-control", @style = "height:30px;border-radius:4px" })
             @Html.ValidationMessageFor(model => model.solicitadoPor, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Creado Por", new { @class = "col-md-2 control-label required" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(m => m.creadoPor, (SelectList)ViewBag.Desarrolladores, "Seleccionar Creador ", new { @class = "col-xs-12 form-control", @style = "height:30px;border-radius:4px" })
+            @Html.ValidationMessageFor(model => model.creadoPor, "", new { @class = "text-danger" })
         </div>
     </div>
 
