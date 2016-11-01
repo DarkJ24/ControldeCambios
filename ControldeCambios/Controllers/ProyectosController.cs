@@ -2,6 +2,7 @@
 using ControldeCambios.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -49,8 +50,29 @@ namespace ControldeCambios.Controllers
             // (solo debe mostrar proyectos a los que pertenezco)
             //Si es cliente, solo debe mostrar sus proyectos solicitados
             //Si es admin, mostrar todos
-            modelo.proyectos = baseDatos.Proyectos.ToList();
-            return View();
+            modelo.proyectos = baseDatos.Proyectos.OrderByDescending(s => s.nombre).ToList();
+            modelo.indexProyectoInfoList = new List<ProyectosModelo.proyectoInfo>();
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
+            int lastElement = (modelo.proyectos.Count < pageSize * pageNumber) ? modelo.proyectos.Count : pageSize * pageNumber;
+
+            //despliega la informacion de los usuarios por paginas
+            for (int i = (pageNumber - 1) * pageSize; i < lastElement; i++)
+            {
+
+                ProyectosModelo.proyectoInfo proyecto = new ProyectosModelo.proyectoInfo();
+                proyecto.nombre = modelo.proyectos.ElementAt(i).nombre;
+                proyecto.lider = baseDatos.Usuarios.Find(modelo.proyectos.ElementAt(i).lider).nombre;
+                proyecto.cliente = baseDatos.Usuarios.Find(modelo.proyectos.ElementAt(i).cliente).nombre;
+                proyecto.estado = modelo.proyectos.ElementAt(i).estado;
+
+                modelo.indexProyectoInfoList.Add(proyecto);
+            }
+            modelo.crearProyecto = revisarPermisos("Crear Proyectos");
+            modelo.detallesProyecto = revisarPermisos("Consultar Detalles de Proyectos");
+            var proyectosAsIPagedList = new StaticPagedList<ProyectosModelo.proyectoInfo>(modelo.indexProyectoInfoList, pageNumber, pageSize, modelo.proyectos.Count);
+            ViewBag.OnePageOfProyectos = proyectosAsIPagedList;
+            return View(modelo);
         }
 
         // GET: Crear

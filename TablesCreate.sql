@@ -146,19 +146,17 @@ ON DELETE NO ACTION
 );
 
 CREATE TABLE Sprint_Requerimiento(
-	idReq int,
-	proyecto varchar(25),
-	numeroSprint int,
-	constraint pk_SprintReq primary key (idReq, proyecto, numeroSprint),
-	constraint fk_SprintReqReq foreign key (idReq) references Requerimientos(id)
-	ON UPDATE CASCADE
-	ON DELETE CASCADE,
-	constraint fk_SprintReqSprint foreign key (proyecto, numeroSprint) references Sprints(proyecto, numero)
-	ON UPDATE CASCADE
-	ON DELETE CASCADE
+idReq int,
+proyecto varchar(25),
+numeroSprint int,
+constraint pk_SprintReq primary key (idReq, proyecto, numeroSprint),
+constraint fk_SprintReqReq foreign key (idReq) references Requerimientos(id)
+ON UPDATE CASCADE
+ON DELETE CASCADE,
+constraint fk_SprintReqSprint foreign key (proyecto, numeroSprint) references Sprints(proyecto, numero)
+ON UPDATE CASCADE
+ON DELETE CASCADE
 );
-
-
 
 CREATE TABLE Requerimientos_Cri_Acep(
 id int identity(1,1) primary key,
@@ -237,7 +235,7 @@ WHERE Email = 'admin@admin.com';
 
 DROP TRIGGER trg_Usuarios_UpdatedAt;
 
-DROP TABLE CambiosRequerimientos, Sprint_Mod_Req, Requerimiento_Encargados, Requerimientos_Cri_Acep, Requerimientos,
+DROP TABLE Requerimiento_Encargados, Requerimientos_Cri_Acep, Sprint_Requerimiento, Requerimientos,
 Estado_Requerimientos, Sprint_Modulo, Modulos, Progreso_Sprint, Sprints, Proyecto_Equipo, Tipo_Desarrollador,
 Proyectos, Estado_Proyecto, Rol_Permisos, Permisos, Usuarios_Telefonos, Usuarios;
 

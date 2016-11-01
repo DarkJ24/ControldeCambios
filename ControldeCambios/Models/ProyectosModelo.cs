@@ -12,8 +12,6 @@ namespace ControldeCambios.Models
     /// </summary>
     public class ProyectosModelo
     {
-        public List<Proyecto> proyectos { get; set; }
-
         [Required(ErrorMessage = "El nombre es un campo requerido.")]
         [StringLength(25, ErrorMessage = "El nombre debe ser de {1} dígitos"), MinLength(1, ErrorMessage = "El nombre debe ser de almenos {1} dígitos")]
         [Display(Name = "Nombre")]
@@ -40,6 +38,20 @@ namespace ControldeCambios.Models
         public Usuario cliente { get; set; }
 
         public List<string> equipo { get; set; }
+
+        //Index View 
+
+        public class proyectoInfo
+        {
+            public string nombre;
+            public string lider;
+            public string cliente;
+            public string estado;
+        }
+        public List<Proyecto> proyectos;
+        public List<proyectoInfo> indexProyectoInfoList;
+        public Boolean crearProyecto { get; set; }
+        public Boolean detallesProyecto { get; set; }
 
     }
 }

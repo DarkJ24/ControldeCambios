@@ -243,9 +243,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\CambiosRequerimiento.cs">
-      <DependentUpon>Modelo.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\CrearUsuarioModel.cs" />
     <Compile Include="Models\Estado_Proyecto.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
@@ -304,9 +301,6 @@
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\SprintModelo.cs" />
-    <Compile Include="Models\Sprint_Modulo.cs">
-      <DependentUpon>Modelo.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\sysdiagram.cs" />
     <Compile Include="Models\Tipo_Desarrollador.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
@@ -474,6 +468,8 @@
     <Content Include="Views\Proyectos\detalles.cshtml" />
     <Content Include="Views\Modulos\Crear.cshtml" />
     <Content Include="Views\Modulos\Detalles.cshtml" />
+    <Content Include="Views\Requerimientos\detalles.cshtml" />
+    <Content Include="Views\Proyectos\index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
