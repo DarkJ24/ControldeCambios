@@ -37,7 +37,7 @@ namespace ControldeCambios.Models
         public string solicitadoPor { get; set; }
 
 
-        public List<Modulo> modulo { get; set; }
+        public string modulo { get; set; }
 
 
         [Required(ErrorMessage = "La prioridad es un campo requerido.")]
@@ -59,7 +59,7 @@ namespace ControldeCambios.Models
         public string fechaFinal { get; set; }
 
 
-        public List<Estado_Requerimientos> estado { get; set; }
+        public string estado { get; set; }
 
 
         [Display(Name = "Observaciones")]
@@ -69,11 +69,14 @@ namespace ControldeCambios.Models
 
         //AGREGAR IMAGEN
 
-        
-        public List<Requerimientos_Cri_Acep> criteriosAceptacion { get; set; }
+        [Display(Name = "Criterios de Aceptación")]
+        [Required]
+        public string criteriosAceptacion { get; set; }
 
 
         //AGREGAR EQUIPO
-        public List<SelectListItem> equipo { get; set; }
+        public List<string> equipo { get; set; }
+
+        public string proyecto { get; set; }
         }
 }
