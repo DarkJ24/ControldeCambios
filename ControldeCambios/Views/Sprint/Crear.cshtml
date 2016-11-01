@@ -24,7 +24,8 @@
     <div class="form-group">
         @Html.Label("Proyecto", new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.DropDownListFor(m => m.proyecto, (SelectList)ViewBag.Proyectos, "Seleccionar Proyecto", new { @class = "col-xs-12 form-control", @style = "height:30px;border-radius:4px" })
+            @Html.DisplayFor(m => m.proyecto, new { @class = "form-control" })
+            @Html.HiddenFor(model => model.proyecto)
             @Html.ValidationMessageFor(model => model.proyecto, "", new { @class = "text-danger" })
         </div>
     </div>

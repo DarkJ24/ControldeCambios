@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -23,7 +24,7 @@ namespace ControldeCambios.Controllers
             return View();
         }
 
-        public ActionResult Crear()
+        public ActionResult Crear(string proyecto)
         {
             if (!revisarPermisos("Crear Proyectos"))
             {
@@ -31,10 +32,21 @@ namespace ControldeCambios.Controllers
                 this.AddToastMessage("Acceso Denegado", "No tienes permiso para crear sprints!", ToastType.Warning);
                 return RedirectToAction("Index", "Home");
             }
-            ViewBag.Proyectos = new SelectList(baseDatos.Proyectos.ToList(), "nombre", "nombre");
-            ViewBag.Requerimientos = new MultiSelectList(baseDatos.Requerimientos.ToList(), "id", "nombre");
-            
-            return View();
+            if (String.IsNullOrEmpty(proyecto))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (baseDatos.Proyectos.Find(proyecto) != null)
+            {
+                var model = new SprintModelo();
+                model.proyecto = proyecto;
+                ViewBag.Requerimientos = new MultiSelectList(baseDatos.Requerimientos.ToList(), "id", "nombre");
+                return View(model);
+            }
+            else
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
         }
 
         [HttpPost]
@@ -68,8 +80,6 @@ namespace ControldeCambios.Controllers
                 ViewBag.Proyectos = new SelectList(baseDatos.Proyectos.ToList(), "nombre", "nombre");
                 ViewBag.Requerimientos = baseDatos.Requerimientos.ToList();
                 return View(model);
-          
-            //return View(model);
         }
         /// <summary>
         /// Se utiliza para revisar que el rol del usuario que intenta acceder a alguna
