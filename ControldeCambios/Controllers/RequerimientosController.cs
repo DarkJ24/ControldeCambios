@@ -30,7 +30,7 @@ namespace ControldeCambios.Controllers
         public ActionResult Index(string proyecto, int? sprint, int? page)
         {
             // si no se usó un parámetro para el proyecto se manda este mensaje
-            if(proyecto == null)
+            if (proyecto == null)
             {
                 this.AddToastMessage("Error", "No se encontró o no se tiene permisos para ver el proyecto", ToastType.Error);
                 return RedirectToAction("Index", "Home");
@@ -39,7 +39,7 @@ namespace ControldeCambios.Controllers
             var proy = baseDatos.Proyectos.Find(proyecto);
 
             //si el proyecto es invalido se manda un mensaje
-            if(proy == null)
+            if (proy == null)
             {
                 this.AddToastMessage("Error", "No se encontró o no se tiene permisos para ver el proyecto", ToastType.Error);
                 return RedirectToAction("Index", "Home");
@@ -47,7 +47,7 @@ namespace ControldeCambios.Controllers
 
             // conseguimos el numero de sprint actual
             int ssprint = sprint ?? 1;
-            
+
             //conseguimos la lista de los sprints del proyecto para hacer paginacion
             var sprints_de_proyecto = baseDatos.Sprints.Where(s => s.proyecto == proyecto).Select(s => s.numero).ToList();
 
@@ -95,25 +95,27 @@ namespace ControldeCambios.Controllers
 
             // extrapolar los valores que no se encuentran en la base de datos
             var horas_esfuerzo = baseDatos.Progreso_Sprint.Where(s => s.sprintNumero == ssprint && s.sprintProyecto == proyecto).ToList();
-            
+
             var esfuerzo_real = new List<double>();
-            if (horas_esfuerzo.Any()) {
+            if (horas_esfuerzo.Any())
+            {
                 var ultimo_dia = horas_esfuerzo.Select(h => h.fecha).Max();
                 for (var dia = start; dia < ultimo_dia.AddDays(1); dia = dia.AddDays(1))
                 {
                     double puntaje;
                     var esfuerzo_actual = horas_esfuerzo.Where(s => s.fecha.Date.Equals(dia.Date)).FirstOrDefault();
-                    if(esfuerzo_actual == null)
+                    if (esfuerzo_actual == null)
                     {
                         puntaje = esfuerzo_real.Last();
-                    } else
+                    }
+                    else
                     {
                         puntaje = esfuerzo_actual.puntos;
                     }
                     esfuerzo_real.Add(puntaje);
                 }
 
-                
+
 
             }
 
@@ -122,15 +124,16 @@ namespace ControldeCambios.Controllers
             var esfuerzo_total = baseDatos.Progreso_Sprint.Find(start, proyecto, ssprint);
 
             // mostrar una estumacion del esfuerzo ideal si se encuentran datos acerca de los puntajes
-            if(esfuerzo_total != null)
+            if (esfuerzo_total != null)
             {
                 var puntos = esfuerzo_total.puntos;
                 double longitud_del_sprint = end.Subtract(start).TotalDays;
                 var velocidad = puntos / longitud_del_sprint;
 
-                ViewBag.esfuerzo_ideal = Enumerable.Range(0, (int)longitud_del_sprint+1).Select(x => System.Convert.ToDouble(((int)longitud_del_sprint - x) *velocidad)).ToList();
+                ViewBag.esfuerzo_ideal = Enumerable.Range(0, (int)longitud_del_sprint + 1).Select(x => System.Convert.ToDouble(((int)longitud_del_sprint - x) * velocidad)).ToList();
 
-            } else
+            }
+            else
             {
                 ViewBag.esfuerzo_ideal = new List<double>();
             }
@@ -224,7 +227,7 @@ namespace ControldeCambios.Controllers
                 requerimiento.creadoPor = model.creadoPor;
                 requerimiento.modulo = Int32.Parse(model.modulo);
                 requerimiento.estado = model.estado;
-                
+
 
                 requerimiento.Usuarios = model.equipo.Select(x => baseDatos.Usuarios.Find(x)).ToList();
 
@@ -257,7 +260,7 @@ namespace ControldeCambios.Controllers
             ViewBag.DesarrolladoresDisp = listaDesarrolladores;
             var listaModulos = baseDatos.Modulos.Where(m => m.proyecto == model.proyecto).ToList();
             ViewBag.Modulo = new SelectList(listaModulos, "numero", "nombre");
-            
+
             ViewBag.EstadoRequerimiento = new SelectList(baseDatos.Estado_Requerimientos.ToList(), "nombre", "nombre");
 
             return View(model);
@@ -268,7 +271,7 @@ namespace ControldeCambios.Controllers
         /// </summary>
         /// <returns>Pagina de Index</returns>
         // GET: /Requerimientos/Detalles
-        public ActionResult Detalles(string requerimiento, int version)
+        public ActionResult Detalles(int? requerimiento)
         {
             if (!revisarPermisos("Consultar Detalles de Requerimiento"))
             {
@@ -277,7 +280,7 @@ namespace ControldeCambios.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            if (String.IsNullOrEmpty(requerimiento))
+            if (requerimiento == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
@@ -287,20 +290,24 @@ namespace ControldeCambios.Controllers
             List<Modulo> listaModulos = new List<Modulo>();
             List<Estado_Requerimientos> listaEstadoRequerimientos = new List<Estado_Requerimientos>();
             List<Usuario> listaClientes = new List<Usuario>();
-            modeloReq.requerimiento = baseDatos.Requerimientos.Find(requerimiento, version);
+            modeloReq.requerimiento = baseDatos.Requerimientos.Find(requerimiento);
             if (modeloReq.requerimiento == null)
             {
                 return HttpNotFound();
             }
+            modeloReq.id = requerimiento ?? default(int);
             modeloReq.codigo = modeloReq.requerimiento.codigo;
             modeloReq.nombre = modeloReq.requerimiento.nombre;
+            modeloReq.version = modeloReq.requerimiento.version.ToString();
             modeloReq.descripcion = modeloReq.requerimiento.descripcion;
             modeloReq.prioridad = modeloReq.requerimiento.prioridad.ToString();
             modeloReq.esfuerzo = modeloReq.requerimiento.esfuerzo.ToString();
             modeloReq.observaciones = modeloReq.requerimiento.observaciones;
             modeloReq.fechaInicial = modeloReq.requerimiento.creadoEn.ToString("MM/dd/yyyy");
+            //modeloReq.fechaFinal = modeloReq.requerimiento.finalizaEn.ToString("MM/dd/yyyy");
             modeloReq.solicitadoPor = modeloReq.requerimiento.solicitadoPor;
-            //modeloReq.modulo = 
+            modeloReq.modulo = modeloReq.requerimiento.modulo.ToString();
+            modeloReq.estado = modeloReq.requerimiento.estado;
             ViewBag.modulos = new SelectList(listaModulos, "cedula", "nombre");
             ViewBag.estadoRequerimientos = new SelectList(listaEstadoRequerimientos, "cedula", "nombre");
             string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
