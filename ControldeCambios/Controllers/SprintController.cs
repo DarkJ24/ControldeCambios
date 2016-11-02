@@ -40,7 +40,7 @@ namespace ControldeCambios.Controllers
             {
                 var model = new SprintModelo();
                 model.proyecto = proyecto;
-                ViewBag.Requerimientos = new MultiSelectList(baseDatos.Requerimientos.ToList(), "id", "nombre");
+                ViewBag.modulos = new MultiSelectList(baseDatos.Modulos.ToList(), "numero", "nombre");
                 return View(model);
             }
             else
@@ -60,7 +60,7 @@ namespace ControldeCambios.Controllers
                 sprint.proyecto = model.proyecto;
                 sprint.fechaInicio = DateTime.ParseExact(model.fechaInicio, "MM/dd/yyyy", CultureInfo.InvariantCulture);
                 sprint.fechaFinal = DateTime.ParseExact(model.fechaFinal, "MM/dd/yyyy", CultureInfo.InvariantCulture);
-                sprint.Requerimientos = model.requerimientos.Select(m => baseDatos.Requerimientos.Find(Int32.Parse(m))).ToList();
+                sprint.modulos = model.modulos.Select(m => baseDatos.Modulos.Finds(Int32.Parse(m))).ToList();
                 baseDatos.Sprints.Add(sprint);
                 baseDatos.SaveChanges();
                 this.AddToastMessage("Sprint Creado", "El sprint " + model.numero + " se ha creado y asignado correctamente"
@@ -69,7 +69,7 @@ namespace ControldeCambios.Controllers
                 
             }
                 ViewBag.Proyectos = new SelectList(baseDatos.Proyectos.ToList(), "nombre", "nombre");
-                ViewBag.Requerimientos = baseDatos.Requerimientos.ToList();
+                ViewBag.modulos = baseDatos.Modulos.ToList();
                 return View(model);
         }
         /// <summary>
