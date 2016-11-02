@@ -13,6 +13,7 @@
 {
     @Html.AntiForgeryToken()
 
+
     <div class="form-group">
         @Html.LabelFor(m => m.numero, new { @class = "col-md-2 control-label required" })
         <div class="col-md-10">
@@ -47,10 +48,10 @@
     </div>
 
     <div class="form-group">
-        @Html.Label("Requerimientos", new { @class = "col-md-2 control-label" })
+        @Html.Label("Modulos", new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.ListBoxFor(m => m.requerimientos, (MultiSelectList) ViewBag.Requerimientos, new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;" })
-            @Html.ValidationMessageFor(model => model.requerimientos, "", new { @class = "text-danger" })
+            @Html.ListBoxFor(m => m.modulos, (MultiSelectList) ViewBag.Modulos, new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;" })
+            @Html.ValidationMessageFor(model => model.modulos, "", new { @class = "text-danger" })
         </div>
     </div>
 
