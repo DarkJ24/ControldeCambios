@@ -52,6 +52,8 @@ public partial class Entities : DbContext
 
     public virtual DbSet<Rol_Permisos> Rol_Permisos { get; set; }
 
+    public virtual DbSet<Sprint_Modulos> Sprint_Modulos { get; set; }
+
     public virtual DbSet<Sprint> Sprints { get; set; }
 
     public virtual DbSet<Tipo_Desarrollador> Tipo_Desarrollador { get; set; }

@@ -4,39 +4,42 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="8f4627deea82470ab59ffd98988056b9" Name="Diagram1" ZoomLevel="88">
-        <EntityTypeShape EntityType="ModeloEntities.Estado_Proyecto" Width="1.5" PointX="0.75" PointY="6" />
-        <EntityTypeShape EntityType="ModeloEntities.Estado_Requerimientos" Width="1.5" PointX="5.25" PointY="3" />
-        <EntityTypeShape EntityType="ModeloEntities.Modulo" Width="1.5" PointX="5.25" PointY="5.75" />
-        <EntityTypeShape EntityType="ModeloEntities.Permiso" Width="1.5" PointX="0.75" PointY="10.25" />
-        <EntityTypeShape EntityType="ModeloEntities.Progreso_Sprint" Width="1.5" PointX="12" PointY="0.75" />
-        <EntityTypeShape EntityType="ModeloEntities.Proyecto_Equipo" Width="1.5" PointX="12" PointY="4.375" />
-        <EntityTypeShape EntityType="ModeloEntities.Proyecto" Width="1.5" PointX="3" PointY="4.875" />
-        <EntityTypeShape EntityType="ModeloEntities.Requerimiento" Width="1.5" PointX="7.5" PointY="4" />
-        <EntityTypeShape EntityType="ModeloEntities.Requerimientos_Cri_Acep" Width="1.5" PointX="9.75" PointY="10.875" />
-        <EntityTypeShape EntityType="ModeloEntities.Rol_Permisos" Width="1.5" PointX="3" PointY="10.25" />
-        <EntityTypeShape EntityType="ModeloEntities.Sprint" Width="1.5" PointX="9.75" PointY="3.5" />
-        <EntityTypeShape EntityType="ModeloEntities.Tipo_Desarrollador" Width="1.5" PointX="9.75" PointY="0.875" />
-        <EntityTypeShape EntityType="ModeloEntities.Usuario" Width="1.5" PointX="9.75" PointY="7" />
-        <EntityTypeShape EntityType="ModeloEntities.Usuarios_Telefonos" Width="1.5" PointX="12" PointY="7.75" />
+      <Diagram DiagramId="8f4627deea82470ab59ffd98988056b9" Name="Diagram1" ZoomLevel="57">
+        <EntityTypeShape EntityType="ModeloEntities.Estado_Proyecto" Width="1.5" PointX="0.75" PointY="7.25" />
+        <EntityTypeShape EntityType="ModeloEntities.Estado_Requerimientos" Width="1.5" PointX="8.25" PointY="1.875" />
+        <EntityTypeShape EntityType="ModeloEntities.Modulo" Width="1.5" PointX="5.25" PointY="5.25" />
+        <EntityTypeShape EntityType="ModeloEntities.Permiso" Width="1.5" PointX="0.75" PointY="0.875" />
+        <EntityTypeShape EntityType="ModeloEntities.Progreso_Sprint" Width="1.5" PointX="7.5" PointY="8.375" />
+        <EntityTypeShape EntityType="ModeloEntities.Proyecto_Equipo" Width="1.5" PointX="15" PointY="7.125" />
+        <EntityTypeShape EntityType="ModeloEntities.Proyecto" Width="1.5" PointX="3" PointY="6" />
+        <EntityTypeShape EntityType="ModeloEntities.Requerimiento" Width="1.5" PointX="10.5" PointY="4.875" />
+        <EntityTypeShape EntityType="ModeloEntities.Requerimientos_Cri_Acep" Width="1.5" PointX="12.75" PointY="4.75" />
+        <EntityTypeShape EntityType="ModeloEntities.Rol_Permisos" Width="1.5" PointX="3" PointY="0.875" />
+        <EntityTypeShape EntityType="ModeloEntities.Sprint_Modulos" Width="1.5" PointX="7.375" PointY="5.5" />
+        <EntityTypeShape EntityType="ModeloEntities.Sprint" Width="1.5" PointX="5.25" PointY="8.25" />
+        <EntityTypeShape EntityType="ModeloEntities.Tipo_Desarrollador" Width="1.5" PointX="12.75" PointY="11.5" />
+        <EntityTypeShape EntityType="ModeloEntities.Usuario" Width="1.5" PointX="12.75" PointY="7.25" />
+        <EntityTypeShape EntityType="ModeloEntities.Usuarios_Telefonos" Width="1.5" PointX="15" PointY="11" />
         <AssociationConnector Association="ModeloEntities.fk_EstadoProye" />
         <AssociationConnector Association="ModeloEntities.fk_EstadoReq" />
         <AssociationConnector Association="ModeloEntities.fk_ProyectoModulo1" />
         <AssociationConnector Association="ModeloEntities.fk_ReqMod" />
+        <AssociationConnector Association="ModeloEntities.fk_SprintModulo" />
         <AssociationConnector Association="ModeloEntities.fk_Permiso" />
         <AssociationConnector Association="ModeloEntities.fk_ProgSprint" />
         <AssociationConnector Association="ModeloEntities.fk_Proy" />
         <AssociationConnector Association="ModeloEntities.fk_UserPE" />
         <AssociationConnector Association="ModeloEntities.fk_UserPETipo" />
+        <AssociationConnector Association="ModeloEntities.fk_ReqProyecto" />
         <AssociationConnector Association="ModeloEntities.fk_UserProy" />
         <AssociationConnector Association="ModeloEntities.fk_UserProyCliente" />
         <AssociationConnector Association="ModeloEntities.fk_UserSprint" />
         <AssociationConnector Association="ModeloEntities.fk_ReqCriAcp" />
         <AssociationConnector Association="ModeloEntities.fk_ReqUserCre" />
         <AssociationConnector Association="ModeloEntities.fk_ReqUserSol" />
+        <AssociationConnector Association="ModeloEntities.fk_SprintReqSprint" />
         <AssociationConnector Association="ModeloEntities.fk_User" />
         <AssociationConnector Association="ModeloEntities.Requerimiento_Encargados" />
-        <AssociationConnector Association="ModeloEntities.Sprint_Requerimiento" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -24,7 +24,7 @@ public partial class Sprint
 
         this.Progreso_Sprint = new HashSet<Progreso_Sprint>();
 
-        this.Requerimientos = new HashSet<Requerimiento>();
+        this.Sprint_Modulos = new HashSet<Sprint_Modulos>();
 
     }
 
@@ -47,7 +47,7 @@ public partial class Sprint
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
-    public virtual ICollection<Requerimiento> Requerimientos { get; set; }
+    public virtual ICollection<Sprint_Modulos> Sprint_Modulos { get; set; }
 
 }
 

@@ -24,6 +24,8 @@ public partial class Modulo
 
         this.Requerimientos = new HashSet<Requerimiento>();
 
+        this.Sprint_Modulos = new HashSet<Sprint_Modulos>();
+
     }
 
 
@@ -40,6 +42,10 @@ public partial class Modulo
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
     public virtual ICollection<Requerimiento> Requerimientos { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+
+    public virtual ICollection<Sprint_Modulos> Sprint_Modulos { get; set; }
 
 }
 

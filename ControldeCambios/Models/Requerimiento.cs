@@ -26,8 +26,6 @@ public partial class Requerimiento
 
         this.Usuarios = new HashSet<Usuario>();
 
-        this.Sprints = new HashSet<Sprint>();
-
     }
 
 
@@ -59,7 +57,7 @@ public partial class Requerimiento
 
     public string proyecto { get; set; }
 
-    public Nullable<int> numeroModulo { get; set; }
+    public Nullable<int> modulo { get; set; }
 
     public byte[] imagen { get; set; }
 
@@ -67,7 +65,9 @@ public partial class Requerimiento
 
     public virtual Estado_Requerimientos Estado_Requerimientos { get; set; }
 
-    public virtual Modulo Modulo { get; set; }
+    public virtual Modulo Modulo1 { get; set; }
+
+    public virtual Proyecto Proyecto1 { get; set; }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
@@ -80,10 +80,6 @@ public partial class Requerimiento
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
     public virtual ICollection<Usuario> Usuarios { get; set; }
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-
-    public virtual ICollection<Sprint> Sprints { get; set; }
 
 }
 

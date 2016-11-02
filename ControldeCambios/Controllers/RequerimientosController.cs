@@ -66,7 +66,9 @@ namespace ControldeCambios.Controllers
             model.cliente = cliente.nombre;
             model.lider = lider.nombre;
 
-            var reqs = baseDatos.Sprints.Find(proyecto, ssprint).Requerimientos;
+            var sprint_modulos = baseDatos.Sprints.Find(proyecto, ssprint).Sprint_Modulos;
+            var reqs = sprint_modulos.Select(m => m.Modulo1.Requerimientos.ToList()).Aggregate((agg, m) => agg.Concat(m).ToList()).ToList();
+
 
             int pageSize = 10;
             int pageNumber = (page ?? 1);
@@ -220,8 +222,7 @@ namespace ControldeCambios.Controllers
                 requerimiento.observaciones = model.observaciones;
                 requerimiento.solicitadoPor = model.solicitadoPor;
                 requerimiento.creadoPor = model.creadoPor;
-                requerimiento.Modulo = baseDatos.Modulos.Find(model.proyecto, Int32.Parse(model.modulo));
-
+                requerimiento.modulo = Int32.Parse(model.modulo);
                 requerimiento.estado = model.estado;
                 
 

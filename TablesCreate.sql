@@ -116,7 +116,7 @@ nombre char(24) primary key --Pendiente de asignación, Asignado, En ejecución, F
 
 CREATE TABLE Requerimientos(
 id int identity(1,1) primary key,
-codigo char(15),
+codigo char(15) not null,
 version int default 1,
 creadoEn date not null,
 finalizaEn date,
@@ -128,8 +128,8 @@ esfuerzo int default 1,
 estado char(24) not null,
 creadoPor varchar(11) not null,
 solicitadoPor varchar(11) not null,
-proyecto varchar(25),
-numeroModulo int,
+proyecto varchar(25) not null,
+modulo int,
 imagen varbinary(MAX),
 constraint fk_EstadoReq foreign key (estado) references Estado_Requerimientos(nombre)
 ON UPDATE CASCADE
@@ -140,22 +140,25 @@ ON DELETE NO ACTION,
 constraint fk_ReqUserSol foreign key (solicitadoPor) references Usuarios(cedula)
 ON UPDATE NO ACTION
 ON DELETE NO ACTION,
-constraint fk_ReqMod foreign key (proyecto, numeroModulo) references Modulos(proyecto, numero)
+constraint fk_ReqProyecto foreign key (proyecto) references Proyectos(nombre)
+ON UPDATE NO ACTION
+ON DELETE NO ACTION,
+constraint fk_ReqMod foreign key (proyecto, modulo) references Modulos(proyecto, numero)
 ON UPDATE NO ACTION
 ON DELETE NO ACTION
 );
 
-CREATE TABLE Sprint_Requerimiento(
-idReq int,
+CREATE TABLE Sprint_Modulos(
+modulo int,
 proyecto varchar(25),
-numeroSprint int,
-constraint pk_SprintReq primary key (idReq, proyecto, numeroSprint),
-constraint fk_SprintReqReq foreign key (idReq) references Requerimientos(id)
-ON UPDATE CASCADE
-ON DELETE CASCADE,
-constraint fk_SprintReqSprint foreign key (proyecto, numeroSprint) references Sprints(proyecto, numero)
-ON UPDATE CASCADE
-ON DELETE CASCADE
+sprint int,
+constraint pk_SprintModulos primary key (proyecto, modulo, sprint),
+constraint fk_SprintModulo foreign key (proyecto, modulo) references Modulos(proyecto, numero)
+ON UPDATE NO ACTION
+ON DELETE NO ACTION,
+constraint fk_SprintReqSprint foreign key (proyecto, sprint) references Sprints(proyecto, numero)
+ON UPDATE NO ACTION
+ON DELETE NO ACTION
 );
 
 CREATE TABLE Requerimientos_Cri_Acep(
@@ -191,6 +194,14 @@ VALUES('Crear Usuarios'),
 ('Modificar Proyectos'),
 ('Eliminar Proyectos'),
 ('Consultar Detalles de Proyectos'),
+('Crear Módulos'),
+('Modificar Módulos'),
+('Eliminar Módulos'),
+('Consultar Detalles de Módulos'),
+('Crear Sprints'),
+('Modificar Sprints'),
+('Eliminar Sprints'),
+('Consultar Detalles de Sprints'),
 ('Crear Requerimientos'),
 ('Consultar Lista de Requerimientos'),
 ('Modificar Requerimientos'),
@@ -235,8 +246,8 @@ WHERE Email = 'admin@admin.com';
 
 DROP TRIGGER trg_Usuarios_UpdatedAt;
 
-DROP TABLE Requerimiento_Encargados, Requerimientos_Cri_Acep, Sprint_Requerimiento, Requerimientos,
-Estado_Requerimientos, Sprint_Modulo, Modulos, Progreso_Sprint, Sprints, Proyecto_Equipo, Tipo_Desarrollador,
+DROP TABLE Requerimiento_Encargados, Requerimientos_Cri_Acep, Sprint_Modulos, Requerimientos,
+Estado_Requerimientos, Modulos, Progreso_Sprint, Sprints, Proyecto_Equipo, Tipo_Desarrollador,
 Proyectos, Estado_Proyecto, Rol_Permisos, Permisos, Usuarios_Telefonos, Usuarios;
 
 DELETE FROM AspNetUserClaims;

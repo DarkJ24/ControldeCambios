@@ -60,7 +60,14 @@ namespace ControldeCambios.Controllers
                 sprint.proyecto = model.proyecto;
                 sprint.fechaInicio = DateTime.ParseExact(model.fechaInicio, "MM/dd/yyyy", CultureInfo.InvariantCulture);
                 sprint.fechaFinal = DateTime.ParseExact(model.fechaFinal, "MM/dd/yyyy", CultureInfo.InvariantCulture);
-                sprint.modulos = model.modulos.Select(m => baseDatos.Modulos.Finds(Int32.Parse(m))).ToList();
+                foreach (var modulo in model.modulos)
+                {
+                    var sprint_modulo = new Sprint_Modulos();
+                    sprint_modulo.proyecto = sprint.proyecto;
+                    sprint_modulo.sprint = sprint.numero;
+                    sprint_modulo.modulo = Int32.Parse(modulo);
+                    sprint.Sprint_Modulos.Add(sprint_modulo);
+                }
                 baseDatos.Sprints.Add(sprint);
                 baseDatos.SaveChanges();
                 this.AddToastMessage("Sprint Creado", "El sprint " + model.numero + " se ha creado y asignado correctamente"

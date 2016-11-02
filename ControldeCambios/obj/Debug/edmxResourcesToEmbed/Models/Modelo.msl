@@ -69,7 +69,7 @@
       <EntityTypeMapping TypeName="ModeloEntities.Requerimiento">
         <MappingFragment StoreEntitySet="Requerimientos">
           <ScalarProperty Name="imagen" ColumnName="imagen" />
-          <ScalarProperty Name="numeroModulo" ColumnName="numeroModulo" />
+          <ScalarProperty Name="modulo" ColumnName="modulo" />
           <ScalarProperty Name="proyecto" ColumnName="proyecto" />
           <ScalarProperty Name="solicitadoPor" ColumnName="solicitadoPor" />
           <ScalarProperty Name="creadoPor" ColumnName="creadoPor" />
@@ -101,6 +101,15 @@
         <MappingFragment StoreEntitySet="Rol_Permisos">
           <ScalarProperty Name="permiso" ColumnName="permiso" />
           <ScalarProperty Name="rol" ColumnName="rol" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Sprint_Modulos">
+      <EntityTypeMapping TypeName="ModeloEntities.Sprint_Modulos">
+        <MappingFragment StoreEntitySet="Sprint_Modulos">
+          <ScalarProperty Name="sprint" ColumnName="sprint" />
+          <ScalarProperty Name="proyecto" ColumnName="proyecto" />
+          <ScalarProperty Name="modulo" ColumnName="modulo" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -142,15 +151,6 @@
     <AssociationSetMapping Name="Requerimiento_Encargados" TypeName="ModeloEntities.Requerimiento_Encargados" StoreEntitySet="Requerimiento_Encargados">
       <EndProperty Name="Usuario">
         <ScalarProperty Name="cedula" ColumnName="usuario" />
-      </EndProperty>
-      <EndProperty Name="Requerimiento">
-        <ScalarProperty Name="id" ColumnName="idReq" />
-      </EndProperty>
-    </AssociationSetMapping>
-    <AssociationSetMapping Name="Sprint_Requerimiento" TypeName="ModeloEntities.Sprint_Requerimiento" StoreEntitySet="Sprint_Requerimiento">
-      <EndProperty Name="Sprint">
-        <ScalarProperty Name="numero" ColumnName="numeroSprint" />
-        <ScalarProperty Name="proyecto" ColumnName="proyecto" />
       </EndProperty>
       <EndProperty Name="Requerimiento">
         <ScalarProperty Name="id" ColumnName="idReq" />
