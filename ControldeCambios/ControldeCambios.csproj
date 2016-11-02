@@ -281,6 +281,7 @@
     <Compile Include="Models\Proyecto.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ProyectoInfoModel.cs" />
     <Compile Include="Models\ProyectosModelo.cs" />
     <Compile Include="Models\Proyecto_Equipo.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
@@ -470,6 +471,7 @@
     <Content Include="Views\Modulos\Detalles.cshtml" />
     <Content Include="Views\Requerimientos\detalles.cshtml" />
     <Content Include="Views\Proyectos\index.cshtml" />
+    <Content Include="Views\Proyectos\informacion.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

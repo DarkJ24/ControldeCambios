@@ -107,7 +107,7 @@ namespace ControldeCambios.Controllers
             ViewBag.DesarrolladoresDisp = listaDesarrolladores;
             return View();
         }
-        
+
         /// <summary>
         /// Funcionalidad para crear Proyectos.
         /// </summary>
@@ -210,7 +210,9 @@ namespace ControldeCambios.Controllers
                 if (user.Roles.First().RoleId.Equals(clienteRol))
                 {
                     listaClientes.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
-                } else {
+                }
+                else
+                {
                     if (user.Roles.First().RoleId.Equals(desarrolladorRol))
                     {
                         listaDesarrolladores.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
@@ -244,7 +246,7 @@ namespace ControldeCambios.Controllers
 
                 var equipo_viejo = baseDatos.Proyecto_Equipo.Where(m => m.proyecto == model.nombre).ToList();
 
-                foreach(var usuario in equipo_viejo)
+                foreach (var usuario in equipo_viejo)
                 {
                     baseDatos.Entry(usuario).State = System.Data.Entity.EntityState.Deleted;
                 }
@@ -267,7 +269,9 @@ namespace ControldeCambios.Controllers
                         proyectoDesarrollador.proyecto = proyecto.nombre;
                         baseDatos.Proyecto_Equipo.Add(proyectoDesarrollador);
                     }
-                } else {
+                }
+                else
+                {
                     var proyectoDesarrollador = new Proyecto_Equipo();
                     proyectoDesarrollador.usuario = proyecto.lider;
                     proyectoDesarrollador.proyecto = proyecto.nombre;
@@ -276,7 +280,7 @@ namespace ControldeCambios.Controllers
 
                 baseDatos.SaveChanges();
                 this.AddToastMessage("Proyecto Modificado", "El proyecto " + model.nombre + " se ha modificado correctamente.", ToastType.Success);
-                return RedirectToAction("Detalles", "Proyectos", new {id = proyecto.nombre });
+                return RedirectToAction("Detalles", "Proyectos", new { id = proyecto.nombre });
 
             }
             List<Usuario> listaDesarrolladores = new List<Usuario>();
@@ -301,6 +305,40 @@ namespace ControldeCambios.Controllers
             ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");
             ViewBag.DesarrolladoresDisp = listaDesarrolladores;
             ViewBag.Estados = new SelectList(baseDatos.Estado_Proyecto.ToList(), "nombre", "nombre");
+            return View(model);
+        }
+
+        // GET: Informacion
+        public ActionResult Informacion(string id, int ? page)
+        {
+            if (!revisarPermisos("Consultar Detalles de Proyectos"))
+            {
+                //Despliega mensaje en caso de no poder modificar un proyecto
+                this.AddToastMessage("Acceso Denegado", "No tienes permiso para ver detalles de proyectos!", ToastType.Warning);
+                return RedirectToAction("Index", "Home");
+            }
+            if (String.IsNullOrEmpty(id))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var model = new ProyectoInfoModel();
+            model.proyecto = baseDatos.Proyectos.Find(id);
+            model.sprints = baseDatos.Sprints.Where(m => m.proyecto == model.proyecto.nombre).ToList();
+            model.modulos = baseDatos.Modulos.Where(m => m.proyecto == model.proyecto.nombre).ToList();
+            model.indexSprintInfoList = new List<Sprint>();
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
+            int lastElement = (model.sprints.Count < pageSize * pageNumber) ? model.sprints.Count : pageSize * pageNumber;
+
+            //despliega la informacion de los usuarios por paginas
+            for (int i = (pageNumber - 1) * pageSize; i < lastElement; i++)
+            {
+                model.indexSprintInfoList.Add(model.sprints.ElementAt(i));
+            }
+            model.crearSprints = revisarPermisos("Crear Proyectos");
+            model.detallesSprints = revisarPermisos("Consultar Detalles de Proyectos");
+            var sprintsAsIPagedList = new StaticPagedList<Sprint>(model.indexSprintInfoList, pageNumber, pageSize, model.sprints.Count);
+            ViewBag.OnePageOfSprints = sprintsAsIPagedList;
             return View(model);
         }
     }
