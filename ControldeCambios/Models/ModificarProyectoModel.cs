@@ -16,7 +16,7 @@ namespace ControldeCambios.Models
         [Required(ErrorMessage = "El nombre es un campo requerido.")]
         [StringLength(25, ErrorMessage = "El nombre debe ser de {1} dígitos"), MinLength(1, ErrorMessage = "El nombre debe ser de almenos {1} dígitos")]
         [Display(Name = "Nombre")]
-        [RegularExpression(@"^[A-Za-z\s]+$", ErrorMessage = "El nombre solo debe contener letras y espacios")]
+        [RegularExpression(@"^[A-Za-z0-9\s]+$", ErrorMessage = "El nombre solo debe contener letras y espacios")]
         public string nombre { get; set; }
 
         [Display(Name = "Descripción")]

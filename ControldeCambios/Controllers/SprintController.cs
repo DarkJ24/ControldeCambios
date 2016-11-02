@@ -56,27 +56,18 @@ namespace ControldeCambios.Controllers
             if (ModelState.IsValid)
             {
                 var sprint = new Sprint();
-                
                 sprint.numero = model.numero;
                 sprint.proyecto = model.proyecto;
-
                 sprint.fechaInicio = DateTime.ParseExact(model.fechaInicio, "MM/dd/yyyy", CultureInfo.InvariantCulture);
                 sprint.fechaFinal = DateTime.ParseExact(model.fechaFinal, "MM/dd/yyyy", CultureInfo.InvariantCulture);
-
                 sprint.Requerimientos = model.requerimientos.Select(m => baseDatos.Requerimientos.Find(Int32.Parse(m))).ToList();
-
                 baseDatos.Sprints.Add(sprint);
                 baseDatos.SaveChanges();
-
-
                 this.AddToastMessage("Sprint Creado", "El sprint " + model.numero + " se ha creado y asignado correctamente"
                     + " al proyecto " + model.proyecto + ".", ToastType.Success);
-
-                
-                return RedirectToAction("Crear", "Sprint");
+                return RedirectToAction("Crear", "Sprint", new { proyecto = model.proyecto });
                 
             }
-            
                 ViewBag.Proyectos = new SelectList(baseDatos.Proyectos.ToList(), "nombre", "nombre");
                 ViewBag.Requerimientos = baseDatos.Requerimientos.ToList();
                 return View(model);
