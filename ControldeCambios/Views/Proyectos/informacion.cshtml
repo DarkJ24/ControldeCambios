@@ -35,7 +35,7 @@
                 @Html.Label("Líder", new { @class = "control-label" })
             </div>
             <div class="col-xs-8">
-                @Html.DisplayFor(m => m.proyecto.lider)
+                @Html.DisplayFor(m => m.proyectoLider)
             </div>
         </div>
         <div class="col-xs-12 col-sm-6">
@@ -43,7 +43,7 @@
                 @Html.Label("Cliente", new { @class = "control-label" })
             </div>
             <div class="col-xs-8">
-                @Html.DisplayFor(m => m.proyecto.cliente)
+                @Html.DisplayFor(m => m.proyectoCliente)
             </div>
         </div>
         <div class="col-xs-12 col-sm-6">
@@ -51,7 +51,7 @@
                 @Html.Label("Fecha de Inicio", new { @class = "control-label" })
             </div>
             <div class="col-xs-8">
-                @Html.DisplayFor(m => m.proyecto.fechaInicio)
+                @Html.DisplayFor(m => m.proyectoFechaInicio)
             </div>
         </div>
         <div class="col-xs-12 col-sm-6">
@@ -59,7 +59,7 @@
                 @Html.Label("Fecha Final", new { @class = "control-label" })
             </div>
             <div class="col-xs-8">
-                @Html.DisplayFor(m => m.proyecto.fechaFinal)
+                @Html.DisplayFor(m => m.proyectoFechaFinal)
             </div>
         </div>
         <div class="col-xs-12 col-sm-6">
@@ -138,11 +138,11 @@
                     {
                             <td>
                                 @Html.ActionLink("Consultar", "Detalles", "Sprint", new
-                       {
-                           numero =
+                           {
+                               numero =
          sprint.numero,
-                           proyecto = Model.proyecto.nombre
-                       }, new { })
+                               proyecto = Model.proyecto.nombre
+                           }, new { })
                             </td>
                             <td>
                                 @Html.ActionLink("Ver Detalles", "Informacion", "Sprint", new
@@ -152,7 +152,7 @@
                                proyecto = Model.proyecto.nombre
                            }, new { })
                             </td>
-                     }
+                        }
                     </tr>
                 }
             </table>
@@ -184,7 +184,7 @@
         @if (Model.crearModulos)
         {
             <p>
-                @Html.ActionLink("Crear Módulos", "Crear", "Modulos", new { proyecto = Model.proyecto.nombre }, new { @class = "btn btn-primary" })
+                @Html.ActionLink("Crear Módulo", "Crear", "Modulos", new { proyecto = Model.proyecto.nombre }, new { @class = "btn btn-primary" })
             </p>
         }
         @if (Model.indexModuloInfoList.Count() > 0)
@@ -234,11 +234,11 @@ modulo.puntaje)
                             <td>
 
                                 @Html.ActionLink("Consultar", "Detalles", "Modulos", new
-                       {
-                           numero =
+                           {
+                               numero =
      modulo.numero,
-                           proyecto = Model.proyecto.nombre
-                       }, new { })
+                               proyecto = Model.proyecto.nombre
+                           }, new { })
                             </td>
                         }
                     </tr>
@@ -263,5 +263,19 @@ modulo.puntaje)
                 <label>No hay Módulos</label>
             </div>
         }
+    </div>
+</div>
+<div class="row panel panel-info">
+    <div class="panel-heading"><label>Lista de Requerimientos</label></div>
+    <div class="panel-body">
+        @if (Model.crearRequerimientos)
+        {
+            <p>
+                @Html.ActionLink("Crear Requerimiento", "Crear", "Requerimientos", new { proyecto = Model.proyecto.nombre }, new { @class = "btn btn-primary" })
+            </p>
+        }
+        <p>
+            @Html.ActionLink("Ver Product Backlog", "Index", "Requerimientos", new { proyecto = Model.proyecto.nombre }, new { @class = "btn btn-info" })
+        </p>
     </div>
 </div>

@@ -53,6 +53,7 @@ function load_all() {
         @Html.LabelFor(m => m.proyecto, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
             @Html.DisplayFor(m => m.proyecto, new { @class = "form-control" })
+            @Html.HiddenFor(m => m.proyecto)
             @Html.ValidationMessageFor(model => model.proyecto, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -104,8 +105,8 @@ function load_all() {
             <div class="form-group">
                 @Html.Label("Imagen", new { @class = "col-md-2 control-label" })
                 <div class="col-md-10">
-                    <label class="btn btn-default btn-file">
-                        <input type="file" />
+                    <label class="" style="cursor:pointer">
+                        <input class="btn btn-default btn-file" type="file" />
                     </label>
                 </div>
             </div>
@@ -120,7 +121,7 @@ function load_all() {
 
             <div class="form-group">
                 @Html.Label("Disponibles", new { @class = "col-md-offset-2 col-md-2 control-label", @style = "text-align:center;margin-left:195px;" })
-                @Html.Label("Equipo", new { @class = "col-md-offset-2  col-md-2 control-label required", @style = "text-align:center;margin-left:10px;margin-bottom:10px" })
+                @Html.Label("Responsables", new { @class = "col-md-offset-2  col-md-2 control-label required", @style = "text-align:center;margin-left:10px;margin-bottom:10px" })
                 <div class="col-md-offset-2 col-md-10" style="margin-bottom:25px">
                     @Html.ListBoxFor(m => m.equipo, new MultiSelectList(ViewBag.DesarrolladoresDisp, "cedula", "nombre"), new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;" })
                     @Html.ValidationMessageFor(model => model.equipo, "", new { @class = "text-danger" })
@@ -173,14 +174,6 @@ function load_all() {
      <div class="panel panel-default">
         <div class="panel-heading">Datos Generales</div>
         <div class="panel-body">
-
-            <div class="form-group">
-                @Html.Label("Módulo", new { @class = "col-md-2 control-label required" })
-                <div class="col-md-10">
-                    @Html.DropDownListFor(m => m.modulo, (SelectList)ViewBag.Modulo, "Seleccionar Módulo ", new { @class = "col-xs-12 form-control", @style = "height:30px;border-radius:4px" })
-                    @Html.ValidationMessageFor(model => model.modulo, "", new { @class = "text-danger" })
-                </div>
-            </div>
 
             <div class="form-group">
                 @Html.Label("Estado", new { @class = "col-md-2 control-label required" })

@@ -34,7 +34,7 @@ namespace ControldeCambios
                 roleManager.Create(role);
 
                 // Then we add all Permisos to Role (16 Permisos)
-                for (int i = 1; i <= 16; i++)
+                for (int i = 1; i <= 24; i++)
                 {
                     var rolPermisosEntry = new Rol_Permisos();
                     rolPermisosEntry.permiso = i;

@@ -325,6 +325,10 @@ namespace ControldeCambios.Controllers
             }
             var model = new ProyectoInfoModel();
             model.proyecto = baseDatos.Proyectos.Find(id);
+            model.proyectoLider = baseDatos.Usuarios.Find(model.proyecto.lider).nombre;
+            model.proyectoCliente = baseDatos.Usuarios.Find(model.proyecto.cliente).nombre;
+            model.proyectoFechaInicio = model.proyecto.fechaInicio.ToString("dd/MM/yyyy");
+            model.proyectoFechaFinal = model.proyecto.fechaFinal.ToString("dd/MM/yyyy");
             model.sprints = baseDatos.Sprints.Where(m => m.proyecto == model.proyecto.nombre).ToList();
             model.modulos = baseDatos.Modulos.Where(m => m.proyecto == model.proyecto.nombre).ToList();
             model.indexSprintInfoList = new List<ProyectoInfoModel.sprintInfo>();
@@ -376,6 +380,7 @@ namespace ControldeCambios.Controllers
             }
             model.crearModulos = revisarPermisos("Crear Módulos");
             model.detallesModulos = revisarPermisos("Consultar Detalles de Proyectos");
+            model.crearRequerimientos = revisarPermisos("Crear Requerimientos");
             var modulosAsIPagedList = new StaticPagedList<ProyectoInfoModel.moduloInfo>(model.indexModuloInfoList, pageNumber2, pageSize2, model.modulos.Count);
             ViewBag.OnePageOfModulos = modulosAsIPagedList;
             return View(model);

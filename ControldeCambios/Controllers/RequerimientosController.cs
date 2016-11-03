@@ -169,22 +169,23 @@ namespace ControldeCambios.Controllers
                 this.AddToastMessage("Acceso Denegado", "No tienes permiso para crear requerimientos!", ToastType.Warning);
                 return RedirectToAction("Index", "Home");
             }
+            if (String.IsNullOrEmpty(proyecto))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            RequerimientosModelo model = new RequerimientosModelo();
+            model.proyecto = proyecto;
             List<Usuario> listaDesarrolladores = new List<Usuario>();
             List<Usuario> listaClientes = new List<Usuario>();
             string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
-            string desarrolladorRol = context.Roles.Where(m => m.Name == "Desarrollador").First().Id;
+            foreach(var proyEquipo in baseDatos.Proyectos.Find(model.proyecto).Proyecto_Equipo){
+                listaDesarrolladores.Add(baseDatos.Usuarios.Find(proyEquipo.usuario));
+            }
             foreach (var user in context.Users.ToArray())
             {
                 if (user.Roles.First().RoleId.Equals(clienteRol))
                 {
                     listaClientes.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
-                }
-                else
-                {
-                    if (user.Roles.First().RoleId.Equals(desarrolladorRol))
-                    {
-                        listaDesarrolladores.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
-                    }
                 }
             }
             ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
@@ -193,11 +194,6 @@ namespace ControldeCambios.Controllers
             var listaModulos = baseDatos.Modulos.Where(m => m.proyecto == proyecto).ToList();
             ViewBag.Modulo = new SelectList(listaModulos, "numero", "nombre");
             ViewBag.EstadoRequerimiento = new SelectList(baseDatos.Estado_Requerimientos.ToList(), "nombre", "nombre");
-
-            RequerimientosModelo model = new RequerimientosModelo();
-
-            model.proyecto = proyecto;
-
             return View(model);
         }
 
@@ -225,10 +221,8 @@ namespace ControldeCambios.Controllers
                 requerimiento.observaciones = model.observaciones;
                 requerimiento.solicitadoPor = model.solicitadoPor;
                 requerimiento.creadoPor = model.creadoPor;
-                requerimiento.modulo = Int32.Parse(model.modulo);
                 requerimiento.estado = model.estado;
-
-
+                requerimiento.proyecto = model.proyecto;
                 requerimiento.Usuarios = model.equipo.Select(x => baseDatos.Usuarios.Find(x)).ToList();
 
                 baseDatos.Requerimientos.Add(requerimiento);

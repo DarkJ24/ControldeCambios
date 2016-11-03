@@ -9,6 +9,14 @@ namespace ControldeCambios.Models
     {
         public Proyecto proyecto { get; set; }
 
+        public string proyectoLider { get; set; }
+
+        public string proyectoCliente { get; set; }
+
+        public string proyectoFechaInicio { get; set; }
+
+        public string proyectoFechaFinal { get; set; }
+
         public List<Sprint> sprints { get; set; }
 
         public class sprintInfo
@@ -41,5 +49,7 @@ namespace ControldeCambios.Models
         public Boolean crearModulos { get; set; }
 
         public Boolean detallesModulos { get; set; }
+
+        public Boolean crearRequerimientos { get; set; }
     }
 }
