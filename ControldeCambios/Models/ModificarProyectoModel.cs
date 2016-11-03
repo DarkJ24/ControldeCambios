@@ -44,5 +44,8 @@ namespace ControldeCambios.Models
 
         [Display(Name = "Equipo")]
         public List<string> equipo { get; set; }
+
+        public Boolean eliminarPermitido { get; set; }
+        public Boolean modificarProyecto { get; set; }
     }
 }

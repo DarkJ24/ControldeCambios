@@ -219,6 +219,8 @@ namespace ControldeCambios.Controllers
                     }
                 }
             }
+            model.eliminarPermitido = (revisarPermisos("Eliminar Proyectos") && (model.estado == "Por iniciar") && (baseDatos.Requerimientos.Where(m => m.proyecto == id).Count() == 0) && (baseDatos.Sprints.Where(m => m.proyecto == id).Count() == 0) && (baseDatos.Modulos.Where(m => m.proyecto == id).Count() == 0));
+            model.modificarProyecto = revisarPermisos("Modificar Proyectos");
             ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
             ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");
             ViewBag.DesarrolladoresDisp = listaDesarrolladores;
@@ -309,7 +311,7 @@ namespace ControldeCambios.Controllers
         }
 
         // GET: Informacion
-        public ActionResult Informacion(string id, int ? page)
+        public ActionResult Informacion(string id, int ? sprintPage, int? moduloPage)
         {
             if (!revisarPermisos("Consultar Detalles de Proyectos"))
             {
@@ -325,20 +327,44 @@ namespace ControldeCambios.Controllers
             model.proyecto = baseDatos.Proyectos.Find(id);
             model.sprints = baseDatos.Sprints.Where(m => m.proyecto == model.proyecto.nombre).ToList();
             model.modulos = baseDatos.Modulos.Where(m => m.proyecto == model.proyecto.nombre).ToList();
-            model.indexSprintInfoList = new List<Sprint>();
+            model.indexSprintInfoList = new List<ProyectoInfoModel.sprintInfo>();
             int pageSize = 10;
-            int pageNumber = (page ?? 1);
+            int pageNumber = (sprintPage ?? 1);
             int lastElement = (model.sprints.Count < pageSize * pageNumber) ? model.sprints.Count : pageSize * pageNumber;
 
             //despliega la informacion de los usuarios por paginas
             for (int i = (pageNumber - 1) * pageSize; i < lastElement; i++)
             {
-                model.indexSprintInfoList.Add(model.sprints.ElementAt(i));
+                var spr = new ProyectoInfoModel.sprintInfo();
+                spr.numero = model.sprints.ElementAt(i).numero.ToString();
+                spr.modulos = model.sprints.ElementAt(i).Sprint_Modulos.Count().ToString();
+                spr.fechaInicio = model.sprints.ElementAt(i).fechaInicio.ToString("dd/MM/yyyy");
+                spr.fechaFinal = model.sprints.ElementAt(i).fechaFinal.ToString("dd/MM/yyyy");
+                model.indexSprintInfoList.Add(spr);
             }
-            model.crearSprints = revisarPermisos("Crear Proyectos");
+            model.crearSprints = revisarPermisos("Crear Sprints");
             model.detallesSprints = revisarPermisos("Consultar Detalles de Proyectos");
-            var sprintsAsIPagedList = new StaticPagedList<Sprint>(model.indexSprintInfoList, pageNumber, pageSize, model.sprints.Count);
+            var sprintsAsIPagedList = new StaticPagedList<ProyectoInfoModel.sprintInfo>(model.indexSprintInfoList, pageNumber, pageSize, model.sprints.Count);
             ViewBag.OnePageOfSprints = sprintsAsIPagedList;
+
+            model.indexModuloInfoList = new List<ProyectoInfoModel.moduloInfo>();
+            int pageSize2 = 10;
+            int pageNumber2 = (moduloPage ?? 1);
+            int lastElement2 = (model.sprints.Count < pageSize2 * pageNumber2) ? model.modulos.Count : pageSize2 * pageNumber2;
+
+            //despliega la informacion de los usuarios por paginas
+            for (int i = (pageNumber2 - 1) * pageSize2; i < lastElement2; i++)
+            {
+                var mod = new ProyectoInfoModel.moduloInfo();
+                mod.numero = model.modulos.ElementAt(i).numero.ToString();
+                mod.nombre = model.modulos.ElementAt(i).nombre;
+                mod.requerimientos = model.modulos.ElementAt(i).Requerimientos.Count().ToString();
+                model.indexModuloInfoList.Add(mod);
+            }
+            model.crearModulos = revisarPermisos("Crear Módulos");
+            model.detallesModulos = revisarPermisos("Consultar Detalles de Proyectos");
+            var modulosAsIPagedList = new StaticPagedList<ProyectoInfoModel.moduloInfo>(model.indexModuloInfoList, pageNumber2, pageSize2, model.modulos.Count);
+            ViewBag.OnePageOfModulos = modulosAsIPagedList;
             return View(model);
         }
     }

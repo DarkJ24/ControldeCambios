@@ -18,69 +18,87 @@
     </p>
 }
 
-<table class="table">
-    <tr>
-        <th>
-            Nombre
-        </th>
-        <th>
-            Líder
-        </th>
-        <th>
-            Cliente
-        </th>
-        <th>
-            Estado
-        </th>
-        @if (Model.detallesProyecto)
-        {
+@if (Model.indexProyectoInfoList.Count() > 0)
+{
+    <table class="table">
+        <tr>
             <th>
-                Consultar
+                Nombre
             </th>
-        }
-    </tr>
-    @foreach (var proyecto in Model.indexProyectoInfoList)
-    {
-        <tr id="@(proyecto.nombre)">
-            <td>
-                @Html.DisplayFor(modelItem =>
-proyecto.nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem =>
-proyecto.lider)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem =>
-proyecto.cliente)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem =>
-proyecto.estado)
-            </td>
+            <th>
+                Líder
+            </th>
+            <th>
+                Cliente
+            </th>
+            <th>
+                Estado
+            </th>
             @if (Model.detallesProyecto)
             {
-                <td>
-
-                    @Html.ActionLink("Consultar", "Detalles", new
-           {
-               id =
-     proyecto.nombre
-           })
-                </td>
+                <th>
+                    Consultar
+                </th>
+                <th>
+                    Detalles
+                </th>
             }
         </tr>
+        @foreach (var proyecto in Model.indexProyectoInfoList)
+        {
+            <tr id="@(proyecto.nombre)">
+                <td>
+                    @Html.DisplayFor(modelItem =>
+proyecto.nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem =>
+proyecto.lider)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem =>
+proyecto.cliente)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem =>
+proyecto.estado)
+                </td>
+                @if (Model.detallesProyecto)
+                {
+                    <td>
+
+                        @Html.ActionLink("Consultar", "Detalles", new
+                   {
+                       id =
+  proyecto.nombre
+                   })
+                    </td>
+                    <td>
+
+                        @Html.ActionLink("Ver Detalles", "Informacion", new
+                   {
+                       id =
+  proyecto.nombre
+                   })
+                    </td>
+                }
+            </tr>
+        }
+    </table>
+    @Html.PagedListPager((IPagedList)ViewBag.OnePageOfProyectos, page => Url.Action("Index", new { page }))
+    @Html.Raw("Página:")
+    if (ViewBag.OnePageOfProyectos.PageCount < ViewBag.OnePageOfProyectos.PageNumber)
+    {
+        @Html.Raw("0")
     }
-</table>
-@Html.PagedListPager((IPagedList)ViewBag.OnePageOfProyectos, page => Url.Action("Index", new { page }))
-@Html.Raw("Página:")
-@if (ViewBag.OnePageOfProyectos.PageCount < ViewBag.OnePageOfProyectos.PageNumber)
-{
-    @Html.Raw("0")
+    else
+    {
+        @ViewBag.OnePageOfProyectos.PageNumber
+    }
+    @Html.Raw(" de ")
+    @ViewBag.OnePageOfProyectos.PageCount
+} else {
+    <div class="row text-center">
+        <label>No hay Proyectos</label>
+    </div>
 }
-else
-{
-    @ViewBag.OnePageOfProyectos.PageNumber
-}
-@Html.Raw(" de ")
-@ViewBag.OnePageOfProyectos.PageCount

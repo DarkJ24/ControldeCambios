@@ -305,7 +305,6 @@
     <Compile Include="Models\Sprint_Modulos.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\sysdiagram.cs" />
     <Compile Include="Models\Tipo_Desarrollador.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
