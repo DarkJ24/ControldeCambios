@@ -15,6 +15,7 @@ namespace ControldeCambios.Models
         {
             public string numero;
             public string modulos;
+            public int puntaje;
             public string fechaInicio;
             public string fechaFinal;
         }
@@ -28,6 +29,7 @@ namespace ControldeCambios.Models
             public string numero;
             public string nombre;
             public string requerimientos;
+            public int puntaje;
         }
 
         public List<moduloInfo> indexModuloInfoList { get; set; }

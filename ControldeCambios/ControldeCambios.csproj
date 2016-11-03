@@ -474,6 +474,8 @@
     <Content Include="Views\Requerimientos\detalles.cshtml" />
     <Content Include="Views\Proyectos\index.cshtml" />
     <Content Include="Views\Proyectos\informacion.cshtml" />
+    <Content Include="Views\Sprint\Detalles.cshtml" />
+    <Content Include="Views\Sprint\Informacion.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

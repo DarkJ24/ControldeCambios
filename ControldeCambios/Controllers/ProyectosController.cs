@@ -338,6 +338,14 @@ namespace ControldeCambios.Controllers
                 var spr = new ProyectoInfoModel.sprintInfo();
                 spr.numero = model.sprints.ElementAt(i).numero.ToString();
                 spr.modulos = model.sprints.ElementAt(i).Sprint_Modulos.Count().ToString();
+                spr.puntaje = 0;
+                foreach (var sprMod in model.sprints.ElementAt(i).Sprint_Modulos)
+                {
+                    foreach(var req in sprMod.Modulo1.Requerimientos)
+                    {
+                        spr.puntaje += (req.esfuerzo ?? 0);
+                    }
+                }
                 spr.fechaInicio = model.sprints.ElementAt(i).fechaInicio.ToString("dd/MM/yyyy");
                 spr.fechaFinal = model.sprints.ElementAt(i).fechaFinal.ToString("dd/MM/yyyy");
                 model.indexSprintInfoList.Add(spr);
@@ -359,6 +367,11 @@ namespace ControldeCambios.Controllers
                 mod.numero = model.modulos.ElementAt(i).numero.ToString();
                 mod.nombre = model.modulos.ElementAt(i).nombre;
                 mod.requerimientos = model.modulos.ElementAt(i).Requerimientos.Count().ToString();
+                mod.puntaje = 0;
+                foreach (var req in model.modulos.ElementAt(i).Requerimientos)
+                {
+                    mod.puntaje += (req.esfuerzo ?? 0);
+                }
                 model.indexModuloInfoList.Add(mod);
             }
             model.crearModulos = revisarPermisos("Crear Módulos");

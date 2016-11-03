@@ -35,7 +35,7 @@
                 @Html.Label("Líder", new { @class = "control-label" })
             </div>
             <div class="col-xs-8">
-                @Html.DisplayFor(m => m.proyecto.nombre)
+                @Html.DisplayFor(m => m.proyecto.lider)
             </div>
         </div>
         <div class="col-xs-12 col-sm-6">
@@ -98,10 +98,16 @@
                     <th>
                         Módulos
                     </th>
+                    <th>
+                        Esfuerzo
+                    </th>
                     @if (Model.detallesSprints)
                 {
                         <th>
                             Consultar
+                        </th>
+                        <th>
+                            Detalles
                         </th>
                     }
                 </tr>
@@ -124,10 +130,13 @@
                             @Html.DisplayFor(modelItem =>
     sprint.modulos)
                         </td>
+                        <td>
+                            @Html.DisplayFor(modelItem =>
+    sprint.puntaje)
+                        </td>
                         @if (Model.detallesSprints)
                     {
                             <td>
-
                                 @Html.ActionLink("Consultar", "Detalles", "Sprint", new
                        {
                            numero =
@@ -135,7 +144,15 @@
                            proyecto = Model.proyecto.nombre
                        }, new { })
                             </td>
-                        }
+                            <td>
+                                @Html.ActionLink("Ver Detalles", "Informacion", "Sprint", new
+                           {
+                               numero =
+         sprint.numero,
+                               proyecto = Model.proyecto.nombre
+                           }, new { })
+                            </td>
+                     }
                     </tr>
                 }
             </table>
@@ -183,6 +200,9 @@
                     <th>
                         Requerimientos
                     </th>
+                    <th>
+                        Esfuerzo
+                    </th>
                     @if (Model.detallesModulos)
                 {
                         <th>
@@ -204,6 +224,10 @@ modulo.nombre)
                         <td>
                             @Html.DisplayFor(modelItem =>
 modulo.requerimientos)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem =>
+modulo.puntaje)
                         </td>
                         @if (Model.detallesModulos)
                     {
