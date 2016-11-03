@@ -55,6 +55,7 @@ namespace ControldeCambios.Controllers
             {
                 var model = new ModulosModel();
                 model.proyecto = proyecto;
+                ViewBag.requerimientos = new MultiSelectList(baseDatos.Requerimientos.Where(m => m.proyecto == proyecto).ToList(), "id", "nombre");
                 return View(model);
             } else
             {
@@ -85,6 +86,15 @@ namespace ControldeCambios.Controllers
                 {
                     modulo.nombre = model.nombre;
                     baseDatos.Modulos.Add(modulo);
+                    if (model.requerimientos.Count() > 0)
+                    {
+                        foreach (var req in model.requerimientos)
+                        {
+                            var requerimiento = baseDatos.Requerimientos.Find(Int32.Parse(req));
+                            requerimiento.modulo = modulo.numero;
+                            baseDatos.Entry(requerimiento).State = System.Data.Entity.EntityState.Modified;
+                        }
+                    }
                     baseDatos.SaveChanges();
                     this.AddToastMessage("Módulo Creado", "El módulo " + model.nombre + " se ha creado correctamente.", ToastType.Success);
                     return RedirectToAction("Crear", "Modulos", new { proyecto = model.proyecto});
@@ -117,6 +127,21 @@ namespace ControldeCambios.Controllers
                 model.numero = numero;
                 model.nombre = modulo1.nombre;
                 model.proyecto = proyecto;
+                var requerimientos = baseDatos.Requerimientos.Where(m => m.proyecto == proyecto).ToList();
+                ViewBag.requerimientos = new List<ModulosModel.reqInfo>();
+                foreach (var req in requerimientos)
+                {
+                    var req2 = new ModulosModel.reqInfo();
+                    req2.id = req.id.ToString();
+                    req2.nombre = req.nombre;
+                    ViewBag.requerimientos.Add(req2);
+                }
+                var reqEnProyecto = baseDatos.Requerimientos.Where(m => m.proyecto == proyecto && m.modulo == modulo.numero).ToList();
+                model.requerimientos = new List<string>();
+                foreach(var req in reqEnProyecto)
+                {
+                    model.requerimientos.Add(req.id.ToString());
+                }
                 return View(model);
             }
             else
@@ -142,6 +167,24 @@ namespace ControldeCambios.Controllers
                 modulo.numero = Int32.Parse(model.numero);
                 modulo.nombre = model.nombre;
                 baseDatos.Entry(modulo).State = System.Data.Entity.EntityState.Modified;
+                var reqViejos = baseDatos.Requerimientos.Where(m => m.proyecto == modulo.proyecto && m.modulo == modulo.numero).ToList();
+                if (reqViejos.Count() > 0)
+                {
+                    foreach (var req in reqViejos)
+                    {
+                        req.modulo = null;
+                        baseDatos.Entry(req).State = System.Data.Entity.EntityState.Modified;
+                    }
+                }
+                if (model.requerimientos.Count() > 0)
+                {
+                    foreach (var req in model.requerimientos)
+                    {
+                        var requerimiento = baseDatos.Requerimientos.Find(Int32.Parse(req));
+                        requerimiento.modulo = modulo.numero;
+                        baseDatos.Entry(requerimiento).State = System.Data.Entity.EntityState.Modified;
+                    }
+                }
                 baseDatos.SaveChanges();
                 this.AddToastMessage("Módulo Modificado", "El módulo " + model.nombre + " se ha modificado correctamente.", ToastType.Success);
                 return RedirectToAction("Detalles", "Modulos", new { proyecto = model.proyecto, numero = model.numero });

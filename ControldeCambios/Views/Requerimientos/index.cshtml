@@ -1,119 +1,61 @@
 ﻿@model ControldeCambios.Models.RequerimientosIndexModel
-@using Chart.Mvc.ComplexChart;
-@using Chart.Mvc.Extensions;
 @using PagedList;
 @using PagedList.Mvc;
 @{
-    ViewBag.Title = "index";
+    ViewBag.Title = "Product Backlog";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<script src="~/Scripts/Chart.js"></script>
-
-<h1>Gestión de proyecto</h1>
-
-<h1>
-    @Html.DisplayFor(m => m.titulo)
-</h1>
-
-<div id="row">
-    <b> Sprint </b>
-    @foreach (var spr in Model.sprints)
-    {
-        if (spr == Model.sprint)
-        {
-            @Html.Label(spr.ToString());
-        }
-        else
-        {
-            @Html.ActionLink(spr.ToString(), "Index", new { proyecto = Model.id, sprint = spr }, null)
-        }
-
-        @Html.Raw("  ")
-    }
-</div>
-
-<center>
-    @Html.DisplayFor(m => m.descripcion)
-    <div class="row">
-        <div class="col-md-6">
-            @Html.LabelFor(m => m.lider)
-            @Html.DisplayFor(m => m.lider)
-        </div>
-        <div class="col-md-6">
-            @Html.LabelFor(m => m.cliente)
-            @Html.DisplayFor(m => m.cliente)
-        </div>
-    </div>
-</center>
-
-<h3>Gráfico de Quema</h3>
-
-@{
-    var lineChart = new LineChart();
-    lineChart.ComplexData.Labels.AddRange(ViewBag.dias);
-    lineChart.ComplexData.Datasets.AddRange(new List<ComplexDataset>
-                           {
-                              new ComplexDataset
-                                  {
-                                      Data = ViewBag.esfuerzo_real,
-                                      Label = "My First dataset",
-                                      FillColor = "rgba(220,220,220,0.2)",
-                                      StrokeColor = "rgba(220,220,220,1)",
-                                      PointColor = "rgba(220,220,220,1)",
-                                      PointStrokeColor = "#fff",
-                                      PointHighlightFill = "#fff",
-                                      PointHighlightStroke = "rgba(220,220,220,1)",
-                                  },
-                              new ComplexDataset
-                                  {
-                                      Data = ViewBag.esfuerzo_ideal,
-                                      Label = "My Second dataset",
-                                      FillColor = "rgba(151,187,205,0.2)",
-                                      StrokeColor = "rgba(151,187,205,1)",
-                                      PointColor = "rgba(151,187,205,1)",
-                                      PointStrokeColor = "#fff",
-                                      PointHighlightFill = "#fff",
-                                      PointHighlightStroke = "rgba(151,187,205,1)",
-                                  }
-                          });
+<h2>Gestión de Proyecto</h2>
+<h4>@ViewBag.Title</h4>
+<hr />
+@if (Model.crearRequerimientos)
+{
+    <p>
+        @Html.ActionLink("Crear Requerimiento", "Crear", new { proyecto = Model.proyecto}, new { @class = "btn btn-primary" })
+    </p>
 }
 
-<center>
-    <canvas id="myCanvas" width="800" height="400"></canvas>
-    @Html.CreateChart("myCanvas", lineChart)
-</center>
-
-<h3>Product Backlog</h3>
-
+@if (Model.reqs.Count() > 0)
+{
 <table class="table">
     <tr>
         <th>
-            Titulo
+            Código
         </th>
         <th>
-            Reponsable
+            Nombre
         </th>
         <th>
-            Valor
+            Prioridad
         </th>
         <th>
-            Completado
+            Esfuerzo
         </th>
         <th>
-            Consultar
+            Estado
         </th>
+        @if (Model.detallesRequerimientos)
+        {
+            <th>
+                Consultar
+            </th>
+        }
     </tr>
     @foreach (var req in Model.reqs)
     {
-        <tr id="@(req.codigo)">
+        <tr id="@(req.id)">
+            <td>
+                @Html.DisplayFor(modelItem =>
+req.codigo)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem =>
 req.nombre)
             </td>
             <td>
                 @Html.DisplayFor(modelItem =>
-req.creadoPor)
+req.prioridad)
             </td>
             <td>
                 @Html.DisplayFor(modelItem =>
@@ -123,20 +65,23 @@ req.esfuerzo)
                 @Html.DisplayFor(modelItem =>
 req.estado)
             </td>
+            @if (Model.detallesRequerimientos)
+            {
                 <td>
 
                     @Html.ActionLink("Consultar", "Detalles", new
-           {
-               id = req.codigo
-           })
+               {
+                   requerimiento = req.id
+               })
                 </td>
+            }
         </tr>
     }
 </table>
 
-@Html.PagedListPager((IPagedList)ViewBag.OnePageOfReqs, page => Url.Action("Index", new { page }))
+@Html.PagedListPager((IPagedList)ViewBag.OnePageOfReqs, page => Url.Action("Index", new { page, proyecto = Model.proyecto }))
 @Html.Raw("Página:")
-@if (ViewBag.OnePageOfReqs.PageCount < ViewBag.OnePageOfReqs.PageNumber)
+if (ViewBag.OnePageOfReqs.PageCount < ViewBag.OnePageOfReqs.PageNumber)
 {
     @Html.Raw("0")
 }
@@ -146,3 +91,10 @@ else
 }
 @Html.Raw(" de ")
 @ViewBag.OnePageOfReqs.PageCount
+}
+else
+{
+    <div class="row text-center">
+        <label>No hay Requerimientos</label>
+    </div>
+}

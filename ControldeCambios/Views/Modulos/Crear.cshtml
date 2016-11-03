@@ -36,6 +36,14 @@
     </div>
 
     <div class="form-group">
+        @Html.Label("Requerimientos", new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.ListBoxFor(m => m.requerimientos, (MultiSelectList)ViewBag.Requerimientos, new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;" })
+            @Html.ValidationMessageFor(model => model.requerimientos, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
             <input type="submit" class="btn btn-success" value="Aceptar" />
             <input type="button" class="btn btn-default" value="Cancelar" onclick="location.reload()" />
@@ -49,6 +57,11 @@
             color: red;
         }
     </style>
+    <script>
+        window.onload = function() {
+            $('#list2').multiSelect();
+        };
+    </script>
 }
 
 @section Scripts {

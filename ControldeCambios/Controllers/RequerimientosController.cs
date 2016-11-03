@@ -27,56 +27,34 @@ namespace ControldeCambios.Controllers
         private ApplicationUserManager _userManager;
 
         // GET: Requerimientos
-        public ActionResult Index(string proyecto, int? sprint, int? page)
+        public ActionResult Index(string proyecto, int? page)
         {
-            // si no se usó un parámetro para el proyecto se manda este mensaje
+            if (!revisarPermisos("Consultar Lista de Requerimientos"))
+            {
+                //despliega mensaje en caso de no poder crear un requerimiento
+                this.AddToastMessage("Acceso Denegado", "No tienes permiso para consultar lista de requerimientos!", ToastType.Warning);
+                return RedirectToAction("Index", "Home");
+            }
+            
             if (proyecto == null)
             {
-                this.AddToastMessage("Error", "No se encontró o no se tiene permisos para ver el proyecto", ToastType.Error);
-                return RedirectToAction("Index", "Home");
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
             var proy = baseDatos.Proyectos.Find(proyecto);
 
-            //si el proyecto es invalido se manda un mensaje
             if (proy == null)
             {
-                this.AddToastMessage("Error", "No se encontró o no se tiene permisos para ver el proyecto", ToastType.Error);
-                return RedirectToAction("Index", "Home");
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            // conseguimos el numero de sprint actual
-            int ssprint = sprint ?? 1;
-
-            //conseguimos la lista de los sprints del proyecto para hacer paginacion
-            var sprints_de_proyecto = baseDatos.Sprints.Where(s => s.proyecto == proyecto).Select(s => s.numero).ToList();
-
-            // montamos el modelo para la pagina
             var model = new RequerimientosIndexModel();
-
-            model.titulo = proy.nombre;
-            model.descripcion = proy.descripcion;
-            model.sprints = sprints_de_proyecto;
-            model.id = proyecto;
-            model.sprint = ssprint;
-
-            var cliente = baseDatos.Usuarios.Find(proy.cliente);
-            var lider = baseDatos.Usuarios.Find(proy.lider);
-
-            model.cliente = cliente.nombre;
-            model.lider = lider.nombre;
-
-            var sprint_modulos = baseDatos.Sprints.Find(proyecto, ssprint).Sprint_Modulos;
-            var reqs = sprint_modulos.Select(m => m.Modulo1.Requerimientos.ToList()).Aggregate((agg, m) => agg.Concat(m).ToList()).ToList();
-
-
+            model.proyecto = proyecto;
+            var reqs = baseDatos.Requerimientos.Where(m => m.proyecto == proyecto).ToList();
             int pageSize = 10;
             int pageNumber = (page ?? 1);
             int lastElement = (reqs.Count < pageSize * pageNumber) ? reqs.Count : pageSize * pageNumber;
-
             model.reqs = new List<Requerimiento>();
-
-            //despliega la informacion de los usuarios por paginas
             for (int i = (pageNumber - 1) * pageSize; i < lastElement; i++)
             {
                 model.reqs.Add(reqs.ElementAt(i));
@@ -84,62 +62,8 @@ namespace ControldeCambios.Controllers
 
             var reqsAsIPagedList = new StaticPagedList<Requerimiento>(model.reqs, pageNumber, pageSize, reqs.Count);
             ViewBag.OnePageOfReqs = reqsAsIPagedList;
-
-            var sprint_actual = baseDatos.Sprints.Find(proyecto, ssprint);
-
-            //charts
-            DateTime start = sprint_actual.fechaInicio;
-            DateTime end = sprint_actual.fechaFinal;
-
-            ViewBag.dias = Enumerable.Range(0, 1 + end.Subtract(start).Days).Select(offset => start.AddDays(offset).ToString("dd/MM/yy")).ToArray();
-
-            // extrapolar los valores que no se encuentran en la base de datos
-            var horas_esfuerzo = baseDatos.Progreso_Sprint.Where(s => s.sprintNumero == ssprint && s.sprintProyecto == proyecto).ToList();
-
-            var esfuerzo_real = new List<double>();
-            if (horas_esfuerzo.Any())
-            {
-                var ultimo_dia = horas_esfuerzo.Select(h => h.fecha).Max();
-                for (var dia = start; dia < ultimo_dia.AddDays(1); dia = dia.AddDays(1))
-                {
-                    double puntaje;
-                    var esfuerzo_actual = horas_esfuerzo.Where(s => s.fecha.Date.Equals(dia.Date)).FirstOrDefault();
-                    if (esfuerzo_actual == null)
-                    {
-                        puntaje = esfuerzo_real.Last();
-                    }
-                    else
-                    {
-                        puntaje = esfuerzo_actual.puntos;
-                    }
-                    esfuerzo_real.Add(puntaje);
-                }
-
-
-
-            }
-
-            ViewBag.esfuerzo_real = esfuerzo_real;
-
-            var esfuerzo_total = baseDatos.Progreso_Sprint.Find(start, proyecto, ssprint);
-
-            // mostrar una estumacion del esfuerzo ideal si se encuentran datos acerca de los puntajes
-            if (esfuerzo_total != null)
-            {
-                var puntos = esfuerzo_total.puntos;
-                double longitud_del_sprint = end.Subtract(start).TotalDays;
-                var velocidad = puntos / longitud_del_sprint;
-
-                ViewBag.esfuerzo_ideal = Enumerable.Range(0, (int)longitud_del_sprint + 1).Select(x => System.Convert.ToDouble(((int)longitud_del_sprint - x) * velocidad)).ToList();
-
-            }
-            else
-            {
-                ViewBag.esfuerzo_ideal = new List<double>();
-            }
-
-
-
+            model.crearRequerimientos = revisarPermisos("Crear Requerimientos");
+            model.detallesRequerimientos = revisarPermisos("Consultar Detalles de Requerimiento");
             return View(model);
         }
 
@@ -191,8 +115,6 @@ namespace ControldeCambios.Controllers
             ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
             ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");
             ViewBag.DesarrolladoresDisp = listaDesarrolladores;
-            var listaModulos = baseDatos.Modulos.Where(m => m.proyecto == proyecto).ToList();
-            ViewBag.Modulo = new SelectList(listaModulos, "numero", "nombre");
             ViewBag.EstadoRequerimiento = new SelectList(baseDatos.Estado_Requerimientos.ToList(), "nombre", "nombre");
             return View(model);
         }
@@ -281,7 +203,6 @@ namespace ControldeCambios.Controllers
             RequerimientosModelo modeloReq = new RequerimientosModelo();
             UsuariosModelo modeloUsuario = new UsuariosModelo();
             List<Usuario> listaDesarrolladores = new List<Usuario>();
-            List<Modulo> listaModulos = new List<Modulo>();
             List<Estado_Requerimientos> listaEstadoRequerimientos = new List<Estado_Requerimientos>();
             List<Usuario> listaClientes = new List<Usuario>();
             modeloReq.requerimiento = baseDatos.Requerimientos.Find(requerimiento);
@@ -298,11 +219,12 @@ namespace ControldeCambios.Controllers
             modeloReq.esfuerzo = modeloReq.requerimiento.esfuerzo.ToString();
             modeloReq.observaciones = modeloReq.requerimiento.observaciones;
             modeloReq.fechaInicial = modeloReq.requerimiento.creadoEn.ToString("MM/dd/yyyy");
-            //modeloReq.fechaFinal = modeloReq.requerimiento.finalizaEn.ToString("MM/dd/yyyy");
+            if (modeloReq.requerimiento.finalizaEn != null)
+            {
+                modeloReq.fechaFinal = (modeloReq.requerimiento.finalizaEn ?? DateTime.Now).ToString("MM/dd/yyyy");
+            }
             modeloReq.solicitadoPor = modeloReq.requerimiento.solicitadoPor;
-            modeloReq.modulo = modeloReq.requerimiento.modulo.ToString();
             modeloReq.estado = modeloReq.requerimiento.estado;
-            ViewBag.modulos = new SelectList(listaModulos, "cedula", "nombre");
             ViewBag.estadoRequerimientos = new SelectList(listaEstadoRequerimientos, "cedula", "nombre");
             string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
             string desarrolladorRol = context.Roles.Where(m => m.Name == "Desarrollador").First().Id;

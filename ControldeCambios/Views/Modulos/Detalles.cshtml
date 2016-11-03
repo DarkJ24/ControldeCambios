@@ -8,6 +8,8 @@
     function habilitarCampos() {
         $('.editBtns').show();
         $('.editFields').attr("disabled", false);
+        $('.ms-elem-selectable').removeClass('disabled');
+        $('.ms-elem-selection').removeClass('disabled');
         $('#subtitle').html("Modificar Proyecto");
     }
 </script>
@@ -46,6 +48,14 @@
         <div class="col-md-10">
             @Html.TextBoxFor(m => m.nombre, new { @class = "form-control editFields", @disabled = "disabled" })
             @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Requerimientos", new { @class = "col-md-2 control-label" })
+    <div class="col-md-10">
+            @Html.ListBoxFor(m => m.requerimientos, new MultiSelectList(ViewBag.requerimientos, "id", "nombre", Model.requerimientos), new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;", @disabled = "disabled", @class = "editFields" })
+            @Html.ValidationMessageFor(model => model.requerimientos, "", new { @class = "text-danger" })
         </div>
     </div>
 
@@ -88,6 +98,11 @@
         color: red;
     }
 </style>
+<script>
+        window.onload = function() {
+            $('#list2').multiSelect();
+        };
+</script>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

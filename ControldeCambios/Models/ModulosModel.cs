@@ -27,5 +27,12 @@ namespace ControldeCambios.Models
         [Required(ErrorMessage = "El proyecto es un campo requerido.")]
         [Display(Name = "Proyecto")]
         public string proyecto { get; set; }
+
+        public List<string> requerimientos { get; set; }
+
+        public class reqInfo {
+            public string id { get; set; }
+            public string nombre { get; set; }
+        }
     }
 }
