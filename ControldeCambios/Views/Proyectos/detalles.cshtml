@@ -3,7 +3,8 @@
     ViewBag.Title = "Consultar Proyecto";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+@if (Model.modificarProyecto)
+{
 <script>
     function habilitarCampos() {
         $('.editBtns').show();
@@ -13,15 +14,20 @@
         $('#subtitle').html("Modificar Proyecto");
     }
 </script>
+}
 
 
 <h2>Gestión de Proyectos</h2>
 <h4 id="subtitle">@ViewBag.Title</h4>
 <hr />
-
+@if (Model.modificarProyecto)
+{
 <button type="button" class="btn btn-primary" onClick="habilitarCampos()">Modificar</button>
+}
+@if (Model.eliminarPermitido)
+{
 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal">Eliminar</button>
-
+}
 @using (Html.BeginForm("Detalles", "Proyectos", FormMethod.Post, new { @class = "form-horizontal editFields", role = "form" }))
 {
     @Html.AntiForgeryToken()
@@ -114,7 +120,8 @@
         };
     </script>
 }
-
+@if (Model.eliminarPermitido)
+{
 <!-- Modal -->
 <div class="modal fade" id="confirmModal" role="dialog">
     <div class="modal-dialog modal-sm">
@@ -138,7 +145,7 @@
         </div>
     </div>
 </div>
-
+}
 
 <style type="text/css">
     .required:after {

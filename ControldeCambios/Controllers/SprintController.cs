@@ -56,7 +56,7 @@ namespace ControldeCambios.Controllers
             if (ModelState.IsValid)
             {
                 var sprint = new Sprint();
-                sprint.numero = model.numero;
+                sprint.numero = Int32.Parse(model.numero);
                 sprint.proyecto = model.proyecto;
                 sprint.fechaInicio = DateTime.ParseExact(model.fechaInicio, "MM/dd/yyyy", CultureInfo.InvariantCulture);
                 sprint.fechaFinal = DateTime.ParseExact(model.fechaFinal, "MM/dd/yyyy", CultureInfo.InvariantCulture);

@@ -21,7 +21,7 @@ namespace ControldeCambios.Models
         [StringLength(15, ErrorMessage = "El número debe ser de {1} dígitos"), MinLength(1, ErrorMessage = "El número debe ser de al menos {1} dígito")]
         [RegularExpression(@"^[0-9]+$", ErrorMessage = "El número no puede contener letras, espacios o guiones")]
         [Display(Name = "Numero")]
-        public int numero { get; set; }
+        public string numero { get; set; }
 
         [Required(ErrorMessage = "La fecha de inicio es un campo requerido.")]
         [Display(Name = "Fecha inicio")]

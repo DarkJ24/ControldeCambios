@@ -14,10 +14,18 @@
 <h2>Gestión de Requerimiento</h2>
 <h4>@ViewBag.Title</h4>
 <hr />
+@if (Model.modificarRequerimiento)
+{
+    <button type="button" class="btn btn-primary" onClick="habilitarCampos()">Modificar</button>
+}
+@if (Model.eliminarRequerimiento)
+{
+    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal">Eliminar</button>
+}
 @using (Html.BeginForm("Detalles", "Requerimientos", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
-
+    @Html.HiddenFor(m => m.id)
     <div class="form-group">
         <label class="control-label col-md-2 required">Código:</label>
         <div class="col-md-10">
@@ -31,6 +39,14 @@
         <div class="col-md-10">
             @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
             @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2 required">Versión:</label>
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.version, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
+            @Html.ValidationMessageFor(model => model.version, "", new { @class = "text-danger" })
         </div>
     </div>
 
@@ -52,7 +68,8 @@
     <div class="form-group">
         <label class="control-label col-md-2 required">Modulo:</label>
         <div class="col-md-10">
-            @Html.DropDownListFor(model => model.modulo, (SelectList)ViewBag.modulos, new { @class = "col-xs-12 editFields", @disabled = "disabled", @style = "height:30px;border-radius:4px" })
+            @Html.EditorFor(model => model.modulo, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
+            @Html.ValidationMessageFor(model => model.modulo, "", new { @class = "text-danger" })
         </div>
     </div>
 
@@ -91,7 +108,8 @@
     <div class="form-group">
         <label class="control-label col-md-2 required">Estado:</label>
         <div class="col-md-10">
-            @Html.DropDownListFor(model => model.estado, (SelectList)ViewBag.estadoRequerimientos, new { @class = "col-xs-12 editFields", @disabled = "disabled", @style = "height:30px;border-radius:4px" })
+            @Html.EditorFor(model => model.estado, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
+            @Html.ValidationMessageFor(model => model.estado, "", new { @class = "text-danger" })
         </div>
     </div>
 
@@ -101,6 +119,21 @@
             @Html.EditorFor(model => model.observaciones, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
             @Html.ValidationMessageFor(model => model.observaciones, "", new { @class = "text-danger" })
         </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.criteriosAceptacion, new { @class = "col-md-2 control-label" })
+        @Html.HiddenFor(m => m.criteriosAceptacion, new { @id = "output" })
+        <div class="col-md-offset-2 col-md-10" style="margin-bottom:25px">
+            <button type="button" onclick="add_textbox()" class="btn editBtns" style="border-radius:4px;display:none"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Nuevo Criterio de Aceptación</button>
+            <br />
+            <br />
+
+            <div id="textboxes">
+                <div class='row'><div id='textbox0'><div class='col-md-4'><textarea class='multitextbox form-control multitextbox0' oninput=update_output() cols='30' rows='2' style='border-radius:4px'></textarea></div> <div class='col-md-1'></div> <br /> <br /> <br />  </div></div>
+            </div>
+        </div>
+        @Html.ValidationMessageFor(m => m.criteriosAceptacion, "", new { @class = "text-danger" })
     </div>
 
     <div class="form-group">

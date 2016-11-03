@@ -11,9 +11,26 @@ namespace ControldeCambios.Models
 
         public List<Sprint> sprints { get; set; }
 
-        public List<Sprint> indexSprintInfoList { get; set; }
+        public class sprintInfo
+        {
+            public string numero;
+            public string modulos;
+            public string fechaInicio;
+            public string fechaFinal;
+        }
+
+        public List<sprintInfo> indexSprintInfoList { get; set; }
 
         public List<Modulo> modulos { get; set; }
+
+        public class moduloInfo
+        {
+            public string numero;
+            public string nombre;
+            public string requerimientos;
+        }
+
+        public List<moduloInfo> indexModuloInfoList { get; set; }
 
         public Boolean crearSprints { get; set; }
 

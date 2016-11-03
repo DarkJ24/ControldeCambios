@@ -27,7 +27,7 @@ namespace ControldeCambios.Models
         [RegularExpression(@"^[A-Za-z\s]+$", ErrorMessage = "El nombre solo debe contener letras y espacios")]
         public string nombre { get; set; }
 
-
+        public string version { get; set; }
 
         [StringLength(120, ErrorMessage = "La descripción debe ser de {1} caracteres máximo"), MinLength(1, ErrorMessage = "La descripción debe ser de al menos {1} caracter")]
         [Display(Name = "Descripción")]
@@ -81,7 +81,13 @@ namespace ControldeCambios.Models
 
         [Display(Name = "Proyecto")]
         public string proyecto { get; set; }
-        }
 
-        
+        public int id { get; set; }
+
+        public bool eliminarRequerimiento { get; set; }
+        public bool modificarRequerimiento { get; set; }
+        public bool crearRequerimiento { get; set; }
+        public bool detallesRequerimiento { get; set; }
+
+    }
 }
