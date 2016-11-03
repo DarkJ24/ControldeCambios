@@ -187,46 +187,52 @@ namespace ControldeCambios.Controllers
         /// </summary>
         /// <returns>Pagina de Index</returns>
         // GET: /Requerimientos/Detalles
-        public ActionResult Detalles(int? requerimiento)
+        // GET: Detalles
+        public ActionResult Detalles(int id)
         {
-            if (!revisarPermisos("Consultar Detalles de Requerimiento"))
+            if (!revisarPermisos("Modificar Requerimientos"))
             {
-                //despliega mensaje en caso de no poder crear un requerimiento
-                this.AddToastMessage("Acceso Denegado", "No tienes permiso para consultar detalles de requerimientos!", ToastType.Warning);
+                //Despliega mensaje en caso de no poder modificar un requerimiento
+                this.AddToastMessage("Acceso Denegado", "No tienes permiso para modificar requerimientos!", ToastType.Warning);
                 return RedirectToAction("Index", "Home");
             }
-
-            if (requerimiento == null)
+            if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            RequerimientosModelo modeloReq = new RequerimientosModelo();
-            UsuariosModelo modeloUsuario = new UsuariosModelo();
+            RequerimientosModelo modelo = new RequerimientosModelo();
+            modelo.requerimiento = baseDatos.Requerimientos.Find(id);
+            if (modelo.requerimiento.id == null)
+            {
+                return HttpNotFound();
+            }
+            modelo.id = modelo.requerimiento.id;
+            modelo.codigo = modelo.requerimiento.codigo;
+            modelo.nombre = modelo.requerimiento.nombre;
+            modelo.version = modelo.requerimiento.version.ToString();
+            modelo.descripcion = modelo.requerimiento.descripcion;
+            modelo.prioridad = modelo.requerimiento.prioridad.ToString();
+            modelo.esfuerzo = modelo.requerimiento.esfuerzo.ToString();
+            modelo.observaciones = modelo.requerimiento.observaciones;
+            modelo.fechaInicial = modelo.requerimiento.creadoEn.ToString("MM/dd/yyyy");
+            modelo.solicitadoPor = modelo.requerimiento.solicitadoPor;
+            modelo.estado = modelo.requerimiento.estado;
+
+            /*var requerimiento = baseDatos.Requerimientos.Find(id);
+            var equipo = requerimiento..ToList();
+            modelo.equipo = new List<string>();
+            foreach (var des in equipo)
+            {
+                modelo.equipo.Add(des.usuario);
+            }*/
+
             List<Usuario> listaDesarrolladores = new List<Usuario>();
             List<Modulo> listaModulos = new List<Modulo>();
             List<Estado_Requerimientos> listaEstadoRequerimientos = new List<Estado_Requerimientos>();
             List<Usuario> listaClientes = new List<Usuario>();
-            modeloReq.requerimiento = baseDatos.Requerimientos.Find(requerimiento);
-            if (modeloReq.requerimiento == null)
-            {
-                return HttpNotFound();
-            }
-            modeloReq.id = requerimiento ?? default(int);
-            modeloReq.codigo = modeloReq.requerimiento.codigo;
-            modeloReq.nombre = modeloReq.requerimiento.nombre;
-            modeloReq.version = modeloReq.requerimiento.version.ToString();
-            modeloReq.descripcion = modeloReq.requerimiento.descripcion;
-            modeloReq.prioridad = modeloReq.requerimiento.prioridad.ToString();
-            modeloReq.esfuerzo = modeloReq.requerimiento.esfuerzo.ToString();
-            modeloReq.observaciones = modeloReq.requerimiento.observaciones;
-            modeloReq.fechaInicial = modeloReq.requerimiento.creadoEn.ToString("MM/dd/yyyy");
-            modeloReq.solicitadoPor = modeloReq.requerimiento.solicitadoPor;
-            modeloReq.estado = modeloReq.requerimiento.estado;
-            ViewBag.modulos = new SelectList(listaModulos, "cedula", "nombre");
-            ViewBag.estadoRequerimientos = new SelectList(listaEstadoRequerimientos, "cedula", "nombre");
+
             string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
             string desarrolladorRol = context.Roles.Where(m => m.Name == "Desarrollador").First().Id;
-
             foreach (var user in context.Users.ToArray())
             {
                 if (user.Roles.First().RoleId.Equals(clienteRol))
@@ -242,15 +248,13 @@ namespace ControldeCambios.Controllers
                 }
             }
 
-            ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre", modeloReq.solicitadoPor);
-            ViewBag.desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
+            modelo.eliminarRequerimiento = revisarPermisos("Eliminar Requerimientos");
+            modelo.modificarRequerimiento = revisarPermisos("Modificar Requerimientos");
+            ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
+            ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");
             ViewBag.DesarrolladoresDisp = listaDesarrolladores;
-            ViewBag.Usuarios = baseDatos.Usuarios.ToList();
-
-            modeloReq.modificarRequerimiento = revisarPermisos("Modificar Requerimientos");
-            modeloReq.eliminarRequerimiento = revisarPermisos("Eliminar Requerimientos");
-
-            return View(modeloReq);
+            ViewBag.Estados = new SelectList(baseDatos.Estado_Proyecto.ToList(), "nombre", "nombre");
+            return View(modelo);
         }
 
         /// <summary>
@@ -261,20 +265,60 @@ namespace ControldeCambios.Controllers
         // POST: Detalles
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Detalles(RequerimientosModelo modeloReq)
+        public ActionResult Detalles(RequerimientosModelo modelo)
         {
             if (ModelState.IsValid)
             {
                 var requerimiento = new Requerimiento();
-                requerimiento.codigo = modeloReq.requerimiento.codigo;
-                requerimiento.nombre = modeloReq.requerimiento.nombre;
-                requerimiento.version = modeloReq.requerimiento.version;
+                requerimiento.codigo = modelo.requerimiento.codigo;
+                requerimiento.nombre = modelo.requerimiento.nombre;
+                requerimiento.version = modelo.requerimiento.version;
+                requerimiento.descripcion = modelo.requerimiento.descripcion;
+                requerimiento.solicitadoPor = modelo.requerimiento.solicitadoPor;
+                requerimiento.prioridad = modelo.requerimiento.prioridad;
+                requerimiento.esfuerzo = modelo.requerimiento.esfuerzo;
+                requerimiento.creadoEn = modelo.requerimiento.creadoEn;
+                requerimiento.estado = modelo.requerimiento.estado;
+                requerimiento.observaciones = modelo.requerimiento.observaciones;
                 baseDatos.Entry(requerimiento).State = System.Data.Entity.EntityState.Modified;
 
-                baseDatos.SaveChanges();
+                /*var equipo_viejo = baseDatos.Proyecto_Equipo.Where(m => m.proyecto == model.nombre).ToList();
 
-                //this.AddToastMessage("Requerimiento Modificado", "El requerimiento " + modeloReq.requerimiento.nombre + " se ha actualizado correctamente.", ToastType.Success);
-                //return RedirectToAction("Index", "Usuarios");
+                foreach (var usuario in equipo_viejo)
+                {
+                    baseDatos.Entry(usuario).State = System.Data.Entity.EntityState.Deleted;
+                }
+
+                if (model.equipo != null)
+                {
+                    foreach (var desarrollador in model.equipo)
+                    {
+                        var proyectoDesarrollador = new Proyecto_Equipo();
+                        proyectoDesarrollador.usuario = desarrollador;
+                        proyectoDesarrollador.proyecto = proyecto.nombre;
+                        baseDatos.Proyecto_Equipo.Add(proyectoDesarrollador);
+                    }
+
+                    var checkLider = model.equipo.Where(m => m == proyecto.lider);
+                    if (checkLider.Count() == 0)
+                    {
+                        var proyectoDesarrollador = new Proyecto_Equipo();
+                        proyectoDesarrollador.usuario = proyecto.lider;
+                        proyectoDesarrollador.proyecto = proyecto.nombre;
+                        baseDatos.Proyecto_Equipo.Add(proyectoDesarrollador);
+                    }
+                }
+                else
+                {
+                    var proyectoDesarrollador = new Proyecto_Equipo();
+                    proyectoDesarrollador.usuario = proyecto.lider;
+                    proyectoDesarrollador.proyecto = proyecto.nombre;
+                    baseDatos.Proyecto_Equipo.Add(proyectoDesarrollador);
+                }*/
+
+                baseDatos.SaveChanges();
+                this.AddToastMessage("Requerimiento Modificado", "El requerimiento " + modelo.nombre + " se ha modificado correctamente.", ToastType.Success);
+                return RedirectToAction("Detalles", "Requerimientos", new { id = requerimiento.id });
 
             }
 
@@ -282,6 +326,7 @@ namespace ControldeCambios.Controllers
             List<Usuario> listaClientes = new List<Usuario>();
             string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
             string desarrolladorRol = context.Roles.Where(m => m.Name == "Desarrollador").First().Id;
+
             foreach (var user in context.Users.ToArray())
             {
                 if (user.Roles.First().RoleId.Equals(clienteRol))
@@ -296,12 +341,13 @@ namespace ControldeCambios.Controllers
                     }
                 }
             }
+
             ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
             ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");
             ViewBag.DesarrolladoresDisp = listaDesarrolladores;
             ViewBag.Estados = new SelectList(baseDatos.Estado_Proyecto.ToList(), "nombre", "nombre"); ;
 
-            return View(modeloReq);
+            return View(modelo);
         }
 
         /// <summary>
@@ -314,12 +360,12 @@ namespace ControldeCambios.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Borrar(RequerimientosModelo modeloReq)
         {
-            var user = await baseDatos.Requerimientos.FindAsync(modeloReq.requerimiento.codigo);
+            var user = await baseDatos.Requerimientos.FindAsync(modeloReq.requerimiento.id);
             baseDatos.Entry(user).State = System.Data.Entity.EntityState.Deleted;
             baseDatos.SaveChanges();
 
             this.AddToastMessage("Usuario Borrado", "El requerimiento " + modeloReq.requerimiento.nombre + " se ha borrado correctamente.", ToastType.Success);
-            return RedirectToAction("Index", "Usuarios");
+            return RedirectToAction("Index", "Home");
         }
     }
 }
