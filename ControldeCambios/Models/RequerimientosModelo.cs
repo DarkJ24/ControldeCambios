@@ -60,6 +60,7 @@ namespace ControldeCambios.Models
         public string fechaFinal { get; set; }
 
 
+        [Display(Name = "Estado")]
         public string estado { get; set; }
 
 
@@ -78,6 +79,9 @@ namespace ControldeCambios.Models
         //AGREGAR EQUIPO
         public List<string> equipo { get; set; }
 
+        [Display(Name = "Proyecto")]
         public string proyecto { get; set; }
         }
+
+        
 }
