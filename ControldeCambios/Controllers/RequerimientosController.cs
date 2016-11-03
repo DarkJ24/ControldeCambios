@@ -203,6 +203,7 @@ namespace ControldeCambios.Controllers
             RequerimientosModelo modeloReq = new RequerimientosModelo();
             UsuariosModelo modeloUsuario = new UsuariosModelo();
             List<Usuario> listaDesarrolladores = new List<Usuario>();
+            List<Modulo> listaModulos = new List<Modulo>();
             List<Estado_Requerimientos> listaEstadoRequerimientos = new List<Estado_Requerimientos>();
             List<Usuario> listaClientes = new List<Usuario>();
             modeloReq.requerimiento = baseDatos.Requerimientos.Find(requerimiento);
@@ -219,13 +220,66 @@ namespace ControldeCambios.Controllers
             modeloReq.esfuerzo = modeloReq.requerimiento.esfuerzo.ToString();
             modeloReq.observaciones = modeloReq.requerimiento.observaciones;
             modeloReq.fechaInicial = modeloReq.requerimiento.creadoEn.ToString("MM/dd/yyyy");
-            if (modeloReq.requerimiento.finalizaEn != null)
-            {
-                modeloReq.fechaFinal = (modeloReq.requerimiento.finalizaEn ?? DateTime.Now).ToString("MM/dd/yyyy");
-            }
             modeloReq.solicitadoPor = modeloReq.requerimiento.solicitadoPor;
             modeloReq.estado = modeloReq.requerimiento.estado;
+            ViewBag.modulos = new SelectList(listaModulos, "cedula", "nombre");
             ViewBag.estadoRequerimientos = new SelectList(listaEstadoRequerimientos, "cedula", "nombre");
+            string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
+            string desarrolladorRol = context.Roles.Where(m => m.Name == "Desarrollador").First().Id;
+
+            foreach (var user in context.Users.ToArray())
+            {
+                if (user.Roles.First().RoleId.Equals(clienteRol))
+                {
+                    listaClientes.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
+                }
+                else
+                {
+                    if (user.Roles.First().RoleId.Equals(desarrolladorRol))
+                    {
+                        listaDesarrolladores.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
+                    }
+                }
+            }
+
+            ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre", modeloReq.solicitadoPor);
+            ViewBag.desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
+            ViewBag.DesarrolladoresDisp = listaDesarrolladores;
+            ViewBag.Usuarios = baseDatos.Usuarios.ToList();
+
+            modeloReq.modificarRequerimiento = revisarPermisos("Modificar Requerimientos");
+            modeloReq.eliminarRequerimiento = revisarPermisos("Eliminar Requerimientos");
+
+            return View(modeloReq);
+        }
+
+        /// <summary>
+        /// Metodo encargado de la modificacion de requerimientos.
+        /// </summary>
+        /// <param name="id"> Modelo con la informacion del requerimiento para modificar.</param>
+        /// <returns>Pagina de Detalles</returns>
+        // POST: Detalles
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Detalles(RequerimientosModelo modeloReq)
+        {
+            if (ModelState.IsValid)
+            {
+                var requerimiento = new Requerimiento();
+                requerimiento.codigo = modeloReq.requerimiento.codigo;
+                requerimiento.nombre = modeloReq.requerimiento.nombre;
+                requerimiento.version = modeloReq.requerimiento.version;
+                baseDatos.Entry(requerimiento).State = System.Data.Entity.EntityState.Modified;
+
+                baseDatos.SaveChanges();
+
+                //this.AddToastMessage("Requerimiento Modificado", "El requerimiento " + modeloReq.requerimiento.nombre + " se ha actualizado correctamente.", ToastType.Success);
+                //return RedirectToAction("Index", "Usuarios");
+
+            }
+
+            List<Usuario> listaDesarrolladores = new List<Usuario>();
+            List<Usuario> listaClientes = new List<Usuario>();
             string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
             string desarrolladorRol = context.Roles.Where(m => m.Name == "Desarrollador").First().Id;
             foreach (var user in context.Users.ToArray())
@@ -242,11 +296,30 @@ namespace ControldeCambios.Controllers
                     }
                 }
             }
-            ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre", modeloReq.solicitadoPor);
-            ViewBag.desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
+            ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
+            ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");
             ViewBag.DesarrolladoresDisp = listaDesarrolladores;
-            ViewBag.Usuarios = baseDatos.Usuarios.ToList();
+            ViewBag.Estados = new SelectList(baseDatos.Estado_Proyecto.ToList(), "nombre", "nombre"); ;
+
             return View(modeloReq);
+        }
+
+        /// <summary>
+        /// Funcionalidad de borrar requerimientos.
+        /// </summary>
+        /// <returns>Pagina de Index</returns>
+        /// <param name="model"> Modelo con la informacion del Usuario a borrar.</param>
+        //POST: Delete
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Borrar(RequerimientosModelo modeloReq)
+        {
+            var user = await baseDatos.Requerimientos.FindAsync(modeloReq.requerimiento.codigo);
+            baseDatos.Entry(user).State = System.Data.Entity.EntityState.Deleted;
+            baseDatos.SaveChanges();
+
+            this.AddToastMessage("Usuario Borrado", "El requerimiento " + modeloReq.requerimiento.nombre + " se ha borrado correctamente.", ToastType.Success);
+            return RedirectToAction("Index", "Usuarios");
         }
     }
 }
