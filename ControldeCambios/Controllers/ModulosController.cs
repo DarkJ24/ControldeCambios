@@ -86,6 +86,7 @@ namespace ControldeCambios.Controllers
                 {
                     modulo.nombre = model.nombre;
                     baseDatos.Modulos.Add(modulo);
+                    model.requerimientos = new List<string>();
                     if (model.requerimientos.Count() > 0)
                     {
                         foreach (var req in model.requerimientos)
@@ -188,6 +189,50 @@ namespace ControldeCambios.Controllers
                 baseDatos.SaveChanges();
                 this.AddToastMessage("Módulo Modificado", "El módulo " + model.nombre + " se ha modificado correctamente.", ToastType.Success);
                 return RedirectToAction("Detalles", "Modulos", new { proyecto = model.proyecto, numero = model.numero });
+            }
+            return View(model);
+        }
+
+        // POST: /Sprint/Detalles
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Borrar(ModulosModel model)
+        {
+            if (ModelState.IsValid)
+            {
+               /* model.nombre;
+                model.numero;
+                model.proyecto;
+                model.requerimientos;*/
+                int model_numero = Int32.Parse(model.numero);
+
+                var modulosViejos = baseDatos.Sprint_Modulos.Where(m => m.modulo == model_numero && m.proyecto == model.proyecto).ToList();
+                if (modulosViejos.Count() > 0)
+                {
+                    foreach (var mod in modulosViejos)
+                    {
+                        baseDatos.Entry(mod).State = System.Data.Entity.EntityState.Deleted;
+                    }
+                }
+
+                var requerimientosViejos = baseDatos.Requerimientos.Where(m => m.modulo == model_numero && m.proyecto == model.proyecto).ToList();
+                if (requerimientosViejos.Count() > 0)
+                {
+                    foreach (var req in requerimientosViejos)
+                    {
+                        req.modulo = null;
+                        baseDatos.Entry(req).State = System.Data.Entity.EntityState.Modified;
+                    }
+                }
+
+                var modulo = baseDatos.Modulos.Find(model.proyecto, model_numero);
+                baseDatos.Entry(modulo).State = System.Data.Entity.EntityState.Deleted;
+
+                baseDatos.SaveChanges();
+                this.AddToastMessage("Módulo Eliminado", "El módulo " + model.numero + " se ha eliminado correctamente.", ToastType.Success);
+                return RedirectToAction("Informacion", "Proyectos", new { id = model.proyecto });
+               
+
             }
             return View(model);
         }

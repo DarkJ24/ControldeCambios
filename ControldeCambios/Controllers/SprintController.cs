@@ -61,6 +61,7 @@ namespace ControldeCambios.Controllers
                 sprint.proyecto = model.proyecto;
                 sprint.fechaInicio = DateTime.ParseExact(model.fechaInicio, "MM/dd/yyyy", CultureInfo.InvariantCulture);
                 sprint.fechaFinal = DateTime.ParseExact(model.fechaFinal, "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                model.modulos = new List<string>();
                 if (model.modulos.Count() > 0)
                 {
                     foreach (var modulo in model.modulos)
@@ -179,6 +180,128 @@ namespace ControldeCambios.Controllers
             else
             {
                 ViewBag.esfuerzo_ideal = new List<double>();
+            }
+            return View(model);
+        }
+
+
+        public ActionResult Detalles(string proyecto, string sprint)
+        {
+            if (!revisarPermisos("Consultar Detalles de Sprints"))
+            {
+                //despliega mensaje en caso de no poder crear un usuario
+                this.AddToastMessage("Acceso Denegado", "No tienes permiso para consultar detalles de sprints!", ToastType.Warning);
+                return RedirectToAction("Index", "Home");
+            }
+            if (String.IsNullOrEmpty(proyecto))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            if (String.IsNullOrEmpty(sprint))
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var proy = baseDatos.Proyectos.Find(proyecto);
+            if (proy == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var spr = baseDatos.Sprints.Find(proyecto, Int32.Parse(sprint));
+            if (spr == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var model = new SprintModelo();
+
+            model.proyecto = proyecto;
+            model.numero = sprint;
+            model.fechaInicio = spr.fechaInicio.ToString("dd/MM/yyyy");
+            model.fechaFinal = spr.fechaFinal.ToString("dd/MM/yyyy");
+
+            int sprint_numero = Int32.Parse(sprint);
+            ViewBag.modulos = new MultiSelectList(baseDatos.Modulos.Where(m => m.proyecto == proyecto).ToList(), "numero", "nombre");
+            model.modulos = new List<string>();
+            var listaDeModulosSprint = baseDatos.Sprint_Modulos.Where(m => m.sprint == sprint_numero && m.proyecto == proyecto).ToList();
+
+            foreach (var modulo in listaDeModulosSprint)
+            {
+                model.modulos.Add(modulo.modulo.ToString());
+            }
+
+            return View(model);
+        }
+
+
+        // POST: /Sprint/Detalles
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Detalles(SprintModelo model)
+        {
+            if (ModelState.IsValid)
+            {
+                var sprint = new Sprint();
+                sprint.numero = Int32.Parse(model.numero);
+                sprint.proyecto = model.proyecto;
+                sprint.fechaInicio = DateTime.ParseExact(model.fechaInicio, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                sprint.fechaFinal = DateTime.ParseExact(model.fechaFinal, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                baseDatos.Entry(sprint).State = System.Data.Entity.EntityState.Modified;
+
+                var modulosViejos = baseDatos.Sprint_Modulos.Where(m => m.sprint == sprint.numero && m.proyecto == model.proyecto);
+                if (modulosViejos.Count() > 0)
+                {
+                    foreach (var modulo in modulosViejos)
+                    {
+
+                        baseDatos.Entry(modulo).State = System.Data.Entity.EntityState.Deleted;
+                    }
+                }
+
+
+                if (model.modulos.Count() > 0)
+                {
+                    foreach (var modulo in model.modulos)
+                    {
+                        var sprint_modulo = new Sprint_Modulos();
+                        sprint_modulo.proyecto = sprint.proyecto;
+                        sprint_modulo.sprint = sprint.numero;
+                        sprint_modulo.modulo = Int32.Parse(modulo);
+                        sprint.Sprint_Modulos.Add(sprint_modulo);
+                        baseDatos.Entry(sprint_modulo).State = System.Data.Entity.EntityState.Added;
+                        baseDatos.Entry(sprint).State = System.Data.Entity.EntityState.Modified;
+
+                    }
+                }
+
+                baseDatos.SaveChanges();
+                this.AddToastMessage("Sprint Modificado", "El sprint " + model.numero + " se ha modificado correctamente.", ToastType.Success);
+                return RedirectToAction("Detalles", "Sprint", new { proyecto = model.proyecto, sprint = model.numero });
+            }
+            return View(model);
+        }
+
+
+        // POST: /Sprint/Detalles
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Borrar(SprintModelo model)
+        {
+            if (ModelState.IsValid)
+            {
+                int sprint_numero = Int32.Parse(model.numero);
+                var modulosViejos = baseDatos.Sprint_Modulos.Where(m => m.sprint == sprint_numero && m.proyecto == model.proyecto).ToList();
+                if (modulosViejos.Count() > 0)
+                {
+                    foreach (var modulo in modulosViejos)
+                    {
+                        baseDatos.Entry(modulo).State = System.Data.Entity.EntityState.Deleted;
+                    }
+                }
+                
+                var sprint = baseDatos.Sprints.Find(model.proyecto, sprint_numero);
+                baseDatos.Entry(sprint).State = System.Data.Entity.EntityState.Deleted;
+                baseDatos.SaveChanges();
+                this.AddToastMessage("Sprint Eliminado", "El sprint " + model.numero + " se ha eliminado correctamente.", ToastType.Success);
+                return RedirectToAction("Informacion", "Proyectos", new { id = model.proyecto });
             }
             return View(model);
         }
