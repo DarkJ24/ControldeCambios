@@ -130,15 +130,24 @@ namespace ControldeCambios.Controllers
                 proyecto.estado = "Por iniciar";
                 proyecto.duracion = proyecto.fechaFinal.Subtract(proyecto.fechaInicio).Days;
                 baseDatos.Proyectos.Add(proyecto);
-                foreach (var desarrollador in model.equipo)
+                if ((model.equipo != null) && (model.equipo.Count() > 0))
                 {
-                    var proyectoDesarrollador = new Proyecto_Equipo();
-                    proyectoDesarrollador.usuario = desarrollador;
-                    proyectoDesarrollador.proyecto = proyecto.nombre;
-                    baseDatos.Proyecto_Equipo.Add(proyectoDesarrollador);
-                }
-                var checkLider = model.equipo.Where(m => m == proyecto.lider);
-                if (checkLider.Count() == 0)
+                    foreach (var desarrollador in model.equipo)
+                    {
+                        var proyectoDesarrollador = new Proyecto_Equipo();
+                        proyectoDesarrollador.usuario = desarrollador;
+                        proyectoDesarrollador.proyecto = proyecto.nombre;
+                        baseDatos.Proyecto_Equipo.Add(proyectoDesarrollador);
+                    }
+                    var checkLider = model.equipo.Where(m => m == proyecto.lider);
+                    if (checkLider.Count() == 0)
+                    {
+                        var proyectoDesarrollador = new Proyecto_Equipo();
+                        proyectoDesarrollador.usuario = proyecto.lider;
+                        proyectoDesarrollador.proyecto = proyecto.nombre;
+                        baseDatos.Proyecto_Equipo.Add(proyectoDesarrollador);
+                    }
+                } else
                 {
                     var proyectoDesarrollador = new Proyecto_Equipo();
                     proyectoDesarrollador.usuario = proyecto.lider;

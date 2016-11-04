@@ -128,7 +128,7 @@ namespace ControldeCambios.Controllers
                 {
                     modulo.nombre = model.nombre;
                     baseDatos.Modulos.Add(modulo);
-                    if (model != null && model.requerimientos.Count() > 0)
+                    if (model.requerimientos != null && model.requerimientos.Count() > 0)
                     {
                         foreach (var req in model.requerimientos)
                         {
