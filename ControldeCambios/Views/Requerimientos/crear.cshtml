@@ -60,7 +60,7 @@ function load_all() {
 
 
     <div class="panel panel-info">
-        <div class="panel-heading">Datos de Requerimiento</div>
+        <div class="panel-heading"><label>Datos de Requerimiento</label></div>
         <div class="panel-body">
 
             <div class="form-group">
@@ -88,7 +88,7 @@ function load_all() {
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(m => m.criteriosAceptacion, new { @class = "col-md-2 control-label" })
+                @Html.LabelFor(m => m.criteriosAceptacion, new { @class = "col-md-2 control-label required" })
                 @Html.HiddenFor(m => m.criteriosAceptacion, new { @id = "output" })
                 <div class="col-md-offset-2 col-md-10" style="margin-bottom:25px">
                     <button type="button" onclick="add_textbox()" class="btn" style="border-radius:4px"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Nuevo Criterio de Aceptación</button>
@@ -132,7 +132,7 @@ function load_all() {
     </div>
 
     <div class="panel panel-info">
-        <div class="panel-heading">Datos de Estimación</div>
+        <div class="panel-heading"><label>Datos de Estimación</label></div>
         <div class="panel-body">
             <div class="form-group">
                 @Html.LabelFor(m => m.prioridad, new { @class = "col-md-2 control-label required" })
@@ -172,7 +172,7 @@ function load_all() {
    
    //FALTA SPRINT Y VERSION 
      <div class="panel panel-info">
-        <div class="panel-heading">Datos Generales</div>
+        <div class="panel-heading"><label>Datos Generales</label></div>
         <div class="panel-body">
 
             <div class="form-group">
