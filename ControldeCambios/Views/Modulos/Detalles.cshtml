@@ -19,7 +19,11 @@
 <hr />
 
 <button type="button" class="btn btn-primary" onClick="habilitarCampos()">Modificar</button>
-<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal">Eliminar</button>
+@if (Model.requerimientos.Count == 0)
+{
+    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal">Eliminar</button>
+
+}
 
 @using (Html.BeginForm("Detalles", "Modulos", FormMethod.Post, new { @class = "form-horizontal editFields", role = "form" }))
 {
@@ -84,6 +88,10 @@
                 @using (Html.BeginForm("Borrar", "Modulos", FormMethod.Post, new { @class = "form-horizontal", role = "form", style = "display:inline;padding-left:5px;" }))
                 {
                     @Html.AntiForgeryToken()
+                    @Html.HiddenFor(m => m.proyecto)
+                    @Html.HiddenFor(m => m.numero)
+                    @Html.HiddenFor(m => m.nombre)
+                    @Html.HiddenFor(m => m.requerimientos)
                     <button type="submit" class="btn btn-danger">Eliminar</button>
                 }
             </div>
