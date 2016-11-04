@@ -15,6 +15,48 @@ namespace ControldeCambios.Controllers
         Entities baseDatos = new Entities();
         ApplicationDbContext context = new ApplicationDbContext();
 
+        private void updateSprintPoints(string Proyecto, int sprint)
+        {
+
+            var sprint_actual = baseDatos.Sprints.Find(Proyecto, sprint);
+            var hoy = DateTime.Today < sprint_actual.fechaInicio ? sprint_actual.fechaInicio : DateTime.Today;
+
+            var progreso_hoy = baseDatos.Progreso_Sprint.Where(x => x.sprintProyecto == Proyecto && x.sprintNumero == sprint &&
+            x.fecha.Year == hoy.Year
+            && x.fecha.Month == hoy.Month
+            && x.fecha.Day == hoy.Day
+            ).FirstOrDefault();
+
+            var modificado = true;
+
+            if (progreso_hoy == default(Progreso_Sprint))
+            {
+                progreso_hoy = new Progreso_Sprint();
+                progreso_hoy.fecha = hoy;
+                progreso_hoy.sprintNumero = sprint;
+                progreso_hoy.sprintProyecto = Proyecto;
+                modificado = false;
+            }
+
+            var puntos = sprint_actual.Sprint_Modulos
+                .Select(m => baseDatos.Modulos
+                    .Find(m.proyecto, m.modulo).Requerimientos
+                        .Select(x => x.estado == "Finalizado" ? 0 : (x.esfuerzo ?? 0))
+                        .Sum())
+                .Sum();
+            progreso_hoy.puntos = puntos;
+            if (modificado)
+            {
+                baseDatos.Entry(progreso_hoy).State = System.Data.Entity.EntityState.Modified;
+            }
+            else
+            {
+                baseDatos.Progreso_Sprint.Add(progreso_hoy);
+            }
+
+            baseDatos.SaveChanges();
+        }
+
         /// <summary>
         /// Se utiliza para revisar que el rol del usuario que intenta acceder a alguna
         /// caracteristica tenga los permisos correspondientes.
@@ -86,7 +128,7 @@ namespace ControldeCambios.Controllers
                 {
                     modulo.nombre = model.nombre;
                     baseDatos.Modulos.Add(modulo);
-                    if (model.requerimientos.Count() > 0)
+                    if (model != null && model.requerimientos.Count() > 0)
                     {
                         foreach (var req in model.requerimientos)
                         {
@@ -185,6 +227,15 @@ namespace ControldeCambios.Controllers
                         baseDatos.Entry(requerimiento).State = System.Data.Entity.EntityState.Modified;
                     }
                 }
+
+                if(modulo.Sprint_Modulos.Any())
+                {
+                    foreach(var sprint_modulo in modulo.Sprint_Modulos.ToList())
+                    {
+                        updateSprintPoints(sprint_modulo.proyecto, sprint_modulo.sprint);
+                    }
+                } 
+
                 baseDatos.SaveChanges();
                 this.AddToastMessage("Módulo Modificado", "El módulo " + model.nombre + " se ha modificado correctamente.", ToastType.Success);
                 return RedirectToAction("Detalles", "Modulos", new { proyecto = model.proyecto, numero = model.numero });

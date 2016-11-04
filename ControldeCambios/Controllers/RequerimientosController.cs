@@ -26,6 +26,48 @@ namespace ControldeCambios.Controllers
 
         private ApplicationUserManager _userManager;
 
+        private void updateSprintPoints(string Proyecto, int sprint)
+        {
+
+            var sprint_actual = baseDatos.Sprints.Find(Proyecto, sprint);
+            var hoy = DateTime.Today < sprint_actual.fechaInicio ? sprint_actual.fechaInicio : DateTime.Today;
+
+            var progreso_hoy = baseDatos.Progreso_Sprint.Where(x => x.sprintProyecto == Proyecto && x.sprintNumero == sprint &&
+            x.fecha.Year == hoy.Year
+            && x.fecha.Month == hoy.Month
+            && x.fecha.Day == hoy.Day
+            ).FirstOrDefault();
+
+            var modificado = true;
+
+            if (progreso_hoy == default(Progreso_Sprint))
+            {
+                progreso_hoy = new Progreso_Sprint();
+                progreso_hoy.fecha = hoy;
+                progreso_hoy.sprintNumero = sprint;
+                progreso_hoy.sprintProyecto = Proyecto;
+                modificado = false;
+            }
+
+            var puntos = sprint_actual.Sprint_Modulos
+                .Select(m => baseDatos.Modulos
+                    .Find(m.proyecto, m.modulo).Requerimientos
+                        .Select(x => x.estado == "Finalizado" ? 0 : (x.esfuerzo ?? 0))
+                        .Sum())
+                .Sum();
+            progreso_hoy.puntos = puntos;
+            if (modificado)
+            {
+                baseDatos.Entry(progreso_hoy).State = System.Data.Entity.EntityState.Modified;
+            }
+            else
+            {
+                baseDatos.Progreso_Sprint.Add(progreso_hoy);
+            }
+
+            baseDatos.SaveChanges();
+        }
+
         // GET: Requerimientos
         public ActionResult Index(string proyecto, int? page)
         {
@@ -147,6 +189,17 @@ namespace ControldeCambios.Controllers
                 requerimiento.proyecto = model.proyecto;
                 requerimiento.Usuarios = model.equipo.Select(x => baseDatos.Usuarios.Find(x)).ToList();
 
+                var criterios = model.criteriosAceptacion.Split('|').ToList();
+
+                var criterio_list = new List<Requerimientos_Cri_Acep>();
+                foreach(var criterio in criterios)
+                {
+                    var cri_ac = new Requerimientos_Cri_Acep();
+                    cri_ac.criterio = criterio;
+                    criterio_list.Add(cri_ac);
+                }
+
+                requerimiento.Requerimientos_Cri_Acep = criterio_list;
                 baseDatos.Requerimientos.Add(requerimiento);
 
                 baseDatos.SaveChanges();
