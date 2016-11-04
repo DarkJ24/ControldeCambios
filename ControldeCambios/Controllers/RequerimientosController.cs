@@ -181,7 +181,10 @@ namespace ControldeCambios.Controllers
                 requerimiento.prioridad = Int32.Parse(model.prioridad);
                 requerimiento.esfuerzo = Int32.Parse(model.esfuerzo);
                 requerimiento.creadoEn = DateTime.ParseExact(model.fechaInicial, "MM/dd/yyyy", CultureInfo.InvariantCulture);
-                requerimiento.finalizaEn = DateTime.ParseExact(model.fechaFinal, "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                if (model.fechaFinal != null)
+                {
+                    requerimiento.finalizaEn = DateTime.ParseExact(model.fechaFinal, "MM/dd/yyyy", CultureInfo.InvariantCulture);
+                }
                 requerimiento.observaciones = model.observaciones;
                 requerimiento.solicitadoPor = model.solicitadoPor;
                 requerimiento.creadoPor = model.creadoPor;

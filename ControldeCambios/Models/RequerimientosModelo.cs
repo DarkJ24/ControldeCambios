@@ -59,6 +59,9 @@ namespace ControldeCambios.Models
 
         //AGREGAR IMAGEN
 
+        public string rutaImagen { get; set; }
+
+
         [Display(Name = "Criterios de Aceptación")]
         [Required]
         public string criteriosAceptacion { get; set; }
