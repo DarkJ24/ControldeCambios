@@ -232,7 +232,6 @@ namespace ControldeCambios.Controllers
             ViewBag.DesarrolladoresDisp = listaDesarrolladores;
             var listaModulos = baseDatos.Modulos.Where(m => m.proyecto == model.proyecto).ToList();
             ViewBag.Modulo = new SelectList(listaModulos, "numero", "nombre");
-
             ViewBag.EstadoRequerimiento = new SelectList(baseDatos.Estado_Requerimientos.ToList(), "nombre", "nombre");
 
             return View(model);
@@ -272,21 +271,23 @@ namespace ControldeCambios.Controllers
             modelo.esfuerzo = modelo.requerimiento.esfuerzo.ToString();
             modelo.observaciones = modelo.requerimiento.observaciones;
             modelo.fechaInicial = modelo.requerimiento.creadoEn.ToString("MM/dd/yyyy");
+            if (modelo.requerimiento.finalizaEn != null)
+            {
+                modelo.fechaFinal = (modelo.requerimiento.finalizaEn ?? DateTime.Now).ToString("MM/dd/yyyy");
+            }
             modelo.solicitadoPor = modelo.requerimiento.solicitadoPor;
             modelo.estado = modelo.requerimiento.estado;
             modelo.proyecto = modelo.requerimiento.proyecto;
-
             var requerimiento = baseDatos.Requerimientos.Find(id);
             modelo.requerimiento = requerimiento;
 
-            modelo.criteriosAceptacion = requerimiento.Requerimientos_Cri_Acep.Select(c => c.criterio).Aggregate((acc, x) => acc + "|" + x);
-
-            /*var equipo = proyecto.Proyecto_Equipo.ToList();
-            model.equipo = new List<string>();
-            foreach (var des in equipo)
+            modelo.equipo = new List<string>();
+            foreach (var des in modelo.requerimiento.Usuarios.ToList())
             {
-                model.equipo.Add(des.usuario);
-            }*/
+                modelo.equipo.Add(des.cedula);
+            }
+
+            modelo.criteriosAceptacion = requerimiento.Requerimientos_Cri_Acep.Select(c => c.criterio).Aggregate((acc, x) => acc + "|" + x);
 
             List<Usuario> listaDesarrolladores = new List<Usuario>();
             List<Modulo> listaModulos = new List<Modulo>();
@@ -331,7 +332,8 @@ namespace ControldeCambios.Controllers
         {
             if (ModelState.IsValid)
             {
-                var requerimiento = new Requerimiento();
+                var requerimiento = baseDatos.Requerimientos.Find(modelo.id);
+                requerimiento.nombre = modelo.nombre;
                 requerimiento.codigo = modelo.codigo;
                 requerimiento.version = Int32.Parse(modelo.version);
                 requerimiento.creadoPor = modelo.creadoPor;
@@ -343,46 +345,20 @@ namespace ControldeCambios.Controllers
                 if (modelo.fechaFinal != null)
                 {
                     requerimiento.finalizaEn = DateTime.ParseExact(modelo.fechaFinal, "MM/dd/yyyy", null);
-                }                
+                }
                 requerimiento.estado = modelo.estado;
                 requerimiento.observaciones = modelo.observaciones;
                 requerimiento.proyecto = modelo.proyecto;
+                requerimiento.Usuarios = new List<Usuario>();
+                baseDatos.SaveChanges();
+                if (modelo.equipo != null)
+                {
+                    foreach (var desarrollador in modelo.equipo)
+                    {
+                         requerimiento.Usuarios.Add(baseDatos.Usuarios.Find(desarrollador));
+                    }
+                }
                 baseDatos.Entry(requerimiento).State = System.Data.Entity.EntityState.Modified;
-
-                /*var equipo_viejo = baseDatos.Proyecto_Equipo.Where(m => m.proyecto == model.nombre).ToList();
-
-                foreach (var usuario in equipo_viejo)
-                {
-                    baseDatos.Entry(usuario).State = System.Data.Entity.EntityState.Deleted;
-                }
-
-                if (model.equipo != null)
-                {
-                    foreach (var desarrollador in model.equipo)
-                    {
-                        var proyectoDesarrollador = new Proyecto_Equipo();
-                        proyectoDesarrollador.usuario = desarrollador;
-                        proyectoDesarrollador.proyecto = proyecto.nombre;
-                        baseDatos.Proyecto_Equipo.Add(proyectoDesarrollador);
-                    }
-
-                    var checkLider = model.equipo.Where(m => m == proyecto.lider);
-                    if (checkLider.Count() == 0)
-                    {
-                        var proyectoDesarrollador = new Proyecto_Equipo();
-                        proyectoDesarrollador.usuario = proyecto.lider;
-                        proyectoDesarrollador.proyecto = proyecto.nombre;
-                        baseDatos.Proyecto_Equipo.Add(proyectoDesarrollador);
-                    }
-                }
-                else
-                {
-                    var proyectoDesarrollador = new Proyecto_Equipo();
-                    proyectoDesarrollador.usuario = proyecto.lider;
-                    proyectoDesarrollador.proyecto = proyecto.nombre;
-                    baseDatos.Proyecto_Equipo.Add(proyectoDesarrollador);
-                }*/
-
                 baseDatos.SaveChanges();
                 this.AddToastMessage("Requerimiento Modificado", "El requerimiento " + modelo.nombre + " se ha modificado correctamente.", ToastType.Success);
                 return RedirectToAction("Detalles", "Requerimientos", new { id = requerimiento.id });
