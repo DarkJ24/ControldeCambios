@@ -209,6 +209,7 @@ namespace ControldeCambios.Controllers
             modelo.id = modelo.requerimiento.id;
             modelo.codigo = modelo.requerimiento.codigo;
             modelo.nombre = modelo.requerimiento.nombre;
+            modelo.creadoPor = modelo.requerimiento.creadoPor;
             modelo.version = modelo.requerimiento.version.ToString();
             modelo.descripcion = modelo.requerimiento.descripcion;
             modelo.prioridad = modelo.requerimiento.prioridad.ToString();
@@ -217,13 +218,18 @@ namespace ControldeCambios.Controllers
             modelo.fechaInicial = modelo.requerimiento.creadoEn.ToString("MM/dd/yyyy");
             modelo.solicitadoPor = modelo.requerimiento.solicitadoPor;
             modelo.estado = modelo.requerimiento.estado;
+            modelo.proyecto = modelo.requerimiento.proyecto;
 
-            /*var requerimiento = baseDatos.Requerimientos.Find(id);
-            var equipo = requerimiento..ToList();
-            modelo.equipo = new List<string>();
+            var requerimiento = baseDatos.Requerimientos.Find(id);
+            modelo.requerimiento = requerimiento;
+
+            modelo.criteriosAceptacion = requerimiento.Requerimientos_Cri_Acep.Select(c => c.criterio).Aggregate((acc, x) => acc + "|" + x);
+
+            /*var equipo = proyecto.Proyecto_Equipo.ToList();
+            model.equipo = new List<string>();
             foreach (var des in equipo)
             {
-                modelo.equipo.Add(des.usuario);
+                model.equipo.Add(des.usuario);
             }*/
 
             List<Usuario> listaDesarrolladores = new List<Usuario>();
@@ -273,6 +279,7 @@ namespace ControldeCambios.Controllers
                 requerimiento.codigo = modelo.requerimiento.codigo;
                 requerimiento.nombre = modelo.requerimiento.nombre;
                 requerimiento.version = modelo.requerimiento.version;
+                requerimiento.creadoPor = modelo.requerimiento.creadoPor;
                 requerimiento.descripcion = modelo.requerimiento.descripcion;
                 requerimiento.solicitadoPor = modelo.requerimiento.solicitadoPor;
                 requerimiento.prioridad = modelo.requerimiento.prioridad;
@@ -280,6 +287,8 @@ namespace ControldeCambios.Controllers
                 requerimiento.creadoEn = modelo.requerimiento.creadoEn;
                 requerimiento.estado = modelo.requerimiento.estado;
                 requerimiento.observaciones = modelo.requerimiento.observaciones;
+                requerimiento.proyecto = modelo.requerimiento.proyecto;
+                requerimiento = modelo.requerimiento;
                 baseDatos.Entry(requerimiento).State = System.Data.Entity.EntityState.Modified;
 
                 /*var equipo_viejo = baseDatos.Proyecto_Equipo.Where(m => m.proyecto == model.nombre).ToList();
