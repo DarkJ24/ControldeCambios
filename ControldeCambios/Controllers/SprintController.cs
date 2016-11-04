@@ -18,6 +18,48 @@ namespace ControldeCambios.Controllers
         Entities baseDatos = new Entities();
         ApplicationDbContext context = new ApplicationDbContext();
 
+        private void updateSprintPoints(string Proyecto, int sprint)
+        {
+
+            var sprint_actual = baseDatos.Sprints.Find(Proyecto, sprint);
+            var hoy = DateTime.Today < sprint_actual.fechaInicio ? sprint_actual.fechaInicio : DateTime.Today;
+
+            var progreso_hoy = baseDatos.Progreso_Sprint.Where(x => x.sprintProyecto == Proyecto && x.sprintNumero == sprint && 
+            x.fecha.Year == hoy.Year
+            && x.fecha.Month == hoy.Month
+            && x.fecha.Day == hoy.Day
+            ).FirstOrDefault();
+
+            var modificado = true;
+
+            if (progreso_hoy == default(Progreso_Sprint))
+            {
+                progreso_hoy = new Progreso_Sprint();
+                progreso_hoy.fecha = hoy;
+                progreso_hoy.sprintNumero = sprint;
+                progreso_hoy.sprintProyecto = Proyecto;
+                modificado = false;
+            }
+
+            var puntos = sprint_actual.Sprint_Modulos
+                .Select(m => baseDatos.Modulos
+                    .Find(m.proyecto, m.modulo).Requerimientos
+                        .Select(x => x.estado == "Finalizado" ? 0 : (x.esfuerzo ?? 0))
+                        .Sum())
+                .Sum();
+            progreso_hoy.puntos = puntos;
+            if (modificado)
+            {
+                baseDatos.Entry(progreso_hoy).State = System.Data.Entity.EntityState.Modified;
+            }
+            else
+            {
+                baseDatos.Progreso_Sprint.Add(progreso_hoy);
+            }
+
+            baseDatos.SaveChanges(); 
+        }
+
         // GET: Sprint
         public ActionResult Index()
         {
@@ -56,12 +98,19 @@ namespace ControldeCambios.Controllers
         {
             if (ModelState.IsValid)
             {
+                
                 var sprint = new Sprint();
                 sprint.numero = Int32.Parse(model.numero);
                 sprint.proyecto = model.proyecto;
                 sprint.fechaInicio = DateTime.ParseExact(model.fechaInicio, "MM/dd/yyyy", CultureInfo.InvariantCulture);
                 sprint.fechaFinal = DateTime.ParseExact(model.fechaFinal, "MM/dd/yyyy", CultureInfo.InvariantCulture);
-                if (model.modulos.Count() > 0)
+                if (sprint.fechaInicio > sprint.fechaFinal)
+                {
+                    this.AddToastMessage("Error", "La fecha de inicio debe ser antes de la fecha final", ToastType.Warning);
+                    return RedirectToAction("Crear", "Sprint", new { proyecto = model.proyecto });
+                }
+
+                    if (model.modulos != null && model.modulos.Count() > 0)
                 {
                     foreach (var modulo in model.modulos)
                     {
@@ -72,8 +121,11 @@ namespace ControldeCambios.Controllers
                         sprint.Sprint_Modulos.Add(sprint_modulo);
                     }
                 }
+
                 baseDatos.Sprints.Add(sprint);
                 baseDatos.SaveChanges();
+
+                updateSprintPoints(sprint.proyecto, sprint.numero);
                 this.AddToastMessage("Sprint Creado", "El sprint " + model.numero + " se ha creado y asignado correctamente"
                     + " al proyecto " + model.proyecto + ".", ToastType.Success);
                 return RedirectToAction("Crear", "Sprint", new { proyecto = model.proyecto });
