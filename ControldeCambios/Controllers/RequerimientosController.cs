@@ -329,19 +329,21 @@ namespace ControldeCambios.Controllers
             if (ModelState.IsValid)
             {
                 var requerimiento = new Requerimiento();
-                requerimiento.codigo = modelo.requerimiento.codigo;
-                requerimiento.nombre = modelo.requerimiento.nombre;
-                requerimiento.version = modelo.requerimiento.version;
-                requerimiento.creadoPor = modelo.requerimiento.creadoPor;
-                requerimiento.descripcion = modelo.requerimiento.descripcion;
-                requerimiento.solicitadoPor = modelo.requerimiento.solicitadoPor;
-                requerimiento.prioridad = modelo.requerimiento.prioridad;
-                requerimiento.esfuerzo = modelo.requerimiento.esfuerzo;
-                requerimiento.creadoEn = modelo.requerimiento.creadoEn;
-                requerimiento.estado = modelo.requerimiento.estado;
-                requerimiento.observaciones = modelo.requerimiento.observaciones;
-                requerimiento.proyecto = modelo.requerimiento.proyecto;
-                requerimiento = modelo.requerimiento;
+                requerimiento.codigo = modelo.codigo;
+                requerimiento.version = Int32.Parse(modelo.version);
+                requerimiento.creadoPor = modelo.creadoPor;
+                requerimiento.descripcion = modelo.descripcion;
+                requerimiento.solicitadoPor = modelo.solicitadoPor;
+                requerimiento.prioridad = Int32.Parse(modelo.prioridad);
+                requerimiento.esfuerzo = Int32.Parse(modelo.esfuerzo);
+                requerimiento.creadoEn = DateTime.ParseExact(modelo.fechaInicial, "MM/dd/yyyy", null);
+                if (modelo.fechaFinal != null)
+                {
+                    requerimiento.finalizaEn = DateTime.ParseExact(modelo.fechaFinal, "MM/dd/yyyy", null);
+                }                
+                requerimiento.estado = modelo.estado;
+                requerimiento.observaciones = modelo.observaciones;
+                requerimiento.proyecto = modelo.proyecto;
                 baseDatos.Entry(requerimiento).State = System.Data.Entity.EntityState.Modified;
 
                 /*var equipo_viejo = baseDatos.Proyecto_Equipo.Where(m => m.proyecto == model.nombre).ToList();
@@ -420,10 +422,12 @@ namespace ControldeCambios.Controllers
         //POST: Delete
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Borrar(RequerimientosModelo modeloReq)
+        public ActionResult Borrar(RequerimientosModelo modeloReq)
         {
-            var user = await baseDatos.Requerimientos.FindAsync(modeloReq.requerimiento.id);
-            baseDatos.Entry(user).State = System.Data.Entity.EntityState.Deleted;
+            var criterios = baseDatos.Requerimientos_Cri_Acep.Where(m => m.idReq == modeloReq.requerimiento.id).ToList();
+            baseDatos.Entry(criterios).State = System.Data.Entity.EntityState.Deleted;
+            var req = baseDatos.Requerimientos.Find(modeloReq.requerimiento.id);
+            baseDatos.Entry(req).State = System.Data.Entity.EntityState.Deleted;
             baseDatos.SaveChanges();
 
             this.AddToastMessage("Usuario Borrado", "El requerimiento " + modeloReq.requerimiento.nombre + " se ha borrado correctamente.", ToastType.Success);
