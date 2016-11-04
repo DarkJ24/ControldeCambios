@@ -1,8 +1,127 @@
-﻿
+﻿@model ControldeCambios.Models.SprintModelo
 @{
-    ViewBag.Title = "Detalles";
+    ViewBag.Title = "Consultar Sprint";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Detalles</h2>
+<script>
+    function habilitarCampos() {
+        $('.editBtns').show();
+        $('.editFields').attr("disabled", false);
+        $('.ms-elem-selectable').removeClass('disabled');
+        $('.ms-elem-selection').removeClass('disabled');
+        $('#subtitle').html("Modificar Sprint");
+    }
+</script>
 
+<h2>Gestión de Proyectos</h2>
+<h4 id="subtitle">@ViewBag.Title</h4>
+<hr />
+
+<button type="button" class="btn btn-primary" onClick="habilitarCampos()">Modificar</button>
+@if (Model.modulos.Count == 0)
+{
+    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal">Eliminar</button>
+}
+@using (Html.BeginForm("Detalles", "Sprint", FormMethod.Post, new { @class = "form-horizontal editFields", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.proyecto, new { @class = "col-md-2 control-label required" })
+        <div class="col-md-10">
+            @Html.DisplayFor(m => m.proyecto, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.proyecto, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.proyecto)
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.numero, new { @class = "col-md-2 control-label required" })
+        <div class="col-md-10">
+            @Html.DisplayFor(m => m.numero, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.numero, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.numero)
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.fechaInicio, new { @class = "col-md-2 control-label required" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.fechaInicio, new { @class = "form-control datePicker" })
+            @Html.ValidationMessageFor(model => model.fechaInicio, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.fechaFinal, new { @class = "col-md-2 control-label required" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.fechaFinal, new { @class = "form-control datePicker" })
+            @Html.ValidationMessageFor(model => model.fechaFinal, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+
+   <div class="form-group">
+        @Html.Label("Modulos", new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.ListBoxFor(m => m.modulos, (MultiSelectList)ViewBag.Modulos, new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;" })
+            @Html.ValidationMessageFor(model => model.modulos, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+
+    <div class="form-group editBtns" style="display:none">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-success" value="Aceptar" />
+            <input type="button" class="btn btn-default" value="Cancelar" onclick="location.reload()" />
+        </div>
+    </div>
+    }
+
+    <!-- Modal -->
+    <div class="modal fade" id="confirmModal" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#d61d1d;color:#FFFFFF">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Eliminar Sprint</h4>
+                </div>
+                <div class="modal-body" style="padding-bottom:0px">
+                    <p>Seguro que deseas eliminar a @(Model.numero)?</p>
+                    <p style="color:red"><sub>*Esta acción es irreversible</sub></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    @using (Html.BeginForm("Borrar", "Sprint", FormMethod.Post, new { @class = "form-horizontal", role = "form", style = "display:inline;padding-left:5px;" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.proyecto)
+                        @Html.HiddenFor(m => m.numero)
+                        @Html.HiddenFor(m => m.fechaInicio)
+                        @Html.HiddenFor(m => m.fechaFinal)
+                        @Html.HiddenFor(m => m.modulos)
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style type="text/css">
+        .required:after {
+            content: "*";
+            font-weight: bold;
+            color: red;
+        }
+    </style>
+    <script>
+            window.onload = function() {
+                $('#list2').multiSelect();
+            };
+    </script>
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
