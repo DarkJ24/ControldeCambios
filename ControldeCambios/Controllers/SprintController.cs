@@ -18,20 +18,30 @@ namespace ControldeCambios.Controllers
         Entities baseDatos = new Entities();
         ApplicationDbContext context = new ApplicationDbContext();
 
+        /// <summary>
+        /// Cuenta la cantidad de puntos que están "en progreso"
+        /// </summary>
+        /// <param name="Proyecto"> El proyecto de donde se va a contar.</param>
+        /// <param name="sprint"> El sprint de donde se va a contar.</param>
         private void updateSprintPoints(string Proyecto, int sprint)
         {
 
             var sprint_actual = baseDatos.Sprints.Find(Proyecto, sprint);
+            // busca el dia actual o el dia donde comienza el sprint, el que sea el maximo
             var hoy = DateTime.Today < sprint_actual.fechaInicio ? sprint_actual.fechaInicio : DateTime.Today;
 
-            var progreso_hoy = baseDatos.Progreso_Sprint.Where(x => x.sprintProyecto == Proyecto && x.sprintNumero == sprint && 
+            //encontrar la tupla en la tabla Progreso_Sprint que cumple que el día es igual al maximo entre hoy y el primer día del sprint,
+            // y esta en el proyecto y sprint pedido
+            var progreso_hoy = baseDatos.Progreso_Sprint.Where(x => x.sprintProyecto == Proyecto && x.sprintNumero == sprint &&
             x.fecha.Year == hoy.Year
             && x.fecha.Month == hoy.Month
             && x.fecha.Day == hoy.Day
             ).FirstOrDefault();
 
+            //sirve para revisar si se ha modificado la tupla
             var modificado = true;
 
+            // si no hay un progreso_sprint creado para ese día, crearlo
             if (progreso_hoy == default(Progreso_Sprint))
             {
                 progreso_hoy = new Progreso_Sprint();
@@ -41,13 +51,17 @@ namespace ControldeCambios.Controllers
                 modificado = false;
             }
 
+            // luego contar los puntos para ese progreso_sprint
             var puntos = sprint_actual.Sprint_Modulos
                 .Select(m => baseDatos.Modulos
                     .Find(m.proyecto, m.modulo).Requerimientos
                         .Select(x => x.estado == "Finalizado" ? 0 : (x.esfuerzo ?? 0))
                         .Sum())
                 .Sum();
+            // asignar los puntos
             progreso_hoy.puntos = puntos;
+
+            //actualizar si fue modificado, sino agregarlo
             if (modificado)
             {
                 baseDatos.Entry(progreso_hoy).State = System.Data.Entity.EntityState.Modified;
@@ -57,8 +71,9 @@ namespace ControldeCambios.Controllers
                 baseDatos.Progreso_Sprint.Add(progreso_hoy);
             }
 
-            baseDatos.SaveChanges(); 
+            baseDatos.SaveChanges();
         }
+
 
         // GET: Sprint
         public ActionResult Index()
@@ -202,15 +217,18 @@ namespace ControldeCambios.Controllers
             var esfuerzo_real = new List<double>();
             if (horas_esfuerzo.Any())
             {
+                //tomar el ultimo dia para iterar por cada día
                 var ultimo_dia = horas_esfuerzo.Select(h => h.fecha).Max();
                 for (var dia = start; dia < ultimo_dia.AddDays(1); dia = dia.AddDays(1))
                 {
                     double puntaje;
                     var esfuerzo_actual = horas_esfuerzo.Where(s => s.fecha.Date.Equals(dia.Date)).FirstOrDefault();
+                    // repetir el esfuerzo del día pasado si no se hizo nada
                     if (esfuerzo_actual == null)
                     {
                         puntaje = esfuerzo_real.Last();
                     }
+                    //sino, usar el puntaje normal
                     else
                     {
                         puntaje = esfuerzo_actual.puntos;

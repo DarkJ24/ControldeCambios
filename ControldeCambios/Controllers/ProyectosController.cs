@@ -182,6 +182,10 @@ namespace ControldeCambios.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Devuelve los detalles y permite un proyecto.
+        /// </summary>
+        /// <returns>Pagina de detalles</returns>
         // GET: Detalles
         public ActionResult Detalles(string id)
         {
@@ -195,6 +199,7 @@ namespace ControldeCambios.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+            //cargar los atributos al modelo
             ModificarProyectoModel model = new ModificarProyectoModel();
             var proyecto = baseDatos.Proyectos.Find(id);
             model.cliente = baseDatos.Usuarios.Find(proyecto.cliente);
@@ -210,6 +215,8 @@ namespace ControldeCambios.Controllers
             {
                 model.equipo.Add(des.usuario);
             }
+
+            //llenar las listas para el combobox
             List<Usuario> listaDesarrolladores = new List<Usuario>();
             List<Usuario> listaClientes = new List<Usuario>();
             string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
@@ -237,6 +244,10 @@ namespace ControldeCambios.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Guarda la modificación de un proyecto.
+        /// </summary>
+        /// <returns>Pagina de detalles</returns>
         // POST: Detalles
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -244,6 +255,7 @@ namespace ControldeCambios.Controllers
         {
             if (ModelState.IsValid)
             {
+                // cargar atributos del modelo
                 var proyecto = new Proyecto();
                 proyecto.cliente = model.cliente.cedula;
                 proyecto.lider = model.lider.cedula;
@@ -256,12 +268,13 @@ namespace ControldeCambios.Controllers
                 baseDatos.Entry(proyecto).State = System.Data.Entity.EntityState.Modified;
 
                 var equipo_viejo = baseDatos.Proyecto_Equipo.Where(m => m.proyecto == model.nombre).ToList();
-
+                // eliminar las entradas del equipo viejo
                 foreach (var usuario in equipo_viejo)
                 {
                     baseDatos.Entry(usuario).State = System.Data.Entity.EntityState.Deleted;
                 }
 
+                // crear las entradas para el equipo nuevo
                 if (model.equipo != null)
                 {
                     foreach (var desarrollador in model.equipo)
@@ -294,6 +307,8 @@ namespace ControldeCambios.Controllers
                 return RedirectToAction("Detalles", "Proyectos", new { id = proyecto.nombre });
 
             }
+
+            // si el modelo no es valido volver a cargar las listas:
             List<Usuario> listaDesarrolladores = new List<Usuario>();
             List<Usuario> listaClientes = new List<Usuario>();
             string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
