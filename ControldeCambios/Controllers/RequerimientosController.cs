@@ -401,15 +401,32 @@ namespace ControldeCambios.Controllers
         //POST: Delete
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Borrar(RequerimientosModelo modeloReq)
+        public ActionResult Borrar(RequerimientosModelo modelo)
         {
-            var criterios = baseDatos.Requerimientos_Cri_Acep.Where(m => m.idReq == modeloReq.requerimiento.id).ToList();
-            baseDatos.Entry(criterios).State = System.Data.Entity.EntityState.Deleted;
-            var req = baseDatos.Requerimientos.Find(modeloReq.requerimiento.id);
-            baseDatos.Entry(req).State = System.Data.Entity.EntityState.Deleted;
-            baseDatos.SaveChanges();
+            if (ModelState.IsValid) {
 
-            this.AddToastMessage("Usuario Borrado", "El requerimiento " + modeloReq.requerimiento.nombre + " se ha borrado correctamente.", ToastType.Success);
+                //var criterios = baseDatos.Requerimientos_Cri_Acep.Where(m => m.id == modelo.id).ToList();
+                //baseDatos.Entry(criterios).State = System.Data.Entity.EntityState.Deleted;
+
+                var criterios = baseDatos.Requerimientos.Find(modelo.id).Requerimientos_Cri_Acep.ToList();
+                for (int i = criterios.Count - 1; i >= 0; i--)
+                {
+                    criterios.RemoveAt(i);
+                }
+
+                var equipo = modelo.equipo.ToList();
+                for (int i = equipo.Count - 1; i >= 0; i--)
+                {
+                    equipo.RemoveAt(i);
+                }
+
+                var req = baseDatos.Requerimientos.Find(modelo.id);
+                baseDatos.Entry(req).State = System.Data.Entity.EntityState.Deleted;
+                baseDatos.SaveChanges();
+
+            }
+
+            this.AddToastMessage("Usuario Borrado", "El requerimiento " + modelo.nombre + " se ha borrado correctamente.", ToastType.Success);
             return RedirectToAction("Index", "Home");
         }
     }
