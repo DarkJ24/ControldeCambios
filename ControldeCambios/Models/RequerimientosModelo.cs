@@ -7,9 +7,12 @@ using System.Web.Mvc;
 
 namespace ControldeCambios.Models
 {
+    /// <summary>
+    /// Provee modelado para los objetos de tipo Requerimiento
+    /// </summary>
+    
     public class RequerimientosModelo
     {
-        //Tabla Requerimientos
 
         public Requerimiento requerimiento { get; set; }
 
@@ -57,7 +60,7 @@ namespace ControldeCambios.Models
         [RegularExpression(@"^[A-Za-z0-9\s]+$", ErrorMessage = "Las observaciones solo pueden contener números, letras y espacios")]
         public string observaciones { get; set; }
 
-        //AGREGAR IMAGEN
+        ///******FALTA AGREGAR IMAGEN******///
 
         public string rutaImagen { get; set; }
 
