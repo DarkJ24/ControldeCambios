@@ -26,20 +26,30 @@ namespace ControldeCambios.Controllers
 
         private ApplicationUserManager _userManager;
 
+        /// <summary>
+        /// Cuenta la cantidad de puntos que están "en progreso"
+        /// </summary>
+        /// <param name="Proyecto"> El proyecto de donde se va a contar.</param>
+        /// <param name="sprint"> El sprint de donde se va a contar.</param>
         private void updateSprintPoints(string Proyecto, int sprint)
         {
 
             var sprint_actual = baseDatos.Sprints.Find(Proyecto, sprint);
+            // busca el dia actual o el dia donde comienza el sprint, el que sea el maximo
             var hoy = DateTime.Today < sprint_actual.fechaInicio ? sprint_actual.fechaInicio : DateTime.Today;
 
+            //encontrar la tupla en la tabla Progreso_Sprint que cumple que el día es igual al maximo entre hoy y el primer día del sprint,
+            // y esta en el proyecto y sprint pedido
             var progreso_hoy = baseDatos.Progreso_Sprint.Where(x => x.sprintProyecto == Proyecto && x.sprintNumero == sprint &&
             x.fecha.Year == hoy.Year
             && x.fecha.Month == hoy.Month
             && x.fecha.Day == hoy.Day
             ).FirstOrDefault();
 
+            //sirve para revisar si se ha modificado la tupla
             var modificado = true;
 
+            // si no hay un progreso_sprint creado para ese día, crearlo
             if (progreso_hoy == default(Progreso_Sprint))
             {
                 progreso_hoy = new Progreso_Sprint();
@@ -49,13 +59,17 @@ namespace ControldeCambios.Controllers
                 modificado = false;
             }
 
+            // luego contar los puntos para ese progreso_sprint
             var puntos = sprint_actual.Sprint_Modulos
                 .Select(m => baseDatos.Modulos
                     .Find(m.proyecto, m.modulo).Requerimientos
                         .Select(x => x.estado == "Finalizado" ? 0 : (x.esfuerzo ?? 0))
                         .Sum())
                 .Sum();
+            // asignar los puntos
             progreso_hoy.puntos = puntos;
+
+            //actualizar si fue modificado, sino agregarlo
             if (modificado)
             {
                 baseDatos.Entry(progreso_hoy).State = System.Data.Entity.EntityState.Modified;
@@ -67,6 +81,7 @@ namespace ControldeCambios.Controllers
 
             baseDatos.SaveChanges();
         }
+
 
         // GET: Requerimientos
         public ActionResult Index(string proyecto, int? page)
