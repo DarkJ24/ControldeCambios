@@ -74,13 +74,21 @@ namespace ControldeCambios.Controllers
             baseDatos.SaveChanges();
         }
 
-
+        /// <summary>
+        /// Funcionalidad para index Sprint.
+        /// </summary>
+        /// <returns>Pagina de Index</returns>
         // GET: Sprint
         public ActionResult Index()
         {
             return View();
         }
 
+        /// <summary>
+        /// Funcionalidad para crear Sprint.
+        /// </summary>
+        /// <param name="proyecto"> Cadena con la nombre del Proyecto al que pertenece el sprint a  crear.</param>
+        /// <returns>Modelo con la informacion del sprint</returns>
         // GET: Crear
         public ActionResult Crear(string proyecto)
         {
@@ -90,6 +98,8 @@ namespace ControldeCambios.Controllers
                 this.AddToastMessage("Acceso Denegado", "No tienes permiso para crear sprints!", ToastType.Warning);
                 return RedirectToAction("Index", "Home");
             }
+
+            //se revisa que el proyecto exista
             if (String.IsNullOrEmpty(proyecto))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -107,13 +117,18 @@ namespace ControldeCambios.Controllers
             }
         }
 
+        /// <summary>
+        /// Funcionalidad para crear Sprint.
+        /// </summary>
+        /// <param name="model">Modelo con la informacion del sprint a  crear.</param>
+        /// <returns>Pagina de Crear Sprint</returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Crear(SprintModelo model)
         {
             if (ModelState.IsValid)
             {
-                
+                //se carga la informacion del sprint del modelo
                 var sprint = new Sprint();
                 sprint.numero = Int32.Parse(model.numero);
                 sprint.proyecto = model.proyecto;
@@ -124,8 +139,8 @@ namespace ControldeCambios.Controllers
                     this.AddToastMessage("Error", "La fecha de inicio debe ser antes de la fecha final", ToastType.Warning);
                     return RedirectToAction("Crear", "Sprint", new { proyecto = model.proyecto });
                 }
-
-                    if (model.modulos != null && model.modulos.Count() > 0)
+                //se crea las relaciones de sprint con modulo
+                if (model.modulos != null && model.modulos.Count() > 0)
                 {
                     foreach (var modulo in model.modulos)
                     {
@@ -167,6 +182,13 @@ namespace ControldeCambios.Controllers
             return userRol;
         }
 
+
+        /// <summary>
+        /// Funcionalidad para consultar informacion del Sprint.
+        /// </summary>
+        /// <param name="proyecto"> Cadena con la nombre del Proyecto al que pertenece el sprint.</param>
+        /// <param name="sprint"> Cadena con el numero de Sprint a consultar.</param>
+        /// <returns>Modelo con la informacion del Sprint a consultar</returns>
         // GET: Informacion
         public ActionResult Informacion(string proyecto, string sprint)
         {
@@ -176,6 +198,7 @@ namespace ControldeCambios.Controllers
                 this.AddToastMessage("Acceso Denegado", "No tienes permiso para consultar detalles de sprints!", ToastType.Warning);
                 return RedirectToAction("Index", "Home");
             }
+            //se revisa que el proyecto y el sprint existan
             if (String.IsNullOrEmpty(proyecto))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -194,12 +217,16 @@ namespace ControldeCambios.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
+            //se actualiza la informacion en el modelo
             var model = new SprintInfoModel();
             model.sprintNumero = sprint;
             model.sprintModulos = spr.Sprint_Modulos.Count();
             model.sprintFechaInicio = spr.fechaInicio.ToString("dd/MM/yyyy");
             model.sprintFechaFinal = spr.fechaFinal.ToString("dd/MM/yyyy");
             model.sprintEsfuerzo = 0;
+
+            //esfuerzo obtenido de los requerimientos que pertenecen a los modulos asociados
             foreach (var sprMod in spr.Sprint_Modulos)
             {
                 foreach (var req in sprMod.Modulo1.Requerimientos)
@@ -254,6 +281,13 @@ namespace ControldeCambios.Controllers
         }
 
 
+        /// <summary>
+        /// Funcionalidad para consultar informacion del Sprint.
+        /// </summary>
+        /// <param name="proyecto"> Cadena con la nombre del Proyecto al que pertenece el sprint.</param>
+        /// <param name="sprint"> Cadena con el numero de Sprint a consultar.</param>
+        /// <returns>Modelo con la informacion del Sprint a consultar</returns>
+        // GET: Detalles
         public ActionResult Detalles(string proyecto, string sprint)
         {
             if (!revisarPermisos("Consultar Detalles de Sprints"))
@@ -262,6 +296,8 @@ namespace ControldeCambios.Controllers
                 this.AddToastMessage("Acceso Denegado", "No tienes permiso para consultar detalles de sprints!", ToastType.Warning);
                 return RedirectToAction("Index", "Home");
             }
+
+            //se revisa que el proyecto y el sprint existan
             if (String.IsNullOrEmpty(proyecto))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -282,16 +318,19 @@ namespace ControldeCambios.Controllers
             }
             var model = new SprintModelo();
 
+            //se actualiza la informacion dle modelo
             model.proyecto = proyecto;
             model.numero = sprint;
             model.fechaInicio = spr.fechaInicio.ToString("dd/MM/yyyy");
             model.fechaFinal = spr.fechaFinal.ToString("dd/MM/yyyy");
 
+            //se carga la lista de modulos asociados
             int sprint_numero = Int32.Parse(sprint);
             ViewBag.modulos = new MultiSelectList(baseDatos.Modulos.Where(m => m.proyecto == proyecto).ToList(), "numero", "nombre");
             model.modulos = new List<string>();
             var listaDeModulosSprint = baseDatos.Sprint_Modulos.Where(m => m.sprint == sprint_numero && m.proyecto == proyecto).ToList();
 
+            //se agregan los modulos al modelo
             foreach (var modulo in listaDeModulosSprint)
             {
                 model.modulos.Add(modulo.modulo.ToString());
@@ -301,6 +340,11 @@ namespace ControldeCambios.Controllers
         }
 
 
+        /// <summary>
+        /// Funcionalidad para consultar informacion  basica del Sprint.
+        /// </summary>
+        /// <param name="model"> Modelo con la informacion del Sprint a consultar.</param>
+        /// <returns>Pantalla de detalles del sprint</returns>
         // POST: /Sprint/Detalles
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -308,6 +352,7 @@ namespace ControldeCambios.Controllers
         {
             if (ModelState.IsValid)
             {
+                //se obtiene la informacion del modelo
                 var sprint = new Sprint();
                 sprint.numero = Int32.Parse(model.numero);
                 sprint.proyecto = model.proyecto;
@@ -315,6 +360,7 @@ namespace ControldeCambios.Controllers
                 sprint.fechaFinal = DateTime.ParseExact(model.fechaFinal, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                 baseDatos.Entry(sprint).State = System.Data.Entity.EntityState.Modified;
 
+                //se eliminan los modulos viejos en caso de haber efectuado cambios
                 var modulosViejos = baseDatos.Sprint_Modulos.Where(m => m.sprint == sprint.numero && m.proyecto == model.proyecto);
                 if (modulosViejos.Count() > 0)
                 {
@@ -325,8 +371,8 @@ namespace ControldeCambios.Controllers
                     }
                 }
 
-
-                if (model.modulos.Count() > 0)
+                //se agregan las nuevas relaciones de sprint con modulo
+                if (model.modulos != null && model.modulos.Count() > 0)
                 {
                     foreach (var modulo in model.modulos)
                     {
@@ -348,7 +394,11 @@ namespace ControldeCambios.Controllers
             return View(model);
         }
 
-
+        /// <summary>
+        /// Funcionalidad para borrar un Sprint.
+        /// </summary>
+        /// <param name="model"> Modelo con la informacion del Sprint a borrar.</param>
+        /// <returns>Pantalla de informacion del proyecto</returns>
         // POST: /Sprint/Detalles
         [HttpPost]
         [ValidateAntiForgeryToken]

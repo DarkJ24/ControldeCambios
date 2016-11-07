@@ -74,6 +74,110 @@
 </div>
 
 <div class="row panel panel-info">
+    <div class="panel-heading"><label>Lista de Requerimientos</label></div>
+    <div class="panel-body">
+        @if (Model.crearRequerimientos)
+        {
+            <p>
+                @Html.ActionLink("Crear Requerimiento", "Crear", "Requerimientos", new { proyecto = Model.proyecto.nombre }, new { @class = "btn btn-primary" })
+            </p>
+        }
+        <p>
+            @Html.ActionLink("Ver Product Backlog", "Index", "Requerimientos", new { proyecto = Model.proyecto.nombre }, new { @class = "btn btn-info" })
+        </p>
+    </div>
+</div>
+
+<div class="row panel panel-info">
+    <div class="panel-heading"><label>Lista de Módulos</label></div>
+    <div class="panel-body">
+        @if (Model.crearModulos)
+        {
+            <p>
+                @Html.ActionLink("Crear Módulo", "Crear", "Modulos", new { proyecto = Model.proyecto.nombre }, new { @class = "btn btn-primary" })
+            </p>
+        }
+        @if (Model.indexModuloInfoList.Count() > 0)
+        {
+            <table class="table">
+                <tr>
+                    <th>
+                        Número
+                    </th>
+                    <th>
+                        Nombre
+                    </th>
+                    <th>
+                        Requerimientos
+                    </th>
+                    <th>
+                        Esfuerzo
+                    </th>
+                    @if (Model.detallesModulos)
+                {
+                        <th>
+                            Consultar
+                        </th>
+                    }
+                </tr>
+                @foreach (var modulo in Model.indexModuloInfoList)
+                {
+                    <tr id="@(modulo.numero)">
+                        <td>
+                            @Html.DisplayFor(modelItem =>
+modulo.numero)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem =>
+modulo.nombre)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem =>
+modulo.requerimientos)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem =>
+modulo.puntaje)
+                        </td>
+                        @if (Model.detallesModulos)
+                    {
+                            <td>
+
+                                @Html.ActionLink("Consultar", "Detalles", "Modulos", new
+                           {
+                               numero =
+     modulo.numero,
+                               proyecto = Model.proyecto.nombre
+                           }, new { })
+                            </td>
+                        }
+                    </tr>
+                }
+            </table>
+            @Html.PagedListPager((IPagedList)ViewBag.OnePageOfModulos, page => Url.Action("Index", new { sprintPage = Request.Params["sprintPage"], moduloPage = page }))
+            @Html.Raw("Página:")
+            if (ViewBag.OnePageOfModulos.PageCount < ViewBag.OnePageOfModulos.PageNumber)
+            {
+                @Html.Raw("0")
+            }
+            else
+            {
+                @ViewBag.OnePageOfModulos.PageNumber
+            }
+            @Html.Raw(" de ")
+            @ViewBag.OnePageOfModulos.PageCount
+        }
+        else
+        {
+            <div class="row text-center">
+                <label>No hay Módulos</label>
+            </div>
+        }
+    </div>
+</div>
+
+
+<div class="row panel panel-info">
     <div class="panel-heading"><label>Lista de Sprints</label></div>
     <div class="panel-body">
         @if (Model.crearSprints)
@@ -178,104 +282,4 @@
     </div>
 </div>
 
-<div class="row panel panel-info">
-    <div class="panel-heading"><label>Lista de Módulos</label></div>
-    <div class="panel-body">
-        @if (Model.crearModulos)
-        {
-            <p>
-                @Html.ActionLink("Crear Módulo", "Crear", "Modulos", new { proyecto = Model.proyecto.nombre }, new { @class = "btn btn-primary" })
-            </p>
-        }
-        @if (Model.indexModuloInfoList.Count() > 0)
-        {
-            <table class="table">
-                <tr>
-                    <th>
-                        Número
-                    </th>
-                    <th>
-                        Nombre
-                    </th>
-                    <th>
-                        Requerimientos
-                    </th>
-                    <th>
-                        Esfuerzo
-                    </th>
-                    @if (Model.detallesModulos)
-                {
-                        <th>
-                            Consultar
-                        </th>
-                    }
-                </tr>
-                @foreach (var modulo in Model.indexModuloInfoList)
-                {
-                    <tr id="@(modulo.numero)">
-                        <td>
-                            @Html.DisplayFor(modelItem =>
-modulo.numero)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem =>
-modulo.nombre)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem =>
-modulo.requerimientos)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem =>
-modulo.puntaje)
-                        </td>
-                        @if (Model.detallesModulos)
-                    {
-                            <td>
 
-                                @Html.ActionLink("Consultar", "Detalles", "Modulos", new
-                           {
-                               numero =
-     modulo.numero,
-                               proyecto = Model.proyecto.nombre
-                           }, new { })
-                            </td>
-                        }
-                    </tr>
-                }
-            </table>
-            @Html.PagedListPager((IPagedList)ViewBag.OnePageOfModulos, page => Url.Action("Index", new { sprintPage = Request.Params["sprintPage"], moduloPage = page }))
-            @Html.Raw("Página:")
-            if (ViewBag.OnePageOfModulos.PageCount < ViewBag.OnePageOfModulos.PageNumber)
-            {
-                @Html.Raw("0")
-            }
-            else
-            {
-                @ViewBag.OnePageOfModulos.PageNumber
-            }
-            @Html.Raw(" de ")
-            @ViewBag.OnePageOfModulos.PageCount
-        }
-        else
-        {
-            <div class="row text-center">
-                <label>No hay Módulos</label>
-            </div>
-        }
-    </div>
-</div>
-<div class="row panel panel-info">
-    <div class="panel-heading"><label>Lista de Requerimientos</label></div>
-    <div class="panel-body">
-        @if (Model.crearRequerimientos)
-        {
-            <p>
-                @Html.ActionLink("Crear Requerimiento", "Crear", "Requerimientos", new { proyecto = Model.proyecto.nombre }, new { @class = "btn btn-primary" })
-            </p>
-        }
-        <p>
-            @Html.ActionLink("Ver Product Backlog", "Index", "Requerimientos", new { proyecto = Model.proyecto.nombre }, new { @class = "btn btn-info" })
-        </p>
-    </div>
-</div>
