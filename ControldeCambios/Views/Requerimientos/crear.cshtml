@@ -4,6 +4,9 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+
+@*Script para implementar visualmente los criterios de aceptacion.
+  A estos se les puede añadir o eliminar criterios de aceptacion*@
 <script>
 i = 1;
 
@@ -58,7 +61,8 @@ function load_all() {
         </div>
     </div>
 
-
+    @*Se utilizan paneles para poder dividir la pantalla en secciones 
+      y acomodar los campos en secciones*@
     <div class="panel panel-info">
         <div class="panel-heading"><label>Datos de Requerimiento</label></div>
         <div class="panel-body">
@@ -170,7 +174,6 @@ function load_all() {
     </div>
 
    
-   //FALTA SPRINT Y VERSION 
      <div class="panel panel-info">
         <div class="panel-heading"><label>Datos Generales</label></div>
         <div class="panel-body">

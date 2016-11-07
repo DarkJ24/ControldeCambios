@@ -135,15 +135,19 @@ namespace ControldeCambios.Controllers
                 this.AddToastMessage("Acceso Denegado", "No tienes permiso para crear requerimientos!", ToastType.Warning);
                 return RedirectToAction("Index", "Home");
             }
+            //Solo se permite crear cuando tiene un proyecto asignado
             if (String.IsNullOrEmpty(proyecto))
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             RequerimientosModelo model = new RequerimientosModelo();
             model.proyecto = proyecto;
+           //Requerido para cargar la lista de desarrolladores
             List<Usuario> listaDesarrolladores = new List<Usuario>();
+            //Requerido para cargar la lista de clientes
             List<Usuario> listaClientes = new List<Usuario>();
             string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
+            //Requerido para formar el equipo de trabajo
             foreach(var proyEquipo in baseDatos.Proyectos.Find(model.proyecto).Proyecto_Equipo){
                 listaDesarrolladores.Add(baseDatos.Usuarios.Find(proyEquipo.usuario));
             }
@@ -174,7 +178,9 @@ namespace ControldeCambios.Controllers
         {
             if (ModelState.IsValid)
             {
+                //Crea el requerimiento en la tabla Requerimientos
                 var requerimiento = new Requerimiento();
+                //Se llenan todos los atributos del requerimiento
                 requerimiento.codigo = model.codigo;
                 requerimiento.nombre = model.nombre;
                 requerimiento.descripcion = model.descripcion;
@@ -192,8 +198,10 @@ namespace ControldeCambios.Controllers
                 requerimiento.proyecto = model.proyecto;
                 requerimiento.Usuarios = model.equipo.Select(x => baseDatos.Usuarios.Find(x)).ToList();
 
+                //Se hace el split para separar los criterios de aceptación y meterlos en una lista
                 var criterios = model.criteriosAceptacion.Split('|').ToList();
 
+               //Se crea la lista de criterios de aceptacion que puede ser expandible
                 var criterio_list = new List<Requerimientos_Cri_Acep>();
                 foreach(var criterio in criterios)
                 {
@@ -205,14 +213,18 @@ namespace ControldeCambios.Controllers
                 requerimiento.Requerimientos_Cri_Acep = criterio_list;
                 baseDatos.Requerimientos.Add(requerimiento);
 
+               //Se guardan los datos en la base de datos
                 baseDatos.SaveChanges();
+               //Se muestra el mensaje de que el requerimiento fue creado correctamente
                 this.AddToastMessage("Requerimiento Creado", "El requerimiento " + model.nombre + " se ha creado correctamente.", ToastType.Success);
+               //Se devuelve a la pagina de crear para seguir creando requerimientos 
                 return RedirectToAction("Crear", "Requerimientos", new { proyecto = model.proyecto });
             }
             List<Usuario> listaDesarrolladores = new List<Usuario>();
             List<Usuario> listaClientes = new List<Usuario>();
             string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
             string desarrolladorRol = context.Roles.Where(m => m.Name == "Desarrollador").First().Id;
+            //Se le asignan a los clientes y a los desarrolladores el requerimiento
             foreach (var user in context.Users.ToArray())
             {
                 if (user.Roles.First().RoleId.Equals(clienteRol))
