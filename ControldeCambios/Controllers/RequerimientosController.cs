@@ -270,25 +270,25 @@ namespace ControldeCambios.Controllers
         /// <returns>Pagina de Index</returns>
         // GET: /Requerimientos/Detalles
         // GET: Detalles
-        public ActionResult Detalles(int id)
+        public ActionResult Detalles(int id)    
         {
-            if (!revisarPermisos("Modificar Requerimientos"))
+            if (!revisarPermisos("Modificar Requerimientos"))   // Revisa los permisos del usuario accediendo a la pantalla
             {
                 //Despliega mensaje en caso de no poder modificar un requerimiento
                 this.AddToastMessage("Acceso Denegado", "No tienes permiso para modificar requerimientos!", ToastType.Warning);
                 return RedirectToAction("Index", "Home");
             }
-            if (id == null)
+            if (id == null) // Si no existe el requerimiento, redirecciona a error
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            RequerimientosModelo modelo = new RequerimientosModelo();
-            modelo.requerimiento = baseDatos.Requerimientos.Find(id);
+            RequerimientosModelo modelo = new RequerimientosModelo();   // Crea un modelo y lo llena con los datos del requerimiento
+            modelo.requerimiento = baseDatos.Requerimientos.Find(id);   // que entro como parametro
             if (modelo.requerimiento.id == null)
             {
                 return HttpNotFound();
             }
-            modelo.id = modelo.requerimiento.id;
+            modelo.id = modelo.requerimiento.id;             // Diferentes asignaciones de variables para el modelo creado
             modelo.codigo = modelo.requerimiento.codigo;
             modelo.nombre = modelo.requerimiento.nombre;
             modelo.creadoPor = modelo.requerimiento.creadoPor;
@@ -305,28 +305,28 @@ namespace ControldeCambios.Controllers
             modelo.solicitadoPor = modelo.requerimiento.solicitadoPor;
             modelo.estado = modelo.requerimiento.estado;
             modelo.proyecto = modelo.requerimiento.proyecto;
-            var requerimiento = baseDatos.Requerimientos.Find(id);
+            var requerimiento = baseDatos.Requerimientos.Find(id);  // Se crea una variable requerimiento con el id del requerimiento llamado
             modelo.requerimiento = requerimiento;
 
-            modelo.equipo = new List<string>();
+            modelo.equipo = new List<string>();     // Se llena la variable equipo con el equipo ya asignado a este requerimiento, si ya hay uno
             foreach (var des in modelo.requerimiento.Usuarios.ToList())
             {
                 modelo.equipo.Add(des.cedula);
             }
 
-            modelo.criteriosAceptacion = requerimiento.Requerimientos_Cri_Acep.Select(c => c.criterio).Aggregate((acc, x) => acc + "|" + x);
-
-            List<Usuario> listaDesarrolladores = new List<Usuario>();
+            modelo.criteriosAceptacion = requerimiento.Requerimientos_Cri_Acep.Select(c => c.criterio).Aggregate((acc, x) => acc + "|" + x);    // Se agrega a la lista de criterios de aceptacion 
+                                                                                                                                                // los que ya estan vinculados con este requerimiento
+            List<Usuario> listaDesarrolladores = new List<Usuario>();       // Se inicializan listas que se usan a traves a continuacion
             List<Modulo> listaModulos = new List<Modulo>();
             List<Estado_Requerimientos> listaEstadoRequerimientos = new List<Estado_Requerimientos>();
             List<Usuario> listaClientes = new List<Usuario>();
 
-            string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
+            string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;       
             string desarrolladorRol = context.Roles.Where(m => m.Name == "Desarrollador").First().Id;
             foreach (var user in context.Users.ToArray())
-            {
-                if (user.Roles.First().RoleId.Equals(clienteRol))
-                {
+            {                                                               // En esta seccion se cargan las listas que despliegan los
+                if (user.Roles.First().RoleId.Equals(clienteRol))           // desarrolladores y usuarios relacionados con el requerimiento
+                {                                                        
                     listaClientes.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
                 }
                 else
@@ -338,13 +338,13 @@ namespace ControldeCambios.Controllers
                 }
             }
 
-            modelo.eliminarRequerimiento = revisarPermisos("Eliminar Requerimientos");
-            modelo.modificarRequerimiento = revisarPermisos("Modificar Requerimientos");
+            modelo.eliminarRequerimiento = revisarPermisos("Eliminar Requerimientos");              // Aqui se hacen unas validaciones de permisos 
+            modelo.modificarRequerimiento = revisarPermisos("Modificar Requerimientos");            // y se cargan ciertos Viewbags necesitados por la vista
             ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
             ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");
             ViewBag.DesarrolladoresDisp = listaDesarrolladores;
             ViewBag.Estados = new SelectList(baseDatos.Estado_Proyecto.ToList(), "nombre", "nombre");
-            return View(modelo);
+            return View(modelo);        // Se retorna la vista al modelo luego de cargar los datos
         }
 
         /// <summary>
@@ -357,10 +357,10 @@ namespace ControldeCambios.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Detalles(RequerimientosModelo modelo)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid)     // Verifica si el modelo que entra como parametro es valido para modificar
             {
-                var requerimiento = baseDatos.Requerimientos.Find(modelo.id);
-                requerimiento.nombre = modelo.nombre;
+                var requerimiento = baseDatos.Requerimientos.Find(modelo.id);   // Se busca el modelo en la base y se cambian sus datos por los
+                requerimiento.nombre = modelo.nombre;                           // del modelo que entra como parametro
                 requerimiento.codigo = modelo.codigo;
                 requerimiento.version = Int32.Parse(modelo.version);
                 requerimiento.creadoPor = modelo.creadoPor;
@@ -385,10 +385,10 @@ namespace ControldeCambios.Controllers
                          requerimiento.Usuarios.Add(baseDatos.Usuarios.Find(desarrollador));
                     }
                 }
-                baseDatos.Entry(requerimiento).State = System.Data.Entity.EntityState.Modified;
-                baseDatos.SaveChanges();
-                this.AddToastMessage("Requerimiento Modificado", "El requerimiento " + modelo.nombre + " se ha modificado correctamente.", ToastType.Success);
-                return RedirectToAction("Detalles", "Requerimientos", new { id = requerimiento.id });
+                baseDatos.Entry(requerimiento).State = System.Data.Entity.EntityState.Modified;     // Con esta linea se notifica a la base que se hacen los cambios
+                baseDatos.SaveChanges();    // Se guardan los cambios en la base
+                this.AddToastMessage("Requerimiento Modificado", "El requerimiento " + modelo.nombre + " se ha modificado correctamente.", ToastType.Success);      // Se muestra un mensaje de confirmacion
+                return RedirectToAction("Detalles", "Requerimientos", new { id = requerimiento.id });       // Se carga el requerimiento modificado en la pantalla
 
             }
 
@@ -397,9 +397,9 @@ namespace ControldeCambios.Controllers
             string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
             string desarrolladorRol = context.Roles.Where(m => m.Name == "Desarrollador").First().Id;
 
-            foreach (var user in context.Users.ToArray())
-            {
-                if (user.Roles.First().RoleId.Equals(clienteRol))
+            foreach (var user in context.Users.ToArray())                   // En esta seccion se cargan las listas que despliegan los
+            {                                                               // desarrolladores y usuarios relacionados con el requerimiento
+                if (user.Roles.First().RoleId.Equals(clienteRol))           // para modificarlos
                 {
                     listaClientes.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
                 }
@@ -412,12 +412,12 @@ namespace ControldeCambios.Controllers
                 }
             }
 
-            ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
-            ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");
+            ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");     // Se hacen unas validaciones de permisos y se
+            ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");                   // cargan los Viewbags necesitados en la vista
             ViewBag.DesarrolladoresDisp = listaDesarrolladores;
             ViewBag.Estados = new SelectList(baseDatos.Estado_Proyecto.ToList(), "nombre", "nombre"); ;
 
-            return View(modelo);
+            return View(modelo);    // Se retorna la vista al modelo luego de modificar los datos
         }
 
         /// <summary>
@@ -430,31 +430,28 @@ namespace ControldeCambios.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Borrar(RequerimientosModelo modelo)
         {
-            if (ModelState.IsValid) {
+            if (ModelState.IsValid) {       // Se verifica que el modelo es valido para eliminar
 
-                //var criterios = baseDatos.Requerimientos_Cri_Acep.Where(m => m.id == modelo.id).ToList();
-                //baseDatos.Entry(criterios).State = System.Data.Entity.EntityState.Deleted;
-
-                var criterios = baseDatos.Requerimientos.Find(modelo.id).Requerimientos_Cri_Acep.ToList();
+                var criterios = baseDatos.Requerimientos.Find(modelo.id).Requerimientos_Cri_Acep.ToList();      // Se carga la lista de criterios de aceptacion
                 for (int i = criterios.Count - 1; i >= 0; i--)
                 {
-                    criterios.RemoveAt(i);
+                    criterios.RemoveAt(i);                  // Se borran los criterios de aceptacion presentes en la lista
                 }
 
-                var equipo = modelo.equipo.ToList();
+                var equipo = modelo.equipo.ToList();                    // Se carga la lista del equipo 
                 for (int i = equipo.Count - 1; i >= 0; i--)
                 {
-                    equipo.RemoveAt(i);
+                    equipo.RemoveAt(i);             // Se borra todo el equipo presente en la lista
                 }
 
-                var req = baseDatos.Requerimientos.Find(modelo.id);
-                baseDatos.Entry(req).State = System.Data.Entity.EntityState.Deleted;
-                baseDatos.SaveChanges();
+                var req = baseDatos.Requerimientos.Find(modelo.id);      // Se carga el modelo para borrar
+                baseDatos.Entry(req).State = System.Data.Entity.EntityState.Deleted;        // Se le notifica a la base que se borra el requerimiento
+                baseDatos.SaveChanges();         // Se guardan los cambios
 
             }
 
-            this.AddToastMessage("Usuario Borrado", "El requerimiento " + modelo.nombre + " se ha borrado correctamente.", ToastType.Success);
-            return RedirectToAction("Index", "Home");
+            this.AddToastMessage("Usuario Borrado", "El requerimiento " + modelo.nombre + " se ha borrado correctamente.", ToastType.Success);      // Se muestra un mensaje de confirmacion
+            return RedirectToAction("Index", "Home");       // Se devuelve a la pantalla principal
         }
     }
-}
+}      
