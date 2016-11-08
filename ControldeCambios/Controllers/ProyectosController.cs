@@ -50,7 +50,24 @@ namespace ControldeCambios.Controllers
             // (solo debe mostrar proyectos a los que pertenezco)
             //Si es cliente, solo debe mostrar sus proyectos solicitados
             //Si es admin, mostrar todos
-            modelo.proyectos = baseDatos.Proyectos.OrderByDescending(s => s.nombre).ToList();
+            String userIdentityId = System.Web.HttpContext.Current.User.Identity.GetUserId(); //Busca el Id  del usuario actual
+            var rolRelacion = context.Users.Find(userIdentityId).Roles.First(); //Busca la relacion de rol del usuario actual
+            String nombreRol = context.Roles.Find(rolRelacion.RoleId).Name;
+            if (nombreRol == "Admin")
+            {
+                modelo.proyectos = baseDatos.Proyectos.ToList();
+            }
+            else
+            {
+                String usuarioActual = baseDatos.Usuarios.Where(m => m.id == userIdentityId).First().cedula; //Busca la cedula del usuario actual
+                var proyectoEquipos = baseDatos.Proyecto_Equipo.Where(m => m.usuario == usuarioActual).ToList(); //Busca las relaciones de pertenencia con proyectos
+                modelo.proyectos = baseDatos.Proyectos.Where(m => m.cliente == usuarioActual).ToList(); //Busca los proyectos que solicito
+                foreach (var proyEquipo in proyectoEquipos)
+                {
+                    modelo.proyectos.Add(baseDatos.Proyectos.Find(proyEquipo.proyecto)); //Anade los proyectos en los que es parte del equipo
+                }
+                modelo.proyectos = modelo.proyectos.OrderByDescending(s => s.nombre).ToList(); //Ordena los proyectos por nombre
+            }
             modelo.indexProyectoInfoList = new List<ProyectosModelo.proyectoInfo>();
             int pageSize = 10;
             int pageNumber = (page ?? 1);
