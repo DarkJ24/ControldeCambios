@@ -252,7 +252,8 @@ namespace ControldeCambios.Controllers
                     }
                 }
             }
-            model.eliminarPermitido = (revisarPermisos("Eliminar Proyectos") && (model.estado == "Por iniciar") && (baseDatos.Requerimientos.Where(m => m.proyecto == id).Count() == 0) && (baseDatos.Sprints.Where(m => m.proyecto == id).Count() == 0) && (baseDatos.Modulos.Where(m => m.proyecto == id).Count() == 0));
+            //model.eliminarPermitido = (revisarPermisos("Eliminar Proyectos") && (model.estado == "Por iniciar") && (baseDatos.Requerimientos.Where(m => m.proyecto == id).Count() == 0) && (baseDatos.Sprints.Where(m => m.proyecto == id).Count() == 0) && (baseDatos.Modulos.Where(m => m.proyecto == id).Count() == 0));
+            model.eliminarPermitido = revisarPermisos("Eliminar Proyectos");
             model.modificarProyecto = revisarPermisos("Modificar Proyectos");
             ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
             ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");

@@ -211,6 +211,7 @@ namespace ControldeCambios.Controllers
                 requerimiento.creadoPor = model.creadoPor;
                 requerimiento.estado = model.estado;
                 requerimiento.proyecto = model.proyecto;
+                requerimiento.version = 1;
                 requerimiento.Usuarios = model.equipo.Select(x => baseDatos.Usuarios.Find(x)).ToList();
 
                 //Se hace el split para separar los criterios de aceptación y meterlos en una lista
@@ -238,20 +239,16 @@ namespace ControldeCambios.Controllers
             List<Usuario> listaDesarrolladores = new List<Usuario>();
             List<Usuario> listaClientes = new List<Usuario>();
             string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
-            string desarrolladorRol = context.Roles.Where(m => m.Name == "Desarrollador").First().Id;
-            //Se le asignan a los clientes y a los desarrolladores el requerimiento
+            //Requerido para formar el equipo de trabajo
+            foreach (var proyEquipo in baseDatos.Proyectos.Find(model.proyecto).Proyecto_Equipo)
+            {
+                listaDesarrolladores.Add(baseDatos.Usuarios.Find(proyEquipo.usuario));
+            }
             foreach (var user in context.Users.ToArray())
             {
                 if (user.Roles.First().RoleId.Equals(clienteRol))
                 {
                     listaClientes.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
-                }
-                else
-                {
-                    if (user.Roles.First().RoleId.Equals(desarrolladorRol))
-                    {
-                        listaDesarrolladores.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
-                    }
                 }
             }
             ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
@@ -320,24 +317,19 @@ namespace ControldeCambios.Controllers
             List<Modulo> listaModulos = new List<Modulo>();
             List<Estado_Requerimientos> listaEstadoRequerimientos = new List<Estado_Requerimientos>();
             List<Usuario> listaClientes = new List<Usuario>();
-
-            string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;       
-            string desarrolladorRol = context.Roles.Where(m => m.Name == "Desarrollador").First().Id;
+            string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
+            //Requerido para formar el equipo de trabajo
+            foreach (var proyEquipo in baseDatos.Proyectos.Find(modelo.requerimiento.proyecto).Proyecto_Equipo)
+            {
+                listaDesarrolladores.Add(baseDatos.Usuarios.Find(proyEquipo.usuario));
+            }
             foreach (var user in context.Users.ToArray())
-            {                                                               // En esta seccion se cargan las listas que despliegan los
-                if (user.Roles.First().RoleId.Equals(clienteRol))           // desarrolladores y usuarios relacionados con el requerimiento
-                {                                                        
+            {
+                if (user.Roles.First().RoleId.Equals(clienteRol))
+                {
                     listaClientes.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
                 }
-                else
-                {
-                    if (user.Roles.First().RoleId.Equals(desarrolladorRol))
-                    {
-                        listaDesarrolladores.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
-                    }
-                }
             }
-
             modelo.eliminarRequerimiento = revisarPermisos("Eliminar Requerimientos");              // Aqui se hacen unas validaciones de permisos 
             modelo.modificarRequerimiento = revisarPermisos("Modificar Requerimientos");            // y se cargan ciertos Viewbags necesitados por la vista
             ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
@@ -430,32 +422,26 @@ namespace ControldeCambios.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Borrar(RequerimientosModelo modelo)
         {
-            if (ModelState.IsValid) // Se verifica que el modelo es valido para eliminar
+            var requerimiento = baseDatos.Requerimientos.Find(modelo.id);
+            String proyecto = requerimiento.proyecto;
+            var criterios = requerimiento.Requerimientos_Cri_Acep.ToList();
+            for (int i = criterios.Count - 1; i >= 0; i--)
             {
-
-                var criterios = baseDatos.Requerimientos.Find(modelo.id).Requerimientos_Cri_Acep.ToList(); // Se carga la lista de criterios de aceptacion
-                for (int i = criterios.Count - 1; i >= 0; i--)
-                {
-                    criterios.RemoveAt(i); // Se borran los criterios de aceptacion presentes en la lista
-                }
-
-                var equipo = modelo.equipo.ToList(); // Se carga la lista del equipo 
-                for (int i = equipo.Count - 1; i >= 0; i--)
-                {
-                    equipo.RemoveAt(i); // Se borra todo el equipo presente en la lista
-                }
-
-                var req = baseDatos.Requerimientos.Find(modelo.id); // Se carga el modelo para borrar
-                baseDatos.Entry(req).State = System.Data.Entity.EntityState.Deleted; // Se le notifica a la base que se borra el requerimiento
-                baseDatos.SaveChanges(); // Se guardan los cambios
-
-                this.AddToastMessage("Requerimiento Borrado", "El requerimiento " + modelo.nombre + " se ha borrado correctamente.", ToastType.Success);
-                return RedirectToAction("Index", "Home");
-            } else
-            {
-                this.AddToastMessage("Requerimiento No Borrado", "Ocurrió un error inesperado al borrar el requerimiento " + modelo.nombre, ToastType.Success);
-                return View(modelo);
+                criterios.RemoveAt(i);
             }
+
+            var equipo = requerimiento.Usuarios;
+
+            foreach (var usuario in equipo.ToList())
+            {
+                requerimiento.Usuarios.Remove(usuario);
+            }
+
+            baseDatos.Entry(requerimiento).State = System.Data.Entity.EntityState.Deleted;
+            baseDatos.SaveChanges();
+
+            this.AddToastMessage("Requerimiento Borrado", "El requerimiento " + modelo.nombre + " se ha borrado correctamente.", ToastType.Success);
+            return RedirectToAction("Index", "Requerimientos", new { proyecto = proyecto });
         }
     }
 }      
