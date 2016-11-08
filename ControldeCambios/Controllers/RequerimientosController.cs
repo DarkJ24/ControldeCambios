@@ -450,7 +450,7 @@ namespace ControldeCambios.Controllers
             baseDatos.Entry(requerimiento).State = System.Data.Entity.EntityState.Deleted;
             baseDatos.SaveChanges();
 
-            this.AddToastMessage("Usuario Borrado", "El requerimiento " + modelo.nombre + " se ha borrado correctamente.", ToastType.Success);
+            this.AddToastMessage("Requerimiento Borrado", "El requerimiento " + modelo.nombre + " se ha borrado correctamente.", ToastType.Success);
             return RedirectToAction("Index", "Home");
         }
     }
