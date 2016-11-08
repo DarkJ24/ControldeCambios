@@ -61,7 +61,7 @@ function load_all() {
 }
 @if (Model.eliminarRequerimiento)
 {
-    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal">Eliminar</button>
+    <button type = "button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal">Eliminar</button>
 }
 <hr />
 @using (Html.BeginForm("Detalles", "Requerimientos", FormMethod.Post, new { @class = "form-horizontal editFields", role = "form" }))
@@ -264,6 +264,7 @@ function load_all() {
                     @using (Html.BeginForm("Borrar", "Requerimientos", FormMethod.Post, new { @class = "form-horizontal", role = "form", style = "display:inline;padding-left:5px;" }))
                 {
                         @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.id)
                         <button type="submit" class="btn btn-danger">Eliminar</button>
                     }
                 </div>

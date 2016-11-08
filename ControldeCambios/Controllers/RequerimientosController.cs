@@ -430,28 +430,32 @@ namespace ControldeCambios.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Borrar(RequerimientosModelo modelo)
         {
-            if (ModelState.IsValid) {       // Se verifica que el modelo es valido para eliminar
+            if (ModelState.IsValid) // Se verifica que el modelo es valido para eliminar
+            {
 
-                var criterios = baseDatos.Requerimientos.Find(modelo.id).Requerimientos_Cri_Acep.ToList();      // Se carga la lista de criterios de aceptacion
+                var criterios = baseDatos.Requerimientos.Find(modelo.id).Requerimientos_Cri_Acep.ToList(); // Se carga la lista de criterios de aceptacion
                 for (int i = criterios.Count - 1; i >= 0; i--)
                 {
-                    criterios.RemoveAt(i);                  // Se borran los criterios de aceptacion presentes en la lista
+                    criterios.RemoveAt(i); // Se borran los criterios de aceptacion presentes en la lista
                 }
 
-                var equipo = modelo.equipo.ToList();                    // Se carga la lista del equipo 
+                var equipo = modelo.equipo.ToList(); // Se carga la lista del equipo 
                 for (int i = equipo.Count - 1; i >= 0; i--)
                 {
-                    equipo.RemoveAt(i);             // Se borra todo el equipo presente en la lista
+                    equipo.RemoveAt(i); // Se borra todo el equipo presente en la lista
                 }
 
-                var req = baseDatos.Requerimientos.Find(modelo.id);      // Se carga el modelo para borrar
-                baseDatos.Entry(req).State = System.Data.Entity.EntityState.Deleted;        // Se le notifica a la base que se borra el requerimiento
-                baseDatos.SaveChanges();         // Se guardan los cambios
+                var req = baseDatos.Requerimientos.Find(modelo.id); // Se carga el modelo para borrar
+                baseDatos.Entry(req).State = System.Data.Entity.EntityState.Deleted; // Se le notifica a la base que se borra el requerimiento
+                baseDatos.SaveChanges(); // Se guardan los cambios
 
+                this.AddToastMessage("Requerimiento Borrado", "El requerimiento " + modelo.nombre + " se ha borrado correctamente.", ToastType.Success);
+                return RedirectToAction("Index", "Home");
+            } else
+            {
+                this.AddToastMessage("Requerimiento No Borrado", "Ocurrió un error inesperado al borrar el requerimiento " + modelo.nombre, ToastType.Success);
+                return View(modelo);
             }
-
-            this.AddToastMessage("Usuario Borrado", "El requerimiento " + modelo.nombre + " se ha borrado correctamente.", ToastType.Success);      // Se muestra un mensaje de confirmacion
-            return RedirectToAction("Index", "Home");       // Se devuelve a la pantalla principal
         }
     }
 }      
