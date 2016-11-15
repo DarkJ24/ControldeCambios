@@ -46,7 +46,7 @@ function load_all() {
 <h2>Gestión de Requerimientos</h2>
 <h4>@ViewBag.Title</h4>
 <hr />
-@using (Html.BeginForm("Crear", "Requerimientos", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+@using (Html.BeginForm("Crear", "Requerimientos", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
 
@@ -106,14 +106,15 @@ function load_all() {
                 @Html.ValidationMessageFor(m => m.criteriosAceptacion, "", new { @class = "text-danger" })
             </div>
 
-            @*<div class="form-group">
+            <div class="form-group">
                 @Html.Label("Imagen", new { @class = "col-md-2 control-label" })
                 <div class="col-md-10">
                     <label class="" style="cursor:pointer">
-                        <input class="btn btn-default btn-file" type="file" />
+                       
+                        <input class="btn btn-default btn-file" type="file" name="ImageData" />
                     </label>
                 </div>
-            </div>*@
+            </div>
 
             <div class="form-group">
                 @Html.LabelFor(m => m.observaciones, new { @class = "col-md-2 control-label" })

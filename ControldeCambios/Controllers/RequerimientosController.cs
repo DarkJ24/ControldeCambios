@@ -184,13 +184,17 @@ namespace ControldeCambios.Controllers
         /// <summary>
         /// Funcionalidad para crear Requerimientos.
         /// </summary>
+        /// <param name="file"> Archivo de imagen subido</param>
         /// <param name="model"> Modelo con la informacion del Requerimiento a crear.</param>
         /// <returns>Pagina de Index</returns>
         // POST: /Requerimientos/Crear
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Crear(RequerimientosModelo model)
+        public ActionResult Crear(RequerimientosModelo model, HttpPostedFileBase ImageData)
         {
+
+
+
             if (ModelState.IsValid)
             {
                 //Crea el requerimiento en la tabla Requerimientos
@@ -213,6 +217,12 @@ namespace ControldeCambios.Controllers
                 requerimiento.proyecto = model.proyecto;
                 requerimiento.version = 1;
                 requerimiento.Usuarios = model.equipo.Select(x => baseDatos.Usuarios.Find(x)).ToList();
+
+                var array = new Byte[ImageData.ContentLength];
+                ImageData.InputStream.Position = 0;
+                ImageData.InputStream.Read(array, 0, ImageData.ContentLength);
+
+                requerimiento.imagen = array;
 
                 //Se hace el split para separar los criterios de aceptación y meterlos en una lista
                 var criterios = model.criteriosAceptacion.Split('|').ToList();
