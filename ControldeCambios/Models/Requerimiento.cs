@@ -26,6 +26,10 @@ public partial class Requerimiento
 
         this.Usuarios = new HashSet<Usuario>();
 
+        this.Solicitud_Cambios = new HashSet<Solicitud_Cambios>();
+
+        this.Solicitud_Cambios1 = new HashSet<Solicitud_Cambios>();
+
     }
 
 
@@ -61,7 +65,11 @@ public partial class Requerimiento
 
     public byte[] imagen { get; set; }
 
+    public string categoria { get; set; }
 
+
+
+    public virtual Categoria_Requerimientos Categoria_Requerimientos { get; set; }
 
     public virtual Estado_Requerimientos Estado_Requerimientos { get; set; }
 
@@ -80,6 +88,14 @@ public partial class Requerimiento
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
     public virtual ICollection<Usuario> Usuarios { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+
+    public virtual ICollection<Solicitud_Cambios> Solicitud_Cambios { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+
+    public virtual ICollection<Solicitud_Cambios> Solicitud_Cambios1 { get; set; }
 
 }
 

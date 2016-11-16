@@ -15,33 +15,21 @@ namespace ControldeCambios.Models
 using System;
     using System.Collections.Generic;
     
-public partial class Modulo
+public partial class Categoria_Requerimientos
 {
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-    public Modulo()
+    public Categoria_Requerimientos()
     {
-
-        this.Sprint_Modulos = new HashSet<Sprint_Modulos>();
 
         this.Requerimientos = new HashSet<Requerimiento>();
 
     }
 
 
-    public string proyecto { get; set; }
-
-    public int numero { get; set; }
-
     public string nombre { get; set; }
 
 
-
-    public virtual Proyecto Proyecto1 { get; set; }
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-
-    public virtual ICollection<Sprint_Modulos> Sprint_Modulos { get; set; }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 

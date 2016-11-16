@@ -12,8 +12,6 @@
         <EntityTypeShape EntityType="ModeloEntities.Progreso_Sprint" Width="1.5" PointX="7.5" PointY="8.375" />
         <EntityTypeShape EntityType="ModeloEntities.Proyecto_Equipo" Width="1.5" PointX="15" PointY="7.125" />
         <EntityTypeShape EntityType="ModeloEntities.Proyecto" Width="1.5" PointX="3" PointY="6" />
-        <EntityTypeShape EntityType="ModeloEntities.Requerimiento" Width="1.5" PointX="10.5" PointY="4.875" />
-        <EntityTypeShape EntityType="ModeloEntities.Requerimientos_Cri_Acep" Width="1.5" PointX="12.75" PointY="4.75" />
         <EntityTypeShape EntityType="ModeloEntities.Rol_Permisos" Width="1.5" PointX="3" PointY="0.875" />
         <EntityTypeShape EntityType="ModeloEntities.Sprint_Modulos" Width="1.5" PointX="7.375" PointY="5.5" />
         <EntityTypeShape EntityType="ModeloEntities.Sprint" Width="1.5" PointX="5.25" PointY="8.25" />
@@ -21,25 +19,38 @@
         <EntityTypeShape EntityType="ModeloEntities.Usuario" Width="1.5" PointX="12.75" PointY="7.25" />
         <EntityTypeShape EntityType="ModeloEntities.Usuarios_Telefonos" Width="1.5" PointX="15" PointY="11" />
         <AssociationConnector Association="ModeloEntities.fk_EstadoProye" />
-        <AssociationConnector Association="ModeloEntities.fk_EstadoReq" />
         <AssociationConnector Association="ModeloEntities.fk_ProyectoModulo1" />
-        <AssociationConnector Association="ModeloEntities.fk_ReqMod" />
         <AssociationConnector Association="ModeloEntities.fk_SprintModulo" />
         <AssociationConnector Association="ModeloEntities.fk_Permiso" />
         <AssociationConnector Association="ModeloEntities.fk_ProgSprint" />
         <AssociationConnector Association="ModeloEntities.fk_Proy" />
         <AssociationConnector Association="ModeloEntities.fk_UserPE" />
         <AssociationConnector Association="ModeloEntities.fk_UserPETipo" />
-        <AssociationConnector Association="ModeloEntities.fk_ReqProyecto" />
         <AssociationConnector Association="ModeloEntities.fk_UserProy" />
         <AssociationConnector Association="ModeloEntities.fk_UserProyCliente" />
         <AssociationConnector Association="ModeloEntities.fk_UserSprint" />
+        <AssociationConnector Association="ModeloEntities.fk_SprintReqSprint" />
+        <AssociationConnector Association="ModeloEntities.fk_User" />
+        <EntityTypeShape EntityType="ModeloEntities.Categoria_Requerimientos" Width="1.5" PointX="15.75" PointY="4.625" />
+        <EntityTypeShape EntityType="ModeloEntities.Estado_Solicitud" Width="1.5" PointX="18" PointY="10.25" />
+        <EntityTypeShape EntityType="ModeloEntities.Requerimiento" Width="1.5" PointX="18" PointY="3.25" />
+        <EntityTypeShape EntityType="ModeloEntities.Requerimientos_Cri_Acep" Width="1.5" PointX="20.25" PointY="5.375" />
+        <AssociationConnector Association="ModeloEntities.fk_DescReq" />
+        <AssociationConnector Association="ModeloEntities.fk_EstadoReq" />
+        <AssociationConnector Association="ModeloEntities.fk_ReqMod" />
+        <AssociationConnector Association="ModeloEntities.fk_ReqProyecto" />
         <AssociationConnector Association="ModeloEntities.fk_ReqCriAcp" />
         <AssociationConnector Association="ModeloEntities.fk_ReqUserCre" />
         <AssociationConnector Association="ModeloEntities.fk_ReqUserSol" />
-        <AssociationConnector Association="ModeloEntities.fk_SprintReqSprint" />
-        <AssociationConnector Association="ModeloEntities.fk_User" />
         <AssociationConnector Association="ModeloEntities.Requerimiento_Encargados" />
+        <EntityTypeShape EntityType="ModeloEntities.Solicitud_Cambios" Width="1.5" PointX="20.25" PointY="8.375" />
+        <EntityTypeShape EntityType="ModeloEntities.Tipo_Solicitud" Width="1.5" PointX="18" PointY="12.75" />
+        <AssociationConnector Association="ModeloEntities.fk_CambiosEstado" />
+        <AssociationConnector Association="ModeloEntities.fk_CambiosReq1" />
+        <AssociationConnector Association="ModeloEntities.fk_CambiosReq2" />
+        <AssociationConnector Association="ModeloEntities.fk_CambiosTipo" />
+        <AssociationConnector Association="ModeloEntities.fk_CambiosU1" />
+        <AssociationConnector Association="ModeloEntities.fk_CambiosU2" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

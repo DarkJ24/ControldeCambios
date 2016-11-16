@@ -1,5 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Schema Namespace="ModeloEntities.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Categoria_Requerimientos">
+    <Key>
+      <PropertyRef Name="nombre" />
+    </Key>
+    <Property Name="nombre" Type="varchar" MaxLength="10" Nullable="false" />
+  </EntityType>
   <EntityType Name="Estado_Proyecto">
     <Key>
       <PropertyRef Name="nombre" />
@@ -11,6 +17,12 @@
       <PropertyRef Name="nombre" />
     </Key>
     <Property Name="nombre" Type="char" MaxLength="24" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Estado_Solicitud">
+    <Key>
+      <PropertyRef Name="nombre" />
+    </Key>
+    <Property Name="nombre" Type="varchar" MaxLength="15" Nullable="false" />
   </EntityType>
   <EntityType Name="Modulos">
     <Key>
@@ -89,6 +101,7 @@
     <Property Name="proyecto" Type="varchar" MaxLength="25" Nullable="false" />
     <Property Name="modulo" Type="int" />
     <Property Name="imagen" Type="varbinary(max)" />
+    <Property Name="categoria" Type="varchar" MaxLength="10" Nullable="false" />
   </EntityType>
   <EntityType Name="Requerimientos_Cri_Acep">
     <Key>
@@ -105,6 +118,21 @@
     </Key>
     <Property Name="rol" Type="nvarchar" MaxLength="128" Nullable="false" />
     <Property Name="permiso" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Solicitud_Cambios">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="req1" Type="int" Nullable="false" />
+    <Property Name="req2" Type="int" Nullable="false" />
+    <Property Name="razon" Type="varchar" MaxLength="200" Nullable="false" />
+    <Property Name="solicitadoPor" Type="varchar" MaxLength="11" Nullable="false" />
+    <Property Name="solicitadoEn" Type="date" Nullable="false" />
+    <Property Name="aprobadoPor" Type="varchar" MaxLength="11" />
+    <Property Name="aprobadoEn" Type="date" />
+    <Property Name="estado" Type="varchar" MaxLength="15" Nullable="false" />
+    <Property Name="tipo" Type="varchar" MaxLength="15" Nullable="false" />
   </EntityType>
   <EntityType Name="Sprint_Modulos">
     <Key>
@@ -132,6 +160,12 @@
     </Key>
     <Property Name="nombre" Type="char" MaxLength="13" Nullable="false" />
   </EntityType>
+  <EntityType Name="Tipo_Solicitud">
+    <Key>
+      <PropertyRef Name="nombre" />
+    </Key>
+    <Property Name="nombre" Type="varchar" MaxLength="15" Nullable="false" />
+  </EntityType>
   <EntityType Name="Usuarios">
     <Key>
       <PropertyRef Name="cedula" />
@@ -149,6 +183,90 @@
     <Property Name="usuario" Type="varchar" MaxLength="11" Nullable="false" />
     <Property Name="telefono" Type="char" MaxLength="8" Nullable="false" />
   </EntityType>
+  <Association Name="fk_CambiosEstado">
+    <End Role="Estado_Solicitud" Type="Self.Estado_Solicitud" Multiplicity="1" />
+    <End Role="Solicitud_Cambios" Type="Self.Solicitud_Cambios" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Estado_Solicitud">
+        <PropertyRef Name="nombre" />
+      </Principal>
+      <Dependent Role="Solicitud_Cambios">
+        <PropertyRef Name="estado" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_CambiosReq1">
+    <End Role="Requerimientos" Type="Self.Requerimientos" Multiplicity="1" />
+    <End Role="Solicitud_Cambios" Type="Self.Solicitud_Cambios" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Requerimientos">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Solicitud_Cambios">
+        <PropertyRef Name="req1" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_CambiosReq2">
+    <End Role="Requerimientos" Type="Self.Requerimientos" Multiplicity="1" />
+    <End Role="Solicitud_Cambios" Type="Self.Solicitud_Cambios" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Requerimientos">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Solicitud_Cambios">
+        <PropertyRef Name="req2" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_CambiosTipo">
+    <End Role="Tipo_Solicitud" Type="Self.Tipo_Solicitud" Multiplicity="1" />
+    <End Role="Solicitud_Cambios" Type="Self.Solicitud_Cambios" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tipo_Solicitud">
+        <PropertyRef Name="nombre" />
+      </Principal>
+      <Dependent Role="Solicitud_Cambios">
+        <PropertyRef Name="estado" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_CambiosU1">
+    <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="0..1" />
+    <End Role="Solicitud_Cambios" Type="Self.Solicitud_Cambios" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuarios">
+        <PropertyRef Name="cedula" />
+      </Principal>
+      <Dependent Role="Solicitud_Cambios">
+        <PropertyRef Name="aprobadoPor" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_CambiosU2">
+    <End Role="Usuarios" Type="Self.Usuarios" Multiplicity="1" />
+    <End Role="Solicitud_Cambios" Type="Self.Solicitud_Cambios" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuarios">
+        <PropertyRef Name="cedula" />
+      </Principal>
+      <Dependent Role="Solicitud_Cambios">
+        <PropertyRef Name="solicitadoPor" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_DescReq">
+    <End Role="Categoria_Requerimientos" Type="Self.Categoria_Requerimientos" Multiplicity="1" />
+    <End Role="Requerimientos" Type="Self.Requerimientos" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Categoria_Requerimientos">
+        <PropertyRef Name="nombre" />
+      </Principal>
+      <Dependent Role="Requerimientos">
+        <PropertyRef Name="categoria" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="fk_EstadoProye">
     <End Role="Estado_Proyecto" Type="Self.Estado_Proyecto" Multiplicity="1" />
     <End Role="Proyectos" Type="Self.Proyectos" Multiplicity="*" />
@@ -418,8 +536,10 @@
     </ReferentialConstraint>
   </Association>
   <EntityContainer Name="ModeloEntitiesStoreContainer">
+    <EntitySet Name="Categoria_Requerimientos" EntityType="Self.Categoria_Requerimientos" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Estado_Proyecto" EntityType="Self.Estado_Proyecto" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Estado_Requerimientos" EntityType="Self.Estado_Requerimientos" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Estado_Solicitud" EntityType="Self.Estado_Solicitud" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Modulos" EntityType="Self.Modulos" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Permisos" EntityType="Self.Permisos" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Progreso_Sprint" EntityType="Self.Progreso_Sprint" Schema="dbo" store:Type="Tables" />
@@ -429,11 +549,41 @@
     <EntitySet Name="Requerimientos" EntityType="Self.Requerimientos" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Requerimientos_Cri_Acep" EntityType="Self.Requerimientos_Cri_Acep" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Rol_Permisos" EntityType="Self.Rol_Permisos" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Solicitud_Cambios" EntityType="Self.Solicitud_Cambios" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Sprint_Modulos" EntityType="Self.Sprint_Modulos" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Sprints" EntityType="Self.Sprints" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Tipo_Desarrollador" EntityType="Self.Tipo_Desarrollador" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Tipo_Solicitud" EntityType="Self.Tipo_Solicitud" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Usuarios" EntityType="Self.Usuarios" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Usuarios_Telefonos" EntityType="Self.Usuarios_Telefonos" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="fk_CambiosEstado" Association="Self.fk_CambiosEstado">
+      <End Role="Estado_Solicitud" EntitySet="Estado_Solicitud" />
+      <End Role="Solicitud_Cambios" EntitySet="Solicitud_Cambios" />
+    </AssociationSet>
+    <AssociationSet Name="fk_CambiosReq1" Association="Self.fk_CambiosReq1">
+      <End Role="Requerimientos" EntitySet="Requerimientos" />
+      <End Role="Solicitud_Cambios" EntitySet="Solicitud_Cambios" />
+    </AssociationSet>
+    <AssociationSet Name="fk_CambiosReq2" Association="Self.fk_CambiosReq2">
+      <End Role="Requerimientos" EntitySet="Requerimientos" />
+      <End Role="Solicitud_Cambios" EntitySet="Solicitud_Cambios" />
+    </AssociationSet>
+    <AssociationSet Name="fk_CambiosTipo" Association="Self.fk_CambiosTipo">
+      <End Role="Tipo_Solicitud" EntitySet="Tipo_Solicitud" />
+      <End Role="Solicitud_Cambios" EntitySet="Solicitud_Cambios" />
+    </AssociationSet>
+    <AssociationSet Name="fk_CambiosU1" Association="Self.fk_CambiosU1">
+      <End Role="Usuarios" EntitySet="Usuarios" />
+      <End Role="Solicitud_Cambios" EntitySet="Solicitud_Cambios" />
+    </AssociationSet>
+    <AssociationSet Name="fk_CambiosU2" Association="Self.fk_CambiosU2">
+      <End Role="Usuarios" EntitySet="Usuarios" />
+      <End Role="Solicitud_Cambios" EntitySet="Solicitud_Cambios" />
+    </AssociationSet>
+    <AssociationSet Name="fk_DescReq" Association="Self.fk_DescReq">
+      <End Role="Categoria_Requerimientos" EntitySet="Categoria_Requerimientos" />
+      <End Role="Requerimientos" EntitySet="Requerimientos" />
+    </AssociationSet>
     <AssociationSet Name="fk_EstadoProye" Association="Self.fk_EstadoProye">
       <End Role="Estado_Proyecto" EntitySet="Estado_Proyecto" />
       <End Role="Proyectos" EntitySet="Proyectos" />

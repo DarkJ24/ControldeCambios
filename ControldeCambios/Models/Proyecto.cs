@@ -26,9 +26,9 @@ public partial class Proyecto
 
         this.Proyecto_Equipo = new HashSet<Proyecto_Equipo>();
 
-        this.Requerimientos = new HashSet<Requerimiento>();
-
         this.Sprints = new HashSet<Sprint>();
+
+        this.Requerimientos = new HashSet<Requerimiento>();
 
     }
 
@@ -61,10 +61,6 @@ public partial class Proyecto
 
     public virtual ICollection<Proyecto_Equipo> Proyecto_Equipo { get; set; }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-
-    public virtual ICollection<Requerimiento> Requerimientos { get; set; }
-
     public virtual Usuario Usuario { get; set; }
 
     public virtual Usuario Usuario1 { get; set; }
@@ -72,6 +68,10 @@ public partial class Proyecto
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
     public virtual ICollection<Sprint> Sprints { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+
+    public virtual ICollection<Requerimiento> Requerimientos { get; set; }
 
 }
 

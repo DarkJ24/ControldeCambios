@@ -111,7 +111,7 @@ namespace ControldeCambios.Controllers
             {
                 var model = new ModulosModel();
                 model.proyecto = proyecto;
-                ViewBag.requerimientos = new MultiSelectList(baseDatos.Requerimientos.Where(m => m.proyecto == proyecto).ToList(), "id", "nombre");
+                ViewBag.requerimientos = new MultiSelectList(baseDatos.Requerimientos.Where(m => m.proyecto == proyecto && m.categoria == "Actual").ToList(), "id", "nombre");
                 return View(model);
             } else
             {
@@ -183,7 +183,7 @@ namespace ControldeCambios.Controllers
                 model.numero = numero;
                 model.nombre = modulo1.nombre;
                 model.proyecto = proyecto;
-                var requerimientos = baseDatos.Requerimientos.Where(m => m.proyecto == proyecto).ToList();
+                var requerimientos = baseDatos.Requerimientos.Where(m => m.proyecto == proyecto && m.categoria == "Actual").ToList();
                 ViewBag.requerimientos = new List<ModulosModel.reqInfo>();
                 foreach (var req in requerimientos)
                 {
@@ -192,7 +192,7 @@ namespace ControldeCambios.Controllers
                     req2.nombre = req.nombre;
                     ViewBag.requerimientos.Add(req2);
                 }
-                var reqEnProyecto = baseDatos.Requerimientos.Where(m => m.proyecto == proyecto && m.modulo == modulo.numero).ToList();
+                var reqEnProyecto = baseDatos.Requerimientos.Where(m => m.proyecto == proyecto && m.modulo == modulo.numero && m.categoria == "Actual").ToList();
                 model.requerimientos = new List<string>();
                 foreach(var req in reqEnProyecto)
                 {
@@ -223,7 +223,7 @@ namespace ControldeCambios.Controllers
                 modulo.numero = Int32.Parse(model.numero);
                 modulo.nombre = model.nombre;
                 baseDatos.Entry(modulo).State = System.Data.Entity.EntityState.Modified;
-                var reqViejos = baseDatos.Requerimientos.Where(m => m.proyecto == modulo.proyecto && m.modulo == modulo.numero).ToList();
+                var reqViejos = baseDatos.Requerimientos.Where(m => m.proyecto == modulo.proyecto && m.modulo == modulo.numero && (m.categoria == "Actual" || m.categoria == "En revisión")).ToList();
                 if (reqViejos.Count() > 0)
                 {
                     foreach (var req in reqViejos)
@@ -239,6 +239,16 @@ namespace ControldeCambios.Controllers
                         var requerimiento = baseDatos.Requerimientos.Find(Int32.Parse(req));
                         requerimiento.modulo = modulo.numero;
                         baseDatos.Entry(requerimiento).State = System.Data.Entity.EntityState.Modified;
+                        var solicitudesDeCambio = baseDatos.Solicitud_Cambios.Where(m => m.req1 == requerimiento.id).ToList();
+                        if (solicitudesDeCambio != null && solicitudesDeCambio.Count() > 0)
+                        {
+                            foreach (var solicitud in solicitudesDeCambio)
+                            {
+                                var requerimiento2 = baseDatos.Requerimientos.Find(solicitud.req2);
+                                requerimiento2.modulo = modulo.numero;
+                                baseDatos.Entry(requerimiento2).State = System.Data.Entity.EntityState.Modified;
+                            }
+                        }
                     }
                 }
 

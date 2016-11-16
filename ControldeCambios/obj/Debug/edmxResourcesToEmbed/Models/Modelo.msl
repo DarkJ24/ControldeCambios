@@ -65,37 +65,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="Requerimientos">
-      <EntityTypeMapping TypeName="ModeloEntities.Requerimiento">
-        <MappingFragment StoreEntitySet="Requerimientos">
-          <ScalarProperty Name="imagen" ColumnName="imagen" />
-          <ScalarProperty Name="modulo" ColumnName="modulo" />
-          <ScalarProperty Name="proyecto" ColumnName="proyecto" />
-          <ScalarProperty Name="solicitadoPor" ColumnName="solicitadoPor" />
-          <ScalarProperty Name="creadoPor" ColumnName="creadoPor" />
-          <ScalarProperty Name="estado" ColumnName="estado" />
-          <ScalarProperty Name="esfuerzo" ColumnName="esfuerzo" />
-          <ScalarProperty Name="observaciones" ColumnName="observaciones" />
-          <ScalarProperty Name="prioridad" ColumnName="prioridad" />
-          <ScalarProperty Name="nombre" ColumnName="nombre" />
-          <ScalarProperty Name="descripcion" ColumnName="descripcion" />
-          <ScalarProperty Name="finalizaEn" ColumnName="finalizaEn" />
-          <ScalarProperty Name="creadoEn" ColumnName="creadoEn" />
-          <ScalarProperty Name="version" ColumnName="version" />
-          <ScalarProperty Name="codigo" ColumnName="codigo" />
-          <ScalarProperty Name="id" ColumnName="id" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="Requerimientos_Cri_Acep">
-      <EntityTypeMapping TypeName="ModeloEntities.Requerimientos_Cri_Acep">
-        <MappingFragment StoreEntitySet="Requerimientos_Cri_Acep">
-          <ScalarProperty Name="criterio" ColumnName="criterio" />
-          <ScalarProperty Name="idReq" ColumnName="idReq" />
-          <ScalarProperty Name="id" ColumnName="id" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
     <EntitySetMapping Name="Rol_Permisos">
       <EntityTypeMapping TypeName="ModeloEntities.Rol_Permisos">
         <MappingFragment StoreEntitySet="Rol_Permisos">
@@ -148,6 +117,52 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="Categoria_Requerimientos">
+      <EntityTypeMapping TypeName="ModeloEntities.Categoria_Requerimientos">
+        <MappingFragment StoreEntitySet="Categoria_Requerimientos">
+          <ScalarProperty Name="nombre" ColumnName="nombre" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Estado_Solicitud">
+      <EntityTypeMapping TypeName="ModeloEntities.Estado_Solicitud">
+        <MappingFragment StoreEntitySet="Estado_Solicitud">
+          <ScalarProperty Name="nombre" ColumnName="nombre" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Requerimientos">
+      <EntityTypeMapping TypeName="ModeloEntities.Requerimiento">
+        <MappingFragment StoreEntitySet="Requerimientos">
+          <ScalarProperty Name="categoria" ColumnName="categoria" />
+          <ScalarProperty Name="imagen" ColumnName="imagen" />
+          <ScalarProperty Name="modulo" ColumnName="modulo" />
+          <ScalarProperty Name="proyecto" ColumnName="proyecto" />
+          <ScalarProperty Name="solicitadoPor" ColumnName="solicitadoPor" />
+          <ScalarProperty Name="creadoPor" ColumnName="creadoPor" />
+          <ScalarProperty Name="estado" ColumnName="estado" />
+          <ScalarProperty Name="esfuerzo" ColumnName="esfuerzo" />
+          <ScalarProperty Name="observaciones" ColumnName="observaciones" />
+          <ScalarProperty Name="prioridad" ColumnName="prioridad" />
+          <ScalarProperty Name="nombre" ColumnName="nombre" />
+          <ScalarProperty Name="descripcion" ColumnName="descripcion" />
+          <ScalarProperty Name="finalizaEn" ColumnName="finalizaEn" />
+          <ScalarProperty Name="creadoEn" ColumnName="creadoEn" />
+          <ScalarProperty Name="version" ColumnName="version" />
+          <ScalarProperty Name="codigo" ColumnName="codigo" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Requerimientos_Cri_Acep">
+      <EntityTypeMapping TypeName="ModeloEntities.Requerimientos_Cri_Acep">
+        <MappingFragment StoreEntitySet="Requerimientos_Cri_Acep">
+          <ScalarProperty Name="criterio" ColumnName="criterio" />
+          <ScalarProperty Name="idReq" ColumnName="idReq" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <AssociationSetMapping Name="Requerimiento_Encargados" TypeName="ModeloEntities.Requerimiento_Encargados" StoreEntitySet="Requerimiento_Encargados">
       <EndProperty Name="Usuario">
         <ScalarProperty Name="cedula" ColumnName="usuario" />
@@ -156,5 +171,28 @@
         <ScalarProperty Name="id" ColumnName="idReq" />
       </EndProperty>
     </AssociationSetMapping>
+    <EntitySetMapping Name="Solicitud_Cambios">
+      <EntityTypeMapping TypeName="ModeloEntities.Solicitud_Cambios">
+        <MappingFragment StoreEntitySet="Solicitud_Cambios">
+          <ScalarProperty Name="tipo" ColumnName="tipo" />
+          <ScalarProperty Name="estado" ColumnName="estado" />
+          <ScalarProperty Name="aprobadoEn" ColumnName="aprobadoEn" />
+          <ScalarProperty Name="aprobadoPor" ColumnName="aprobadoPor" />
+          <ScalarProperty Name="solicitadoEn" ColumnName="solicitadoEn" />
+          <ScalarProperty Name="solicitadoPor" ColumnName="solicitadoPor" />
+          <ScalarProperty Name="razon" ColumnName="razon" />
+          <ScalarProperty Name="req2" ColumnName="req2" />
+          <ScalarProperty Name="req1" ColumnName="req1" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Tipo_Solicitud">
+      <EntityTypeMapping TypeName="ModeloEntities.Tipo_Solicitud">
+        <MappingFragment StoreEntitySet="Tipo_Solicitud">
+          <ScalarProperty Name="nombre" ColumnName="nombre" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
   </EntityContainerMapping>
 </Mapping>

@@ -102,7 +102,7 @@ ON DELETE CASCADE
 
 CREATE TABLE Modulos(
 proyecto varchar(25),
-numero int,
+numero int identity(1,1),
 nombre varchar(25) not null,
 constraint pk_ReqModulo1 primary key (proyecto, numero),
 constraint fk_ProyectoModulo1 foreign key (proyecto) references Proyectos(nombre)
@@ -194,6 +194,10 @@ CREATE TABLE Estado_Solicitud(
 nombre varchar(15) primary key --Aprobado, Rechazado, En revisión
 );
 
+CREATE TABLE Tipo_Solicitud(
+nombre varchar(15) primary key --Modificar, Eliminar
+);
+
 CREATE TABLE Solicitud_Cambios(
 id int identity(1,1) primary key,
 req1 int not null,
@@ -204,6 +208,7 @@ solicitadoEn date not null,
 aprobadoPor varchar(11),
 aprobadoEn date,
 estado varchar(15) not null,
+tipo varchar(15) not null,
 constraint fk_CambiosU1 foreign key (aprobadoPor) references Usuarios(cedula)
 ON UPDATE NO ACTION
 ON DELETE NO ACTION,
@@ -211,6 +216,9 @@ constraint fk_CambiosU2 foreign key (solicitadoPor) references Usuarios(cedula)
 ON UPDATE NO ACTION
 ON DELETE NO ACTION,
 constraint fk_CambiosEstado foreign key (estado) references Estado_Solicitud(nombre)
+ON UPDATE CASCADE
+ON DELETE NO ACTION,
+constraint fk_CambiosTipo foreign key (estado) references Tipo_Solicitud(nombre)
 ON UPDATE CASCADE
 ON DELETE NO ACTION,
 constraint fk_CambiosReq1 foreign key (req1) references Requerimientos(id)
@@ -277,6 +285,10 @@ VALUES('Aprobado'),
 ('En revisión'),
 ('Rechazado');
 
+INSERT INTO Tipo_Solicitud
+VALUES('Modificar'), 
+('Eliminar');
+
 --Segundo se ejecuta esto:
 
 CREATE TRIGGER trg_Usuarios_UpdatedAt ON Usuarios for UPDATE AS
@@ -296,9 +308,9 @@ WHERE Email = 'admin@admin.com';
 
 DROP TRIGGER trg_Usuarios_UpdatedAt;
 
-DROP TABLE Solicitud_Cambios, Estado_Solicitud, Requerimiento_Encargados, Requerimientos_Cri_Acep, Requerimientos,
-Categoria_Requerimientos, Estado_Requerimientos, Sprint_Modulos, Modulos, Progreso_Sprint, Sprints, Proyecto_Equipo,
-Tipo_Desarrollador, Proyectos, Estado_Proyecto, Rol_Permisos, Permisos, Usuarios_Telefonos, Usuarios;
+DROP TABLE Solicitud_Cambios, Tipo_Solicitud, Estado_Solicitud, Requerimiento_Encargados, Requerimientos_Cri_Acep, 
+Requerimientos, Categoria_Requerimientos, Estado_Requerimientos, Sprint_Modulos, Modulos, Progreso_Sprint, Sprints, 
+Proyecto_Equipo, Tipo_Desarrollador, Proyectos, Estado_Proyecto, Rol_Permisos, Permisos, Usuarios_Telefonos, Usuarios;
 
 DELETE FROM AspNetUserClaims;
 DELETE FROM AspNetUserLogins;

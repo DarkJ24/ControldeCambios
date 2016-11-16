@@ -1,6 +1,29 @@
 --Migracion de Cambios
 
-DROP TABLE Requerimiento_Encargados, Requerimientos_Cri_Acep, Requerimientos;
+DROP TABLE Requerimiento_Encargados, Requerimientos_Cri_Acep, Requerimientos, Sprint_Modulos, Modulos;
+
+CREATE TABLE Modulos(
+proyecto varchar(25),
+numero int identity(1,1),
+nombre varchar(25) not null,
+constraint pk_ReqModulo1 primary key (proyecto, numero),
+constraint fk_ProyectoModulo1 foreign key (proyecto) references Proyectos(nombre)
+ON UPDATE CASCADE
+ON DELETE NO ACTION
+);
+
+CREATE TABLE Sprint_Modulos(
+modulo int,
+proyecto varchar(25),
+sprint int,
+constraint pk_SprintModulos primary key (proyecto, modulo, sprint),
+constraint fk_SprintModulo foreign key (proyecto, modulo) references Modulos(proyecto, numero)
+ON UPDATE NO ACTION
+ON DELETE NO ACTION,
+constraint fk_SprintReqSprint foreign key (proyecto, sprint) references Sprints(proyecto, numero)
+ON UPDATE NO ACTION
+ON DELETE NO ACTION
+);
 
 CREATE TABLE Categoria_Requerimientos(
 nombre varchar(10) primary key --Actual, Historial, Solicitud, Rechazada
@@ -69,6 +92,10 @@ CREATE TABLE Estado_Solicitud(
 nombre varchar(15) primary key --Aprobado, Rechazado, En revisión
 );
 
+CREATE TABLE Tipo_Solicitud(
+nombre varchar(15) primary key --Modificar, Eliminar
+);
+
 CREATE TABLE Solicitud_Cambios(
 id int identity(1,1) primary key,
 req1 int not null,
@@ -79,6 +106,7 @@ solicitadoEn date not null,
 aprobadoPor varchar(11),
 aprobadoEn date,
 estado varchar(15) not null,
+tipo varchar(15) not null,
 constraint fk_CambiosU1 foreign key (aprobadoPor) references Usuarios(cedula)
 ON UPDATE NO ACTION
 ON DELETE NO ACTION,
@@ -86,6 +114,9 @@ constraint fk_CambiosU2 foreign key (solicitadoPor) references Usuarios(cedula)
 ON UPDATE NO ACTION
 ON DELETE NO ACTION,
 constraint fk_CambiosEstado foreign key (estado) references Estado_Solicitud(nombre)
+ON UPDATE CASCADE
+ON DELETE NO ACTION,
+constraint fk_CambiosTipo foreign key (estado) references Tipo_Solicitud(nombre)
 ON UPDATE CASCADE
 ON DELETE NO ACTION,
 constraint fk_CambiosReq1 foreign key (req1) references Requerimientos(id)
@@ -106,3 +137,7 @@ INSERT INTO Estado_Solicitud
 VALUES('Aprobado'), 
 ('En revisión'),
 ('Rechazado');
+
+INSERT INTO Tipo_Solicitud
+VALUES('Modificar'), 
+('Eliminar');

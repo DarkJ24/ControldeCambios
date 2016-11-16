@@ -28,13 +28,17 @@ public partial class Usuario
 
         this.Proyectos1 = new HashSet<Proyecto>();
 
+        this.Usuarios_Telefonos = new HashSet<Usuarios_Telefonos>();
+
         this.Requerimientos = new HashSet<Requerimiento>();
 
         this.Requerimientos1 = new HashSet<Requerimiento>();
 
-        this.Usuarios_Telefonos = new HashSet<Usuarios_Telefonos>();
-
         this.Requerimientos2 = new HashSet<Requerimiento>();
+
+        this.Solicitud_Cambios = new HashSet<Solicitud_Cambios>();
+
+        this.Solicitud_Cambios1 = new HashSet<Solicitud_Cambios>();
 
     }
 
@@ -63,6 +67,10 @@ public partial class Usuario
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
+    public virtual ICollection<Usuarios_Telefonos> Usuarios_Telefonos { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+
     public virtual ICollection<Requerimiento> Requerimientos { get; set; }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -71,11 +79,15 @@ public partial class Usuario
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
-    public virtual ICollection<Usuarios_Telefonos> Usuarios_Telefonos { get; set; }
+    public virtual ICollection<Requerimiento> Requerimientos2 { get; set; }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
-    public virtual ICollection<Requerimiento> Requerimientos2 { get; set; }
+    public virtual ICollection<Solicitud_Cambios> Solicitud_Cambios { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+
+    public virtual ICollection<Solicitud_Cambios> Solicitud_Cambios1 { get; set; }
 
 }
 

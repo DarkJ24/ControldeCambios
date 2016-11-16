@@ -8,8 +8,6 @@
     <EntitySet Name="Progreso_Sprint" EntityType="ModeloEntities.Progreso_Sprint" />
     <EntitySet Name="Proyecto_Equipo" EntityType="ModeloEntities.Proyecto_Equipo" />
     <EntitySet Name="Proyectos" EntityType="ModeloEntities.Proyecto" />
-    <EntitySet Name="Requerimientos" EntityType="ModeloEntities.Requerimiento" />
-    <EntitySet Name="Requerimientos_Cri_Acep" EntityType="ModeloEntities.Requerimientos_Cri_Acep" />
     <EntitySet Name="Rol_Permisos" EntityType="ModeloEntities.Rol_Permisos" />
     <EntitySet Name="Sprint_Modulos" EntityType="ModeloEntities.Sprint_Modulos" />
     <EntitySet Name="Sprints" EntityType="ModeloEntities.Sprint" />
@@ -20,17 +18,9 @@
       <End Role="Estado_Proyecto" EntitySet="Estado_Proyecto" />
       <End Role="Proyecto" EntitySet="Proyectos" />
     </AssociationSet>
-    <AssociationSet Name="fk_EstadoReq" Association="ModeloEntities.fk_EstadoReq">
-      <End Role="Estado_Requerimientos" EntitySet="Estado_Requerimientos" />
-      <End Role="Requerimiento" EntitySet="Requerimientos" />
-    </AssociationSet>
     <AssociationSet Name="fk_ProyectoModulo1" Association="ModeloEntities.fk_ProyectoModulo1">
       <End Role="Proyecto" EntitySet="Proyectos" />
       <End Role="Modulo" EntitySet="Modulos" />
-    </AssociationSet>
-    <AssociationSet Name="fk_ReqMod" Association="ModeloEntities.fk_ReqMod">
-      <End Role="Modulo" EntitySet="Modulos" />
-      <End Role="Requerimiento" EntitySet="Requerimientos" />
     </AssociationSet>
     <AssociationSet Name="fk_SprintModulo" Association="ModeloEntities.fk_SprintModulo">
       <End Role="Modulo" EntitySet="Modulos" />
@@ -56,10 +46,6 @@
       <End Role="Tipo_Desarrollador" EntitySet="Tipo_Desarrollador" />
       <End Role="Proyecto_Equipo" EntitySet="Proyecto_Equipo" />
     </AssociationSet>
-    <AssociationSet Name="fk_ReqProyecto" Association="ModeloEntities.fk_ReqProyecto">
-      <End Role="Proyecto" EntitySet="Proyectos" />
-      <End Role="Requerimiento" EntitySet="Requerimientos" />
-    </AssociationSet>
     <AssociationSet Name="fk_UserProy" Association="ModeloEntities.fk_UserProy">
       <End Role="Usuario" EntitySet="Usuarios" />
       <End Role="Proyecto" EntitySet="Proyectos" />
@@ -71,6 +57,34 @@
     <AssociationSet Name="fk_UserSprint" Association="ModeloEntities.fk_UserSprint">
       <End Role="Proyecto" EntitySet="Proyectos" />
       <End Role="Sprint" EntitySet="Sprints" />
+    </AssociationSet>
+    <AssociationSet Name="fk_SprintReqSprint" Association="ModeloEntities.fk_SprintReqSprint">
+      <End Role="Sprint" EntitySet="Sprints" />
+      <End Role="Sprint_Modulos" EntitySet="Sprint_Modulos" />
+    </AssociationSet>
+    <AssociationSet Name="fk_User" Association="ModeloEntities.fk_User">
+      <End Role="Usuario" EntitySet="Usuarios" />
+      <End Role="Usuarios_Telefonos" EntitySet="Usuarios_Telefonos" />
+    </AssociationSet>
+    <EntitySet Name="Categoria_Requerimientos" EntityType="ModeloEntities.Categoria_Requerimientos" />
+    <EntitySet Name="Estado_Solicitud" EntityType="ModeloEntities.Estado_Solicitud" />
+    <EntitySet Name="Requerimientos" EntityType="ModeloEntities.Requerimiento" />
+    <EntitySet Name="Requerimientos_Cri_Acep" EntityType="ModeloEntities.Requerimientos_Cri_Acep" />
+    <AssociationSet Name="fk_DescReq" Association="ModeloEntities.fk_DescReq">
+      <End Role="Categoria_Requerimientos" EntitySet="Categoria_Requerimientos" />
+      <End Role="Requerimiento" EntitySet="Requerimientos" />
+    </AssociationSet>
+    <AssociationSet Name="fk_EstadoReq" Association="ModeloEntities.fk_EstadoReq">
+      <End Role="Estado_Requerimientos" EntitySet="Estado_Requerimientos" />
+      <End Role="Requerimiento" EntitySet="Requerimientos" />
+    </AssociationSet>
+    <AssociationSet Name="fk_ReqMod" Association="ModeloEntities.fk_ReqMod">
+      <End Role="Modulo" EntitySet="Modulos" />
+      <End Role="Requerimiento" EntitySet="Requerimientos" />
+    </AssociationSet>
+    <AssociationSet Name="fk_ReqProyecto" Association="ModeloEntities.fk_ReqProyecto">
+      <End Role="Proyecto" EntitySet="Proyectos" />
+      <End Role="Requerimiento" EntitySet="Requerimientos" />
     </AssociationSet>
     <AssociationSet Name="fk_ReqCriAcp" Association="ModeloEntities.fk_ReqCriAcp">
       <End Role="Requerimiento" EntitySet="Requerimientos" />
@@ -84,17 +98,35 @@
       <End Role="Usuario" EntitySet="Usuarios" />
       <End Role="Requerimiento" EntitySet="Requerimientos" />
     </AssociationSet>
-    <AssociationSet Name="fk_SprintReqSprint" Association="ModeloEntities.fk_SprintReqSprint">
-      <End Role="Sprint" EntitySet="Sprints" />
-      <End Role="Sprint_Modulos" EntitySet="Sprint_Modulos" />
-    </AssociationSet>
-    <AssociationSet Name="fk_User" Association="ModeloEntities.fk_User">
-      <End Role="Usuario" EntitySet="Usuarios" />
-      <End Role="Usuarios_Telefonos" EntitySet="Usuarios_Telefonos" />
-    </AssociationSet>
     <AssociationSet Name="Requerimiento_Encargados" Association="ModeloEntities.Requerimiento_Encargados">
       <End Role="Requerimiento" EntitySet="Requerimientos" />
       <End Role="Usuario" EntitySet="Usuarios" />
+    </AssociationSet>
+    <EntitySet Name="Solicitud_Cambios" EntityType="ModeloEntities.Solicitud_Cambios" />
+    <EntitySet Name="Tipo_Solicitud" EntityType="ModeloEntities.Tipo_Solicitud" />
+    <AssociationSet Name="fk_CambiosEstado" Association="ModeloEntities.fk_CambiosEstado">
+      <End Role="Estado_Solicitud" EntitySet="Estado_Solicitud" />
+      <End Role="Solicitud_Cambios" EntitySet="Solicitud_Cambios" />
+    </AssociationSet>
+    <AssociationSet Name="fk_CambiosReq1" Association="ModeloEntities.fk_CambiosReq1">
+      <End Role="Requerimiento" EntitySet="Requerimientos" />
+      <End Role="Solicitud_Cambios" EntitySet="Solicitud_Cambios" />
+    </AssociationSet>
+    <AssociationSet Name="fk_CambiosReq2" Association="ModeloEntities.fk_CambiosReq2">
+      <End Role="Requerimiento" EntitySet="Requerimientos" />
+      <End Role="Solicitud_Cambios" EntitySet="Solicitud_Cambios" />
+    </AssociationSet>
+    <AssociationSet Name="fk_CambiosTipo" Association="ModeloEntities.fk_CambiosTipo">
+      <End Role="Tipo_Solicitud" EntitySet="Tipo_Solicitud" />
+      <End Role="Solicitud_Cambios" EntitySet="Solicitud_Cambios" />
+    </AssociationSet>
+    <AssociationSet Name="fk_CambiosU1" Association="ModeloEntities.fk_CambiosU1">
+      <End Role="Usuario" EntitySet="Usuarios" />
+      <End Role="Solicitud_Cambios" EntitySet="Solicitud_Cambios" />
+    </AssociationSet>
+    <AssociationSet Name="fk_CambiosU2" Association="ModeloEntities.fk_CambiosU2">
+      <End Role="Usuario" EntitySet="Usuarios" />
+      <End Role="Solicitud_Cambios" EntitySet="Solicitud_Cambios" />
     </AssociationSet>
   </EntityContainer>
   <EntityType Name="Estado_Proyecto">
@@ -120,8 +152,8 @@
     <Property Name="numero" Type="Int32" Nullable="false" />
     <Property Name="nombre" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
     <NavigationProperty Name="Proyecto1" Relationship="ModeloEntities.fk_ProyectoModulo1" FromRole="Modulo" ToRole="Proyecto" />
-    <NavigationProperty Name="Requerimientos" Relationship="ModeloEntities.fk_ReqMod" FromRole="Modulo" ToRole="Requerimiento" />
     <NavigationProperty Name="Sprint_Modulos" Relationship="ModeloEntities.fk_SprintModulo" FromRole="Modulo" ToRole="Sprint_Modulos" />
+    <NavigationProperty Name="Requerimientos" Relationship="ModeloEntities.fk_ReqMod" FromRole="Modulo" ToRole="Requerimiento" />
   </EntityType>
   <EntityType Name="Permiso">
     <Key>
@@ -170,47 +202,10 @@
     <NavigationProperty Name="Estado_Proyecto" Relationship="ModeloEntities.fk_EstadoProye" FromRole="Proyecto" ToRole="Estado_Proyecto" />
     <NavigationProperty Name="Modulos" Relationship="ModeloEntities.fk_ProyectoModulo1" FromRole="Proyecto" ToRole="Modulo" />
     <NavigationProperty Name="Proyecto_Equipo" Relationship="ModeloEntities.fk_Proy" FromRole="Proyecto" ToRole="Proyecto_Equipo" />
-    <NavigationProperty Name="Requerimientos" Relationship="ModeloEntities.fk_ReqProyecto" FromRole="Proyecto" ToRole="Requerimiento" />
     <NavigationProperty Name="Usuario" Relationship="ModeloEntities.fk_UserProy" FromRole="Proyecto" ToRole="Usuario" />
     <NavigationProperty Name="Usuario1" Relationship="ModeloEntities.fk_UserProyCliente" FromRole="Proyecto" ToRole="Usuario" />
     <NavigationProperty Name="Sprints" Relationship="ModeloEntities.fk_UserSprint" FromRole="Proyecto" ToRole="Sprint" />
-  </EntityType>
-  <EntityType Name="Requerimiento">
-    <Key>
-      <PropertyRef Name="id" />
-    </Key>
-    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="codigo" Type="String" Nullable="false" MaxLength="15" FixedLength="true" Unicode="false" />
-    <Property Name="version" Type="Int32" />
-    <Property Name="creadoEn" Type="DateTime" Nullable="false" Precision="0" />
-    <Property Name="finalizaEn" Type="DateTime" Precision="0" />
-    <Property Name="descripcion" Type="String" MaxLength="120" FixedLength="false" Unicode="false" />
-    <Property Name="nombre" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
-    <Property Name="prioridad" Type="Int32" Nullable="false" />
-    <Property Name="observaciones" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
-    <Property Name="esfuerzo" Type="Int32" />
-    <Property Name="estado" Type="String" Nullable="false" MaxLength="24" FixedLength="true" Unicode="false" />
-    <Property Name="creadoPor" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="false" />
-    <Property Name="solicitadoPor" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="false" />
-    <Property Name="proyecto" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
-    <Property Name="modulo" Type="Int32" />
-    <Property Name="imagen" Type="Binary" MaxLength="Max" FixedLength="false" />
-    <NavigationProperty Name="Estado_Requerimientos" Relationship="ModeloEntities.fk_EstadoReq" FromRole="Requerimiento" ToRole="Estado_Requerimientos" />
-    <NavigationProperty Name="Modulo1" Relationship="ModeloEntities.fk_ReqMod" FromRole="Requerimiento" ToRole="Modulo" />
-    <NavigationProperty Name="Proyecto1" Relationship="ModeloEntities.fk_ReqProyecto" FromRole="Requerimiento" ToRole="Proyecto" />
-    <NavigationProperty Name="Requerimientos_Cri_Acep" Relationship="ModeloEntities.fk_ReqCriAcp" FromRole="Requerimiento" ToRole="Requerimientos_Cri_Acep" />
-    <NavigationProperty Name="Usuario" Relationship="ModeloEntities.fk_ReqUserCre" FromRole="Requerimiento" ToRole="Usuario" />
-    <NavigationProperty Name="Usuario1" Relationship="ModeloEntities.fk_ReqUserSol" FromRole="Requerimiento" ToRole="Usuario" />
-    <NavigationProperty Name="Usuarios" Relationship="ModeloEntities.Requerimiento_Encargados" FromRole="Requerimiento" ToRole="Usuario" />
-  </EntityType>
-  <EntityType Name="Requerimientos_Cri_Acep">
-    <Key>
-      <PropertyRef Name="id" />
-    </Key>
-    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-    <Property Name="idReq" Type="Int32" />
-    <Property Name="criterio" Type="String" MaxLength="120" FixedLength="false" Unicode="false" />
-    <NavigationProperty Name="Requerimiento" Relationship="ModeloEntities.fk_ReqCriAcp" FromRole="Requerimientos_Cri_Acep" ToRole="Requerimiento" />
+    <NavigationProperty Name="Requerimientos" Relationship="ModeloEntities.fk_ReqProyecto" FromRole="Proyecto" ToRole="Requerimiento" />
   </EntityType>
   <EntityType Name="Rol_Permisos">
     <Key>
@@ -264,10 +259,12 @@
     <NavigationProperty Name="Proyecto_Equipo" Relationship="ModeloEntities.fk_UserPE" FromRole="Usuario" ToRole="Proyecto_Equipo" />
     <NavigationProperty Name="Proyectos" Relationship="ModeloEntities.fk_UserProy" FromRole="Usuario" ToRole="Proyecto" />
     <NavigationProperty Name="Proyectos1" Relationship="ModeloEntities.fk_UserProyCliente" FromRole="Usuario" ToRole="Proyecto" />
+    <NavigationProperty Name="Usuarios_Telefonos" Relationship="ModeloEntities.fk_User" FromRole="Usuario" ToRole="Usuarios_Telefonos" />
     <NavigationProperty Name="Requerimientos" Relationship="ModeloEntities.fk_ReqUserCre" FromRole="Usuario" ToRole="Requerimiento" />
     <NavigationProperty Name="Requerimientos1" Relationship="ModeloEntities.fk_ReqUserSol" FromRole="Usuario" ToRole="Requerimiento" />
-    <NavigationProperty Name="Usuarios_Telefonos" Relationship="ModeloEntities.fk_User" FromRole="Usuario" ToRole="Usuarios_Telefonos" />
     <NavigationProperty Name="Requerimientos2" Relationship="ModeloEntities.Requerimiento_Encargados" FromRole="Usuario" ToRole="Requerimiento" />
+    <NavigationProperty Name="Solicitud_Cambios" Relationship="ModeloEntities.fk_CambiosU1" FromRole="Usuario" ToRole="Solicitud_Cambios" />
+    <NavigationProperty Name="Solicitud_Cambios1" Relationship="ModeloEntities.fk_CambiosU2" FromRole="Usuario" ToRole="Solicitud_Cambios" />
   </EntityType>
   <EntityType Name="Usuarios_Telefonos">
     <Key>
@@ -290,18 +287,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_EstadoReq">
-    <End Type="ModeloEntities.Estado_Requerimientos" Role="Estado_Requerimientos" Multiplicity="1" />
-    <End Type="ModeloEntities.Requerimiento" Role="Requerimiento" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Estado_Requerimientos">
-        <PropertyRef Name="nombre" />
-      </Principal>
-      <Dependent Role="Requerimiento">
-        <PropertyRef Name="estado" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="fk_ProyectoModulo1">
     <End Type="ModeloEntities.Proyecto" Role="Proyecto" Multiplicity="1" />
     <End Type="ModeloEntities.Modulo" Role="Modulo" Multiplicity="*" />
@@ -311,20 +296,6 @@
       </Principal>
       <Dependent Role="Modulo">
         <PropertyRef Name="proyecto" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
-  <Association Name="fk_ReqMod">
-    <End Type="ModeloEntities.Modulo" Role="Modulo" Multiplicity="0..1" />
-    <End Type="ModeloEntities.Requerimiento" Role="Requerimiento" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Modulo">
-        <PropertyRef Name="proyecto" />
-        <PropertyRef Name="numero" />
-      </Principal>
-      <Dependent Role="Requerimiento">
-        <PropertyRef Name="proyecto" />
-        <PropertyRef Name="modulo" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -408,18 +379,6 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_ReqProyecto">
-    <End Type="ModeloEntities.Proyecto" Role="Proyecto" Multiplicity="1" />
-    <End Type="ModeloEntities.Requerimiento" Role="Requerimiento" Multiplicity="*" />
-    <ReferentialConstraint>
-      <Principal Role="Proyecto">
-        <PropertyRef Name="nombre" />
-      </Principal>
-      <Dependent Role="Requerimiento">
-        <PropertyRef Name="proyecto" />
-      </Dependent>
-    </ReferentialConstraint>
-  </Association>
   <Association Name="fk_UserProy">
     <End Type="ModeloEntities.Usuario" Role="Usuario" Multiplicity="1" />
     <End Type="ModeloEntities.Proyecto" Role="Proyecto" Multiplicity="*" />
@@ -452,6 +411,139 @@
         <PropertyRef Name="nombre" />
       </Principal>
       <Dependent Role="Sprint">
+        <PropertyRef Name="proyecto" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_SprintReqSprint">
+    <End Type="ModeloEntities.Sprint" Role="Sprint" Multiplicity="1" />
+    <End Type="ModeloEntities.Sprint_Modulos" Role="Sprint_Modulos" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Sprint">
+        <PropertyRef Name="proyecto" />
+        <PropertyRef Name="numero" />
+      </Principal>
+      <Dependent Role="Sprint_Modulos">
+        <PropertyRef Name="proyecto" />
+        <PropertyRef Name="sprint" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_User">
+    <End Type="ModeloEntities.Usuario" Role="Usuario" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Type="ModeloEntities.Usuarios_Telefonos" Role="Usuarios_Telefonos" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuario">
+        <PropertyRef Name="cedula" />
+      </Principal>
+      <Dependent Role="Usuarios_Telefonos">
+        <PropertyRef Name="usuario" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="Categoria_Requerimientos">
+    <Key>
+      <PropertyRef Name="nombre" />
+    </Key>
+    <Property Name="nombre" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Requerimientos" Relationship="ModeloEntities.fk_DescReq" FromRole="Categoria_Requerimientos" ToRole="Requerimiento" />
+  </EntityType>
+  <EntityType Name="Estado_Solicitud">
+    <Key>
+      <PropertyRef Name="nombre" />
+    </Key>
+    <Property Name="nombre" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Solicitud_Cambios" Relationship="ModeloEntities.fk_CambiosEstado" FromRole="Estado_Solicitud" ToRole="Solicitud_Cambios" />
+  </EntityType>
+  <EntityType Name="Requerimiento">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="codigo" Type="String" Nullable="false" MaxLength="15" FixedLength="true" Unicode="false" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="creadoEn" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="finalizaEn" Type="DateTime" Precision="0" />
+    <Property Name="descripcion" Type="String" MaxLength="120" FixedLength="false" Unicode="false" />
+    <Property Name="nombre" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
+    <Property Name="prioridad" Type="Int32" Nullable="false" />
+    <Property Name="observaciones" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="esfuerzo" Type="Int32" />
+    <Property Name="estado" Type="String" Nullable="false" MaxLength="24" FixedLength="true" Unicode="false" />
+    <Property Name="creadoPor" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="false" />
+    <Property Name="solicitadoPor" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="false" />
+    <Property Name="proyecto" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
+    <Property Name="modulo" Type="Int32" />
+    <Property Name="imagen" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <Property Name="categoria" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Categoria_Requerimientos" Relationship="ModeloEntities.fk_DescReq" FromRole="Requerimiento" ToRole="Categoria_Requerimientos" />
+    <NavigationProperty Name="Estado_Requerimientos" Relationship="ModeloEntities.fk_EstadoReq" FromRole="Requerimiento" ToRole="Estado_Requerimientos" />
+    <NavigationProperty Name="Modulo1" Relationship="ModeloEntities.fk_ReqMod" FromRole="Requerimiento" ToRole="Modulo" />
+    <NavigationProperty Name="Proyecto1" Relationship="ModeloEntities.fk_ReqProyecto" FromRole="Requerimiento" ToRole="Proyecto" />
+    <NavigationProperty Name="Requerimientos_Cri_Acep" Relationship="ModeloEntities.fk_ReqCriAcp" FromRole="Requerimiento" ToRole="Requerimientos_Cri_Acep" />
+    <NavigationProperty Name="Usuario" Relationship="ModeloEntities.fk_ReqUserCre" FromRole="Requerimiento" ToRole="Usuario" />
+    <NavigationProperty Name="Usuario1" Relationship="ModeloEntities.fk_ReqUserSol" FromRole="Requerimiento" ToRole="Usuario" />
+    <NavigationProperty Name="Usuarios" Relationship="ModeloEntities.Requerimiento_Encargados" FromRole="Requerimiento" ToRole="Usuario" />
+    <NavigationProperty Name="Solicitud_Cambios" Relationship="ModeloEntities.fk_CambiosReq1" FromRole="Requerimiento" ToRole="Solicitud_Cambios" />
+    <NavigationProperty Name="Solicitud_Cambios1" Relationship="ModeloEntities.fk_CambiosReq2" FromRole="Requerimiento" ToRole="Solicitud_Cambios" />
+  </EntityType>
+  <EntityType Name="Requerimientos_Cri_Acep">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="idReq" Type="Int32" />
+    <Property Name="criterio" Type="String" MaxLength="120" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Requerimiento" Relationship="ModeloEntities.fk_ReqCriAcp" FromRole="Requerimientos_Cri_Acep" ToRole="Requerimiento" />
+  </EntityType>
+  <Association Name="fk_DescReq">
+    <End Type="ModeloEntities.Categoria_Requerimientos" Role="Categoria_Requerimientos" Multiplicity="1" />
+    <End Type="ModeloEntities.Requerimiento" Role="Requerimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Categoria_Requerimientos">
+        <PropertyRef Name="nombre" />
+      </Principal>
+      <Dependent Role="Requerimiento">
+        <PropertyRef Name="categoria" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_EstadoReq">
+    <End Type="ModeloEntities.Estado_Requerimientos" Role="Estado_Requerimientos" Multiplicity="1" />
+    <End Type="ModeloEntities.Requerimiento" Role="Requerimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Estado_Requerimientos">
+        <PropertyRef Name="nombre" />
+      </Principal>
+      <Dependent Role="Requerimiento">
+        <PropertyRef Name="estado" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_ReqMod">
+    <End Type="ModeloEntities.Modulo" Role="Modulo" Multiplicity="0..1" />
+    <End Type="ModeloEntities.Requerimiento" Role="Requerimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Modulo">
+        <PropertyRef Name="proyecto" />
+        <PropertyRef Name="numero" />
+      </Principal>
+      <Dependent Role="Requerimiento">
+        <PropertyRef Name="proyecto" />
+        <PropertyRef Name="modulo" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_ReqProyecto">
+    <End Type="ModeloEntities.Proyecto" Role="Proyecto" Multiplicity="1" />
+    <End Type="ModeloEntities.Requerimiento" Role="Requerimiento" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyecto">
+        <PropertyRef Name="nombre" />
+      </Principal>
+      <Dependent Role="Requerimiento">
         <PropertyRef Name="proyecto" />
       </Dependent>
     </ReferentialConstraint>
@@ -494,36 +586,108 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_SprintReqSprint">
-    <End Type="ModeloEntities.Sprint" Role="Sprint" Multiplicity="1" />
-    <End Type="ModeloEntities.Sprint_Modulos" Role="Sprint_Modulos" Multiplicity="*" />
+  <Association Name="Requerimiento_Encargados">
+    <End Type="ModeloEntities.Requerimiento" Role="Requerimiento" Multiplicity="*" />
+    <End Type="ModeloEntities.Usuario" Role="Usuario" Multiplicity="*" />
+  </Association>
+  <EntityType Name="Solicitud_Cambios">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="req1" Type="Int32" Nullable="false" />
+    <Property Name="req2" Type="Int32" Nullable="false" />
+    <Property Name="razon" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
+    <Property Name="solicitadoPor" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="false" />
+    <Property Name="solicitadoEn" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="aprobadoPor" Type="String" MaxLength="11" FixedLength="false" Unicode="false" />
+    <Property Name="aprobadoEn" Type="DateTime" Precision="0" />
+    <Property Name="estado" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="tipo" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Estado_Solicitud" Relationship="ModeloEntities.fk_CambiosEstado" FromRole="Solicitud_Cambios" ToRole="Estado_Solicitud" />
+    <NavigationProperty Name="Requerimiento" Relationship="ModeloEntities.fk_CambiosReq1" FromRole="Solicitud_Cambios" ToRole="Requerimiento" />
+    <NavigationProperty Name="Requerimiento1" Relationship="ModeloEntities.fk_CambiosReq2" FromRole="Solicitud_Cambios" ToRole="Requerimiento" />
+    <NavigationProperty Name="Tipo_Solicitud" Relationship="ModeloEntities.fk_CambiosTipo" FromRole="Solicitud_Cambios" ToRole="Tipo_Solicitud" />
+    <NavigationProperty Name="Usuario" Relationship="ModeloEntities.fk_CambiosU1" FromRole="Solicitud_Cambios" ToRole="Usuario" />
+    <NavigationProperty Name="Usuario1" Relationship="ModeloEntities.fk_CambiosU2" FromRole="Solicitud_Cambios" ToRole="Usuario" />
+  </EntityType>
+  <EntityType Name="Tipo_Solicitud">
+    <Key>
+      <PropertyRef Name="nombre" />
+    </Key>
+    <Property Name="nombre" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Solicitud_Cambios" Relationship="ModeloEntities.fk_CambiosTipo" FromRole="Tipo_Solicitud" ToRole="Solicitud_Cambios" />
+  </EntityType>
+  <Association Name="fk_CambiosEstado">
+    <End Type="ModeloEntities.Estado_Solicitud" Role="Estado_Solicitud" Multiplicity="1" />
+    <End Type="ModeloEntities.Solicitud_Cambios" Role="Solicitud_Cambios" Multiplicity="*" />
     <ReferentialConstraint>
-      <Principal Role="Sprint">
-        <PropertyRef Name="proyecto" />
-        <PropertyRef Name="numero" />
+      <Principal Role="Estado_Solicitud">
+        <PropertyRef Name="nombre" />
       </Principal>
-      <Dependent Role="Sprint_Modulos">
-        <PropertyRef Name="proyecto" />
-        <PropertyRef Name="sprint" />
+      <Dependent Role="Solicitud_Cambios">
+        <PropertyRef Name="estado" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="fk_User">
-    <End Type="ModeloEntities.Usuario" Role="Usuario" Multiplicity="1">
-      <OnDelete Action="Cascade" />
-    </End>
-    <End Type="ModeloEntities.Usuarios_Telefonos" Role="Usuarios_Telefonos" Multiplicity="*" />
+  <Association Name="fk_CambiosReq1">
+    <End Type="ModeloEntities.Requerimiento" Role="Requerimiento" Multiplicity="1" />
+    <End Type="ModeloEntities.Solicitud_Cambios" Role="Solicitud_Cambios" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Requerimiento">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Solicitud_Cambios">
+        <PropertyRef Name="req1" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_CambiosReq2">
+    <End Type="ModeloEntities.Requerimiento" Role="Requerimiento" Multiplicity="1" />
+    <End Type="ModeloEntities.Solicitud_Cambios" Role="Solicitud_Cambios" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Requerimiento">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="Solicitud_Cambios">
+        <PropertyRef Name="req2" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_CambiosTipo">
+    <End Type="ModeloEntities.Tipo_Solicitud" Role="Tipo_Solicitud" Multiplicity="1" />
+    <End Type="ModeloEntities.Solicitud_Cambios" Role="Solicitud_Cambios" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tipo_Solicitud">
+        <PropertyRef Name="nombre" />
+      </Principal>
+      <Dependent Role="Solicitud_Cambios">
+        <PropertyRef Name="estado" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_CambiosU1">
+    <End Type="ModeloEntities.Usuario" Role="Usuario" Multiplicity="0..1" />
+    <End Type="ModeloEntities.Solicitud_Cambios" Role="Solicitud_Cambios" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Usuario">
         <PropertyRef Name="cedula" />
       </Principal>
-      <Dependent Role="Usuarios_Telefonos">
-        <PropertyRef Name="usuario" />
+      <Dependent Role="Solicitud_Cambios">
+        <PropertyRef Name="aprobadoPor" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
-  <Association Name="Requerimiento_Encargados">
-    <End Type="ModeloEntities.Requerimiento" Role="Requerimiento" Multiplicity="*" />
-    <End Type="ModeloEntities.Usuario" Role="Usuario" Multiplicity="*" />
+  <Association Name="fk_CambiosU2">
+    <End Type="ModeloEntities.Usuario" Role="Usuario" Multiplicity="1" />
+    <End Type="ModeloEntities.Solicitud_Cambios" Role="Solicitud_Cambios" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuario">
+        <PropertyRef Name="cedula" />
+      </Principal>
+      <Dependent Role="Solicitud_Cambios">
+        <PropertyRef Name="solicitadoPor" />
+      </Dependent>
+    </ReferentialConstraint>
   </Association>
 </Schema>

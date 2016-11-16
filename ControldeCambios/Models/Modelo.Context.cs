@@ -46,10 +46,6 @@ public partial class Entities : DbContext
 
     public virtual DbSet<Proyecto> Proyectos { get; set; }
 
-    public virtual DbSet<Requerimiento> Requerimientos { get; set; }
-
-    public virtual DbSet<Requerimientos_Cri_Acep> Requerimientos_Cri_Acep { get; set; }
-
     public virtual DbSet<Rol_Permisos> Rol_Permisos { get; set; }
 
     public virtual DbSet<Sprint_Modulos> Sprint_Modulos { get; set; }
@@ -61,6 +57,18 @@ public partial class Entities : DbContext
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
     public virtual DbSet<Usuarios_Telefonos> Usuarios_Telefonos { get; set; }
+
+    public virtual DbSet<Categoria_Requerimientos> Categoria_Requerimientos { get; set; }
+
+    public virtual DbSet<Estado_Solicitud> Estado_Solicitud { get; set; }
+
+    public virtual DbSet<Requerimiento> Requerimientos { get; set; }
+
+    public virtual DbSet<Requerimientos_Cri_Acep> Requerimientos_Cri_Acep { get; set; }
+
+    public virtual DbSet<Solicitud_Cambios> Solicitud_Cambios { get; set; }
+
+    public virtual DbSet<Tipo_Solicitud> Tipo_Solicitud { get; set; }
 
 }
 

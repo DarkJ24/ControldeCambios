@@ -107,7 +107,7 @@ namespace ControldeCambios.Controllers
 
             var model = new RequerimientosIndexModel();
             model.proyecto = proyecto;
-            var reqs = baseDatos.Requerimientos.Where(m => m.proyecto == proyecto).ToList();
+            var reqs = baseDatos.Requerimientos.Where(m => m.proyecto == proyecto && m.categoria == "Actual").ToList();
             int pageSize = 10;
             int pageNumber = (page ?? 1);
             int lastElement = (reqs.Count < pageSize * pageNumber) ? reqs.Count : pageSize * pageNumber;
@@ -212,6 +212,7 @@ namespace ControldeCambios.Controllers
                 requerimiento.estado = model.estado;
                 requerimiento.proyecto = model.proyecto;
                 requerimiento.version = 1;
+                requerimiento.categoria = "Actual";
                 requerimiento.Usuarios = model.equipo.Select(x => baseDatos.Usuarios.Find(x)).ToList();
 
                 //Se hace el split para separar los criterios de aceptación y meterlos en una lista
