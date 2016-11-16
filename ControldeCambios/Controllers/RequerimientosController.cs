@@ -184,13 +184,17 @@ namespace ControldeCambios.Controllers
         /// <summary>
         /// Funcionalidad para crear Requerimientos.
         /// </summary>
+        /// <param name="file"> Archivo de imagen subido</param>
         /// <param name="model"> Modelo con la informacion del Requerimiento a crear.</param>
         /// <returns>Pagina de Index</returns>
         // POST: /Requerimientos/Crear
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Crear(RequerimientosModelo model)
+        public ActionResult Crear(RequerimientosModelo model, HttpPostedFileBase ImageData)
         {
+
+
+
             if (ModelState.IsValid)
             {
                 //Crea el requerimiento en la tabla Requerimientos
@@ -214,6 +218,12 @@ namespace ControldeCambios.Controllers
                 requerimiento.version = 1;
                 requerimiento.categoria = "Actual";
                 requerimiento.Usuarios = model.equipo.Select(x => baseDatos.Usuarios.Find(x)).ToList();
+
+                var array = new Byte[ImageData.ContentLength];
+                ImageData.InputStream.Position = 0;
+                ImageData.InputStream.Read(array, 0, ImageData.ContentLength);
+
+                requerimiento.imagen = array;
 
                 //Se hace el split para separar los criterios de aceptación y meterlos en una lista
                 var criterios = model.criteriosAceptacion.Split('|').ToList();
@@ -305,6 +315,12 @@ namespace ControldeCambios.Controllers
             modelo.proyecto = modelo.requerimiento.proyecto;
             var requerimiento = baseDatos.Requerimientos.Find(id);  // Se crea una variable requerimiento con el id del requerimiento llamado
             modelo.requerimiento = requerimiento;
+            
+            if(modelo.requerimiento.imagen != null)
+            {
+                //HttpPostedFileBase objFile = (modelo.requerimiento.imagen) as HttpPostedFileBase;
+                modelo.file = HttpUtility.UrlEncode(Convert.ToBase64String(modelo.requerimiento.imagen));
+            }
 
             modelo.equipo = new List<string>();     // Se llena la variable equipo con el equipo ya asignado a este requerimiento, si ya hay uno
             foreach (var des in modelo.requerimiento.Usuarios.ToList())
