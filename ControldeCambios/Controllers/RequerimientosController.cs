@@ -314,6 +314,12 @@ namespace ControldeCambios.Controllers
             modelo.proyecto = modelo.requerimiento.proyecto;
             var requerimiento = baseDatos.Requerimientos.Find(id);  // Se crea una variable requerimiento con el id del requerimiento llamado
             modelo.requerimiento = requerimiento;
+            
+            if(modelo.requerimiento.imagen != null)
+            {
+                //HttpPostedFileBase objFile = (modelo.requerimiento.imagen) as HttpPostedFileBase;
+                modelo.file = HttpUtility.UrlEncode(Convert.ToBase64String(modelo.requerimiento.imagen));
+            }
 
             modelo.equipo = new List<string>();     // Se llena la variable equipo con el equipo ya asignado a este requerimiento, si ya hay uno
             foreach (var des in modelo.requerimiento.Usuarios.ToList())

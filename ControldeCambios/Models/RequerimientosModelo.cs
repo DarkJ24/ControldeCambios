@@ -62,7 +62,7 @@ namespace ControldeCambios.Models
 
         ///******FALTA AGREGAR IMAGEN******///
 
-        //public HttpPostedFileBase file { get; set; }
+        public string file { get; set; }
 
 
         [Display(Name = "Criterios de Aceptación")]
