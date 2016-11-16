@@ -279,6 +279,7 @@
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ModulosModel.cs" />
+    <Compile Include="Models\ModulosModificarModel.cs" />
     <Compile Include="Models\Permiso.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
@@ -492,10 +493,10 @@
     <Content Include="Views\Proyectos\informacion.cshtml" />
     <Content Include="Views\Sprint\Detalles.cshtml" />
     <Content Include="Views\Sprint\Informacion.cshtml" />
+    <Content Include="Views\Solicitud_Cambios\Consultar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Solicitud_Cambios\" />
     <Folder Include="Views\Toastr\" />
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,4 @@
-﻿@model ControldeCambios.Models.ModulosModel
+﻿@model ControldeCambios.Models.ModulosModificarModel
 @{
     ViewBag.Title = "Consultar Módulo";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -29,6 +29,7 @@
 {
     @Html.AntiForgeryToken()
 
+    @Html.HiddenFor(model => model.numero)
     <div class="form-group">
         @Html.LabelFor(m => m.proyecto, new { @class = "col-md-2 control-label required" })
         <div class="col-md-10">

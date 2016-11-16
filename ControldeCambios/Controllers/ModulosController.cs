@@ -133,29 +133,32 @@ namespace ControldeCambios.Controllers
             {
                 var modulo = new Modulo();
                 modulo.proyecto = model.proyecto;
-                modulo.numero = Int32.Parse(model.numero);
-                if (baseDatos.Modulos.Where(m => m.numero == modulo.numero && m.proyecto == modulo.proyecto).Count() > 0)
+                modulo.nombre = model.nombre;
+                baseDatos.Modulos.Add(modulo);
+                if (model.requerimientos != null && model.requerimientos.Count() > 0)
                 {
-                    this.AddToastMessage("Módulo Ya Existe", "Ya existe un módulo con ese número para ese proyecto.", ToastType.Error);
-                    return View(model);
-                } else
-                {
-                    modulo.nombre = model.nombre;
-                    baseDatos.Modulos.Add(modulo);
-                    if (model.requerimientos != null && model.requerimientos.Count() > 0)
+                    foreach (var req in model.requerimientos)
                     {
-                        foreach (var req in model.requerimientos)
+                        var requerimiento = baseDatos.Requerimientos.Find(Int32.Parse(req));
+                        requerimiento.modulo = modulo.numero;
+                        baseDatos.Entry(requerimiento).State = System.Data.Entity.EntityState.Modified;
+                        var solicitudesDeCambio = baseDatos.Solicitud_Cambios.Where(m => m.req1 == requerimiento.id).ToList();
+                        if (solicitudesDeCambio != null && solicitudesDeCambio.Count() > 0)
                         {
-                            var requerimiento = baseDatos.Requerimientos.Find(Int32.Parse(req));
-                            requerimiento.modulo = modulo.numero;
-                            baseDatos.Entry(requerimiento).State = System.Data.Entity.EntityState.Modified;
+                            foreach (var solicitud in solicitudesDeCambio)
+                            {
+                                var requerimiento2 = baseDatos.Requerimientos.Find(solicitud.req2);
+                                requerimiento2.modulo = modulo.numero;
+                                baseDatos.Entry(requerimiento2).State = System.Data.Entity.EntityState.Modified;
+                            }
                         }
                     }
-                    baseDatos.SaveChanges();
-                    this.AddToastMessage("Módulo Creado", "El módulo " + model.nombre + " se ha creado correctamente.", ToastType.Success);
-                    return RedirectToAction("Crear", "Modulos", new { proyecto = model.proyecto});
                 }
+                baseDatos.SaveChanges();
+                this.AddToastMessage("Módulo Creado", "El módulo " + model.nombre + " se ha creado correctamente.", ToastType.Success);
+                return RedirectToAction("Crear", "Modulos", new { proyecto = model.proyecto});
             }
+            ViewBag.requerimientos = new MultiSelectList(baseDatos.Requerimientos.Where(m => m.proyecto == model.proyecto && m.categoria == "Actual").ToList(), "id", "nombre");
             return View(model);
         }
 
@@ -179,7 +182,7 @@ namespace ControldeCambios.Controllers
             if (listaDeModulos.Count() > 0)
             {
                 var modulo1 = listaDeModulos.First();
-                var model = new ModulosModel();
+                var model = new ModulosModificarModel();
                 model.numero = numero;
                 model.nombre = modulo1.nombre;
                 model.proyecto = proyecto;
@@ -214,13 +217,11 @@ namespace ControldeCambios.Controllers
         // POST: /Modulos/Detalles
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Detalles(ModulosModel model)
+        public ActionResult Detalles(ModulosModificarModel model)
         {
             if (ModelState.IsValid)
             {
-                var modulo = new Modulo();
-                modulo.proyecto = model.proyecto;
-                modulo.numero = Int32.Parse(model.numero);
+                var modulo = baseDatos.Modulos.Find(model.proyecto, Int32.Parse(model.numero));
                 modulo.nombre = model.nombre;
                 baseDatos.Entry(modulo).State = System.Data.Entity.EntityState.Modified;
                 var reqViejos = baseDatos.Requerimientos.Where(m => m.proyecto == modulo.proyecto && m.modulo == modulo.numero && (m.categoria == "Actual" || m.categoria == "En revisión")).ToList();
@@ -232,7 +233,7 @@ namespace ControldeCambios.Controllers
                         baseDatos.Entry(req).State = System.Data.Entity.EntityState.Modified;
                     }
                 }
-                if (model.requerimientos.Count() > 0)
+                if (model.requerimientos != null && model.requerimientos.Count() > 0)
                 {
                     foreach (var req in model.requerimientos)
                     {
@@ -267,17 +268,13 @@ namespace ControldeCambios.Controllers
             return View(model);
         }
 
-        // POST: /Sprint/Detalles
+        // POST: /Modulos/Borrar
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Borrar(ModulosModel model)
+        public ActionResult Borrar(ModulosModificarModel model)
         {
             if (ModelState.IsValid)
             {
-               /* model.nombre;
-                model.numero;
-                model.proyecto;
-                model.requerimientos;*/
                 int model_numero = Int32.Parse(model.numero);
 
                 var modulosViejos = baseDatos.Sprint_Modulos.Where(m => m.modulo == model_numero && m.proyecto == model.proyecto).ToList();
@@ -305,8 +302,6 @@ namespace ControldeCambios.Controllers
                 baseDatos.SaveChanges();
                 this.AddToastMessage("Módulo Eliminado", "El módulo " + model.numero + " se ha eliminado correctamente.", ToastType.Success);
                 return RedirectToAction("Informacion", "Proyectos", new { id = model.proyecto });
-               
-
             }
             return View(model);
         }
