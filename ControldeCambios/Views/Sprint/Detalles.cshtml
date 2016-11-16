@@ -23,6 +23,13 @@
 {
     <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal">Eliminar</button>
 }
+else
+{
+    <a href="#" data-toggle="tooltip" title="No se puede eliminar este sprint porque tiene modulos asociados" data-placement="right">
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal" disabled="disabled">Eliminar</button>
+    </a>
+}
+
 @using (Html.BeginForm("Detalles", "Sprint", FormMethod.Post, new { @class = "form-horizontal editFields", role = "form" }))
 {
     @Html.AntiForgeryToken()
@@ -119,6 +126,9 @@
     <script>
             window.onload = function() {
                 $('#list2').multiSelect();
+                $(document).ready(function () {
+                    $('[data-toggle="tooltip"]').tooltip();
+                });
             };
     </script>
 
