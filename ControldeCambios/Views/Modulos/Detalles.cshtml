@@ -22,7 +22,12 @@
 @if (Model.requerimientos.Count == 0)
 {
     <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal">Eliminar</button>
-
+}
+else
+{
+    <a href="#" data-toggle="tooltip" title="No se puede eliminar este modulo porque tiene requerimientos asociados" data-placement="right">
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal" disabled="disabled">Eliminar</button>
+    </a>
 }
 
 @using (Html.BeginForm("Detalles", "Modulos", FormMethod.Post, new { @class = "form-horizontal editFields", role = "form" }))
@@ -102,6 +107,9 @@
 <script>
         window.onload = function() {
             $('#list2').multiSelect();
+            $(document).ready(function () {
+                $('[data-toggle="tooltip"]').tooltip();
+            });
         };
 </script>
 
