@@ -38,14 +38,6 @@
         </div>
     </div>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.numero, new { @class = "col-md-2 control-label required" })
-        <div class="col-md-10">
-            @Html.DisplayFor(m => m.numero, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.numero, "", new { @class = "text-danger" })
-            @Html.HiddenFor(model => model.numero)
-        </div>
-    </div>
 
     <div class="form-group">
         @Html.LabelFor(m => m.nombre, new { @class = "col-md-2 control-label required" })
