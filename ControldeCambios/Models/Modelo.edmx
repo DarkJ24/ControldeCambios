@@ -35,7 +35,7 @@
             <PropertyRef Name="numero" />
           </Key>
           <Property Name="proyecto" Type="varchar" MaxLength="25" Nullable="false" />
-          <Property Name="numero" Type="int" Nullable="false" />
+          <Property Name="numero" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="nombre" Type="varchar" MaxLength="25" Nullable="false" />
         </EntityType>
         <EntityType Name="Permisos">
