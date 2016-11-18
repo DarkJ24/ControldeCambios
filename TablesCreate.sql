@@ -201,7 +201,7 @@ nombre varchar(15) primary key --Modificar, Eliminar
 CREATE TABLE Solicitud_Cambios(
 id int identity(1,1) primary key,
 req1 int not null,
-req2 int not null,
+req2 int,
 razon varchar(200) not null,
 solicitadoPor varchar(11) not null,
 solicitadoEn date not null,
@@ -209,6 +209,7 @@ aprobadoPor varchar(11),
 aprobadoEn date,
 estado varchar(15) not null,
 tipo varchar(15) not null,
+comentario varchar(200), --Comentario del Líder
 constraint fk_CambiosU1 foreign key (aprobadoPor) references Usuarios(cedula)
 ON UPDATE NO ACTION
 ON DELETE NO ACTION,

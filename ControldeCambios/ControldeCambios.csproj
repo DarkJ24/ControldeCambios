@@ -306,6 +306,7 @@
     <Compile Include="Models\Rol_Permisos.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\SolicitudCambiosModel.cs" />
     <Compile Include="Models\Solicitud_Cambios.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>

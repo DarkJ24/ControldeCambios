@@ -130,7 +130,7 @@
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="req1" Type="int" Nullable="false" />
-          <Property Name="req2" Type="int" Nullable="false" />
+          <Property Name="req2" Type="int" />
           <Property Name="razon" Type="varchar" MaxLength="200" Nullable="false" />
           <Property Name="solicitadoPor" Type="varchar" MaxLength="11" Nullable="false" />
           <Property Name="solicitadoEn" Type="date" Nullable="false" />
@@ -138,6 +138,7 @@
           <Property Name="aprobadoEn" Type="date" />
           <Property Name="estado" Type="varchar" MaxLength="15" Nullable="false" />
           <Property Name="tipo" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="comentario" Type="varchar" MaxLength="200" />
         </EntityType>
         <EntityType Name="Sprint_Modulos">
           <Key>
@@ -213,7 +214,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="fk_CambiosReq2">
-          <End Role="Requerimientos" Type="Self.Requerimientos" Multiplicity="1" />
+          <End Role="Requerimientos" Type="Self.Requerimientos" Multiplicity="0..1" />
           <End Role="Solicitud_Cambios" Type="Self.Solicitud_Cambios" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Requerimientos">
@@ -780,8 +781,8 @@
             <End Role="Requerimiento" EntitySet="Requerimientos" />
             <End Role="Usuario" EntitySet="Usuarios" />
           </AssociationSet>
-          <EntitySet Name="Solicitud_Cambios" EntityType="ModeloEntities.Solicitud_Cambios" />
           <EntitySet Name="Tipo_Solicitud" EntityType="ModeloEntities.Tipo_Solicitud" />
+          <EntitySet Name="Solicitud_Cambios" EntityType="ModeloEntities.Solicitud_Cambios" />
           <AssociationSet Name="fk_CambiosEstado" Association="ModeloEntities.fk_CambiosEstado">
             <End Role="Estado_Solicitud" EntitySet="Estado_Solicitud" />
             <End Role="Solicitud_Cambios" EntitySet="Solicitud_Cambios" />
@@ -806,7 +807,7 @@
             <End Role="Usuario" EntitySet="Usuarios" />
             <End Role="Solicitud_Cambios" EntitySet="Solicitud_Cambios" />
           </AssociationSet>
-        </EntityContainer>
+          </EntityContainer>
         <EntityType Name="Estado_Proyecto">
           <Key>
             <PropertyRef Name="nombre" />
@@ -943,7 +944,7 @@
           <NavigationProperty Name="Requerimientos2" Relationship="ModeloEntities.Requerimiento_Encargados" FromRole="Usuario" ToRole="Requerimiento" />
           <NavigationProperty Name="Solicitud_Cambios" Relationship="ModeloEntities.fk_CambiosU1" FromRole="Usuario" ToRole="Solicitud_Cambios" />
           <NavigationProperty Name="Solicitud_Cambios1" Relationship="ModeloEntities.fk_CambiosU2" FromRole="Usuario" ToRole="Solicitud_Cambios" />
-        </EntityType>
+          </EntityType>
         <EntityType Name="Usuarios_Telefonos">
           <Key>
             <PropertyRef Name="usuario" />
@@ -1268,13 +1269,20 @@
           <End Type="ModeloEntities.Requerimiento" Role="Requerimiento" Multiplicity="*" />
           <End Type="ModeloEntities.Usuario" Role="Usuario" Multiplicity="*" />
         </Association>
+        <EntityType Name="Tipo_Solicitud">
+          <Key>
+            <PropertyRef Name="nombre" />
+          </Key>
+          <Property Name="nombre" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Solicitud_Cambios" Relationship="ModeloEntities.fk_CambiosTipo" FromRole="Tipo_Solicitud" ToRole="Solicitud_Cambios" />
+        </EntityType>
         <EntityType Name="Solicitud_Cambios">
           <Key>
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="req1" Type="Int32" Nullable="false" />
-          <Property Name="req2" Type="Int32" Nullable="false" />
+          <Property Name="req2" Type="Int32" />
           <Property Name="razon" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="solicitadoPor" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="false" />
           <Property Name="solicitadoEn" Type="DateTime" Nullable="false" Precision="0" />
@@ -1282,19 +1290,13 @@
           <Property Name="aprobadoEn" Type="DateTime" Precision="0" />
           <Property Name="estado" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
           <Property Name="tipo" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
+          <Property Name="comentario" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Estado_Solicitud" Relationship="ModeloEntities.fk_CambiosEstado" FromRole="Solicitud_Cambios" ToRole="Estado_Solicitud" />
           <NavigationProperty Name="Requerimiento" Relationship="ModeloEntities.fk_CambiosReq1" FromRole="Solicitud_Cambios" ToRole="Requerimiento" />
           <NavigationProperty Name="Requerimiento1" Relationship="ModeloEntities.fk_CambiosReq2" FromRole="Solicitud_Cambios" ToRole="Requerimiento" />
           <NavigationProperty Name="Tipo_Solicitud" Relationship="ModeloEntities.fk_CambiosTipo" FromRole="Solicitud_Cambios" ToRole="Tipo_Solicitud" />
           <NavigationProperty Name="Usuario" Relationship="ModeloEntities.fk_CambiosU1" FromRole="Solicitud_Cambios" ToRole="Usuario" />
           <NavigationProperty Name="Usuario1" Relationship="ModeloEntities.fk_CambiosU2" FromRole="Solicitud_Cambios" ToRole="Usuario" />
-        </EntityType>
-        <EntityType Name="Tipo_Solicitud">
-          <Key>
-            <PropertyRef Name="nombre" />
-          </Key>
-          <Property Name="nombre" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="Solicitud_Cambios" Relationship="ModeloEntities.fk_CambiosTipo" FromRole="Tipo_Solicitud" ToRole="Solicitud_Cambios" />
         </EntityType>
         <Association Name="fk_CambiosEstado">
           <End Type="ModeloEntities.Estado_Solicitud" Role="Estado_Solicitud" Multiplicity="1" />
@@ -1321,7 +1323,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="fk_CambiosReq2">
-          <End Type="ModeloEntities.Requerimiento" Role="Requerimiento" Multiplicity="1" />
+          <End Type="ModeloEntities.Requerimiento" Role="Requerimiento" Multiplicity="0..1" />
           <End Type="ModeloEntities.Solicitud_Cambios" Role="Solicitud_Cambios" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Requerimiento">
@@ -1544,9 +1546,17 @@
               <ScalarProperty Name="id" ColumnName="idReq" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="Tipo_Solicitud">
+            <EntityTypeMapping TypeName="ModeloEntities.Tipo_Solicitud">
+              <MappingFragment StoreEntitySet="Tipo_Solicitud">
+                <ScalarProperty Name="nombre" ColumnName="nombre" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Solicitud_Cambios">
             <EntityTypeMapping TypeName="ModeloEntities.Solicitud_Cambios">
               <MappingFragment StoreEntitySet="Solicitud_Cambios">
+                <ScalarProperty Name="comentario" ColumnName="comentario" />
                 <ScalarProperty Name="tipo" ColumnName="tipo" />
                 <ScalarProperty Name="estado" ColumnName="estado" />
                 <ScalarProperty Name="aprobadoEn" ColumnName="aprobadoEn" />
@@ -1557,13 +1567,6 @@
                 <ScalarProperty Name="req2" ColumnName="req2" />
                 <ScalarProperty Name="req1" ColumnName="req1" />
                 <ScalarProperty Name="id" ColumnName="id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Tipo_Solicitud">
-            <EntityTypeMapping TypeName="ModeloEntities.Tipo_Solicitud">
-              <MappingFragment StoreEntitySet="Tipo_Solicitud">
-                <ScalarProperty Name="nombre" ColumnName="nombre" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

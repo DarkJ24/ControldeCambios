@@ -66,9 +66,9 @@ public partial class Entities : DbContext
 
     public virtual DbSet<Requerimientos_Cri_Acep> Requerimientos_Cri_Acep { get; set; }
 
-    public virtual DbSet<Solicitud_Cambios> Solicitud_Cambios { get; set; }
-
     public virtual DbSet<Tipo_Solicitud> Tipo_Solicitud { get; set; }
+
+    public virtual DbSet<Solicitud_Cambios> Solicitud_Cambios { get; set; }
 
 }
 

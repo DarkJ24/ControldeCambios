@@ -22,7 +22,7 @@ public partial class Solicitud_Cambios
 
     public int req1 { get; set; }
 
-    public int req2 { get; set; }
+    public Nullable<int> req2 { get; set; }
 
     public string razon { get; set; }
 
@@ -37,6 +37,8 @@ public partial class Solicitud_Cambios
     public string estado { get; set; }
 
     public string tipo { get; set; }
+
+    public string comentario { get; set; }
 
 
 

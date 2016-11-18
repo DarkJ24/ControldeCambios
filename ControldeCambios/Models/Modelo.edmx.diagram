@@ -43,15 +43,15 @@
         <AssociationConnector Association="ModeloEntities.fk_ReqUserCre" />
         <AssociationConnector Association="ModeloEntities.fk_ReqUserSol" />
         <AssociationConnector Association="ModeloEntities.Requerimiento_Encargados" />
-        <EntityTypeShape EntityType="ModeloEntities.Solicitud_Cambios" Width="1.5" PointX="20.25" PointY="8.375" />
         <EntityTypeShape EntityType="ModeloEntities.Tipo_Solicitud" Width="1.5" PointX="18" PointY="12.75" />
+        <EntityTypeShape EntityType="ModeloEntities.Solicitud_Cambios" Width="1.5" PointX="20.25" PointY="8.5" />
         <AssociationConnector Association="ModeloEntities.fk_CambiosEstado" />
         <AssociationConnector Association="ModeloEntities.fk_CambiosReq1" />
         <AssociationConnector Association="ModeloEntities.fk_CambiosReq2" />
         <AssociationConnector Association="ModeloEntities.fk_CambiosTipo" />
         <AssociationConnector Association="ModeloEntities.fk_CambiosU1" />
         <AssociationConnector Association="ModeloEntities.fk_CambiosU2" />
-      </Diagram>
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>
