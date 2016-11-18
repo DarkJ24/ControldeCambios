@@ -1,0 +1,31 @@
+﻿@model ControldeCambios.Models.Solicitud_CambiosIndexModel
+@using PagedList;
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Índice de Solicitud de Cambios";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Solicitud de Cambios</h2>
+<h4>@ViewBag.Title</h4>
+<hr />
+
+<table class="table">
+    <tr>
+        <th>
+            Código
+        </th>
+        <th>
+            Nombre
+        </th>
+        <th>
+            Prioridad
+        </th>
+        <th>
+            Esfuerzo
+        </th>
+        <th>
+            Estado
+        </th>
+    </tr>
+</table>
