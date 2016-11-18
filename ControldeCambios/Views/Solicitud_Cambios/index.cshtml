@@ -25,7 +25,46 @@
             Esfuerzo
         </th>
         <th>
-            Estado
+            Estado de Solicitud
+        </th>
+        <th>
+            Fecha de Solicitud
+        </th>
+        <th>
+            Consultar
         </th>
     </tr>
+    @foreach (var req in Model.reqs)
+    {
+        <tr id="@(req.id)">
+            <td>
+                @Html.DisplayFor(modelItem => req.codigo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => req.nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => req.prioridad)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => req.esfuerzo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => req.estado)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => req.creadoEn)
+            </td>
+            @if (Model.detallesRequerimientos)
+            {
+                <td>
+
+                    @Html.ActionLink("Consultar", "Detalles", new
+               {
+                   id = req.id
+               })
+                </td>
+            }
+        </tr>
+    }
 </table>
