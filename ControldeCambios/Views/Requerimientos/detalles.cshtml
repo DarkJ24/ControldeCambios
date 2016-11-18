@@ -123,13 +123,13 @@ function load_all() {
                 @Html.ValidationMessageFor(m => m.criteriosAceptacion, "", new { @class = "text-danger" })
             </div>
 
+
             <div class="form-group">
                 @Html.Label("Imagen", new { @class = "col-md-2 control-label" })
                 <div class="col-md-10">
                     <label class="" style="cursor:pointer">
-                        <a href="data:image/png;base64,@Html.DisplayFor(m => m.file)"><img src="data:image/png;base64,@Html.DisplayFor(m => m.file)" width="100px" /></a>
-
-                        <input class="btn btn-default btn-file hidden" type="file" name="ImageData" accept="image/*" />
+                        <img id="myImg" src="data:image/png;base64,@Html.DisplayFor(m => m.file)" width="100px"  data-toggle="modal" data-target="#myModal" class="imagen" />
+                        <input class="btn btn-default btn-file hidden" type="file" name="ImageData" accept="image/*"> </input>
                     </label>
                 </div>
             </div>
@@ -284,13 +284,42 @@ function load_all() {
     </div>
 }
 
-<style type="text/css">
-    .required:after {
-        content: "*";
-        font-weight: bold;
-        color: red;
-    }
+<style>
+   @@media (min-width: 768px) {
+  .modal-xl {
+          width: 90%;
+   max-width:1200px;
+   max-height:90vh;
+  }
+}
 </style>
+
+<div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <center>
+                <img src="data:image/png;base64,@Html.DisplayFor(m => m.file)" class="img-responsive" style="width:100%; height:auto">
+            </center> 
+           </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function centerModal() {
+        $(this).css('display', 'block');
+        var $dialog = $(this).find(".modal-dialog");
+        var offset = ($(window).height() - $dialog.height()) / 2;
+        // Center modal vertically in window
+        $dialog.css("margin-top", offset);
+    }
+
+    $('.modal').on('show.bs.modal', centerModal);
+    $(window).on("resize", function () {
+        $('.modal:visible').each(centerModal);
+    });
+</script>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
