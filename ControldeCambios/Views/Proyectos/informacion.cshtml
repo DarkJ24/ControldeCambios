@@ -76,16 +76,22 @@
 <div class="row panel panel-info">
     <div class="panel-heading"><label>Lista de Requerimientos</label></div>
     <div class="panel-body">
-        @if (Model.crearRequerimientos)
-        {
+        <div class="col-xs-12 col-sm-6">
+            @if (Model.crearRequerimientos)
+            {
+                <p>
+                    @Html.ActionLink("Crear Requerimiento", "Crear", "Requerimientos", new { proyecto = Model.proyecto.nombre }, new { @class = "btn btn-primary" })
+                </p>
+            }
             <p>
-                @Html.ActionLink("Crear Requerimiento", "Crear", "Requerimientos", new { proyecto = Model.proyecto.nombre }, new { @class = "btn btn-primary" })
+                @Html.ActionLink("Ver Product Backlog", "Index", "Requerimientos", new { proyecto = Model.proyecto.nombre }, new { @class = "btn btn-info" })
             </p>
-        }
-        <p>
-            @Html.ActionLink("Ver Product Backlog", "Index", "Requerimientos", new { proyecto = Model.proyecto.nombre }, new { @class = "btn btn-info" })
-        </p>
-    </div>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <p>
+                @Html.ActionLink("Mis solicitudes de cambios", "Index", "Solicitud_Cambios", new { proyecto = Model.proyecto.nombre }, new { @class = "btn btn-info" })
+            </p>
+        </div>
 </div>
 
 <div class="row panel panel-info">
