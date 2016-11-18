@@ -34,8 +34,12 @@ namespace ControldeCambios.Models
         [Display(Name = "Descripción")]
         public string descripcion { get; set; }
         
+        [Required(ErrorMessage = "El solicitante es un campo requerido.")]
+        [Display(Name = "Solicitado Por")]
         public string solicitadoPor { get; set; }
 
+        [Required(ErrorMessage = "El creador es un campo requerido.")]
+        [Display(Name = "Creado Por")]
         public string creadoPor { get; set; }
 
         [Required(ErrorMessage = "La prioridad es un campo requerido.")]
