@@ -10,6 +10,8 @@
 <h4>@ViewBag.Title</h4>
 <hr />
 
+@if (Model.reqs.Count() > 0)
+{
 <table class="table">
     <tr>
         <th>
@@ -55,16 +57,32 @@
             <td>
                 @Html.DisplayFor(modelItem => req.creadoEn)
             </td>
-            @if (Model.detallesRequerimientos)
-            {
-                <td>
-
-                    @Html.ActionLink("Consultar", "Detalles", new
+            <td>
+                @Html.ActionLink("Consultar", "Detalles", new
                {
                    id = req.id
                })
-                </td>
-            }
+            </td>
         </tr>
     }
 </table>
+
+@Html.PagedListPager((IPagedList)ViewBag.OnePageOfReqs, page => Url.Action("Index", new { page, proyecto = Model.proyecto }))
+@Html.Raw("Página:")
+if (ViewBag.OnePageOfReqs.PageCount < ViewBag.OnePageOfReqs.PageNumber)
+{
+@Html.Raw("0")
+}
+else
+{
+@ViewBag.OnePageOfReqs.PageNumber
+}
+@Html.Raw(" de ")
+@ViewBag.OnePageOfReqs.PageCount
+}
+else
+{
+<div class="row text-center">
+    <label>No hay Requerimientos</label>
+</div>
+}

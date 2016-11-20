@@ -50,7 +50,48 @@ namespace ControldeCambios.Controllers
 
             var model = new Solicitud_CambiosIndexModel();
             model.proyecto = proyecto;
-            var reqs = baseDatos.Requerimientos.Where(m => m.proyecto == proyecto/* && m.categoria == "Solicitud"*/).ToList();
+            var reqs = baseDatos.Requerimientos.Where(m => m.proyecto == proyecto /*&& m.categoria == "Solicitud" && m.creadoPor == m.Usuario.nombre*/).ToList();
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
+            int lastElement = (reqs.Count < pageSize * pageNumber) ? reqs.Count : pageSize * pageNumber;
+            model.reqs = new List<Requerimiento>();
+            for (int i = (pageNumber - 1) * pageSize; i < lastElement; i++)
+            {
+                model.reqs.Add(reqs.ElementAt(i));
+            }
+
+            var reqsAsIPagedList = new StaticPagedList<Requerimiento>(model.reqs, pageNumber, pageSize, reqs.Count);
+            ViewBag.OnePageOfReqs = reqsAsIPagedList;
+            //model.crearRequerimientos = revisarPermisos("Crear Requerimientos");
+            //model.detallesRequerimientos = revisarPermisos("Consultar Detalles de Requerimiento");
+            return View(model);
+        }
+
+        // GET: Solicitud_Cambios
+        public ActionResult IndexAprobacion(string proyecto, int? page)
+        {
+            /*if (!revisarPermisos("Consultar Lista de Requerimientos"))
+            {
+                //despliega mensaje en caso de no poder crear un requerimiento
+                this.AddToastMessage("Acceso Denegado", "No tienes permiso para consultar la lista de versiones de requerimientos!", ToastType.Warning);
+                return RedirectToAction("Index", "Home");
+            }*/
+
+            if (proyecto == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            var proy = baseDatos.Proyectos.Find(proyecto);
+
+            if (proy == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            var model = new Solicitud_CambiosIndexModel();
+            model.proyecto = proyecto;
+            var reqs = baseDatos.Requerimientos.Where(m => m.proyecto == proyecto /*&& m.categoria == "Solicitud"*/).ToList();
             int pageSize = 10;
             int pageNumber = (page ?? 1);
             int lastElement = (reqs.Count < pageSize * pageNumber) ? reqs.Count : pageSize * pageNumber;
