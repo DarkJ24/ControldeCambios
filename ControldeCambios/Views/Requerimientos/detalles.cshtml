@@ -12,6 +12,8 @@
         $('.ms-elem-selectable').removeClass('disabled');
         $('.ms-elem-selection').removeClass('disabled');
         $('#subtitle').html("Modificar Requerimiento");
+        $('.imgdiv').removeClass("hidden");
+        $('.showimgdiv').addClass("hidden");
     }
     </script>
 }
@@ -31,7 +33,7 @@ function delete_all(button) {
 }
 
 function add_textbox() {
-    $("#textboxes").append("<div class='row'><div id='textbox" + i + "'><div class='col-md-4'><textarea class='multitextbox form-control multitextbox" + i + "' oninput=update_output() cols='30' rows='2' style='border-radius:4px'></textarea></div> <div class='col-md-1'><button onclick='delete_all(this)' class='btn' id='textbox" + i + "'><span class='glyphicon glyphicon-minus' aria-hidden='true'></span></button></div> <br/> <br/> <br />  </div></div>")
+    $("#textboxes").append("<div class='row'><div id='textbox" + i + "'><div class='col-md-4'><textarea class='multitextbox form-control multitextbox" + i + " editFields' oninput=update_output() cols='30' rows='2' style='border-radius:4px'></textarea></div> <div class='col-md-1'><button onclick='delete_all(this)' class='btn' id='textbox" + i + "'><span class='glyphicon glyphicon-minus' aria-hidden='true'></span></button></div> <br/> <br/> <br />  </div></div>")
     var tbid = "multitextbox" + i;
     i++
     return tbid;
@@ -64,7 +66,7 @@ function load_all() {
     <button type = "button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal">Eliminar</button>
 }
 <hr />
-@using (Html.BeginForm("Detalles", "Requerimientos", FormMethod.Post, new { @class = "form-horizontal editFields", role = "form" }))
+@using (Html.BeginForm("Detalles", "Requerimientos", FormMethod.Post, new { @class = "form-horizontal editFields", role = "form", enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m => m.id)
@@ -111,25 +113,42 @@ function load_all() {
             <div class="form-group">
                 @Html.LabelFor(m => m.criteriosAceptacion, new { @class = "col-md-2 control-label required" })
                 @Html.HiddenFor(m => m.criteriosAceptacion, new { @id = "output" })
-                <div class="col-md-offset-2 col-md-10" style="margin-bottom:25px">
-                    <button type="button" onclick="add_textbox()" class="btn editBtns" style="border-radius:4px;display:none"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Nuevo Criterio de Aceptación</button>
-                    <br />
-                    <br />
-
+                <div class="col-md-10" style="margin-bottom:25px">
+                    <div class="editBtns" style="display:none">
+                        <button type="button" onclick="add_textbox()" class="btn editBtns" style="border-radius:4px"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Nuevo Criterio de Aceptación</button>
+                        <br />
+                        <br />
+                    </div>
                     <div id="textboxes">
-                        <div class='row'><div id='textbox0'><div class='col-md-4'><textarea class='multitextbox form-control multitextbox0' oninput=update_output() cols='30' rows='2' style='border-radius:4px'></textarea></div> <div class='col-md-1'></div> <br /> <br /> <br />  </div></div>
+                        <div class='row'><div id='textbox0'><div class='col-md-4'><textarea class='multitextbox form-control multitextbox0 editFields' oninput=update_output() cols='30' rows='2' style='border-radius:4px'></textarea></div> <div class='col-md-1'></div> <br /> <br /> <br />  </div></div>
                     </div>
                 </div>
                 @Html.ValidationMessageFor(m => m.criteriosAceptacion, "", new { @class = "text-danger" })
             </div>
 
-            <div class="form-group">
+
+            <div class="form-group showimgdiv">
+                @Html.Label("Imagen", new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @if (Model.file != "")
+                    {
+                    <label class="" style="cursor:pointer">
+                        <img id="myImg" src="data:image/png;base64,@Html.DisplayFor(m => m.file)" width="100px"  data-toggle="modal" data-target="#myModal" class="imagen" /> 
+                    </label>
+                    }
+                    else
+                    {
+                        @Html.Raw("No hay imagen")
+                    }
+                    @Html.HiddenFor(m => m.file)
+                </div>
+            </div>
+
+            <div class="form-group hidden imgdiv">
                 @Html.Label("Imagen", new { @class = "col-md-2 control-label" })
                 <div class="col-md-10">
                     <label class="" style="cursor:pointer">
-                        <a href="data:image/png;base64,@Html.DisplayFor(m => m.file)"><img src="data:image/png;base64,@Html.DisplayFor(m => m.file)" width="100px" /></a>
-
-                        <input class="btn btn-default btn-file hidden" type="file" name="ImageData" accept="image/*" />
+                        <input class="btn btn-default btn-file" type="file" name="ImageData" accept="image/*">
                     </label>
                 </div>
             </div>
@@ -251,6 +270,7 @@ function load_all() {
             $('#list2').multiSelect();
             $('.datePicker').datepicker();
             load_all();
+            $('.editFields').attr("disabled", "disabled");
         };
     </script>
 
@@ -284,13 +304,42 @@ function load_all() {
     </div>
 }
 
-<style type="text/css">
-    .required:after {
-        content: "*";
-        font-weight: bold;
-        color: red;
-    }
+<style>
+   @@media (min-width: 768px) {
+  .modal-xl {
+          width: 90%;
+   max-width:1200px;
+   max-height:90vh;
+  }
+}
 </style>
+
+<div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <center>
+                <img src="data:image/png;base64,@Html.DisplayFor(m => m.file)" class="img-responsive" style="width:100%; height:auto">
+            </center> 
+           </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function centerModal() {
+        $(this).css('display', 'block');
+        var $dialog = $(this).find(".modal-dialog");
+        var offset = ($(window).height() - $dialog.height()) / 2;
+        // Center modal vertically in window
+        $dialog.css("margin-top", offset);
+    }
+
+    $('.modal').on('show.bs.modal', centerModal);
+    $(window).on("resize", function () {
+        $('.modal:visible').each(centerModal);
+    });
+</script>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

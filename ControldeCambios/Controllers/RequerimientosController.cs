@@ -219,11 +219,17 @@ namespace ControldeCambios.Controllers
                 requerimiento.categoria = "Actual";
                 requerimiento.Usuarios = model.equipo.Select(x => baseDatos.Usuarios.Find(x)).ToList();
 
-                var array = new Byte[ImageData.ContentLength];
-                ImageData.InputStream.Position = 0;
-                ImageData.InputStream.Read(array, 0, ImageData.ContentLength);
+                if (ImageData != null)
+                {
+                    var array = new Byte[ImageData.ContentLength];
+                    ImageData.InputStream.Position = 0;
+                    ImageData.InputStream.Read(array, 0, ImageData.ContentLength);
 
-                requerimiento.imagen = array;
+                    requerimiento.imagen = array;
+                } else
+                {
+                    requerimiento.imagen = null;
+                }
 
                 //Se hace el split para separar los criterios de aceptación y meterlos en una lista
                 var criterios = model.criteriosAceptacion.Split('|').ToList();
@@ -318,8 +324,10 @@ namespace ControldeCambios.Controllers
             
             if(modelo.requerimiento.imagen != null)
             {
-                //HttpPostedFileBase objFile = (modelo.requerimiento.imagen) as HttpPostedFileBase;
                 modelo.file = HttpUtility.UrlEncode(Convert.ToBase64String(modelo.requerimiento.imagen));
+            } else
+            {
+                modelo.file = "";
             }
 
             modelo.equipo = new List<string>();     // Se llena la variable equipo con el equipo ya asignado a este requerimiento, si ya hay uno
@@ -364,7 +372,7 @@ namespace ControldeCambios.Controllers
         // POST: Detalles
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Detalles(RequerimientosModelo modelo)
+        public ActionResult Detalles(RequerimientosModelo modelo, HttpPostedFileBase ImageData)
         {
             if (ModelState.IsValid)     // Verifica si el modelo que entra como parametro es valido para modificar
             {
@@ -394,6 +402,23 @@ namespace ControldeCambios.Controllers
                          requerimiento.Usuarios.Add(baseDatos.Usuarios.Find(desarrollador));
                     }
                 }
+
+                if (ImageData != null)
+                {
+                    var array = new Byte[ImageData.ContentLength];
+                    ImageData.InputStream.Position = 0;
+                    ImageData.InputStream.Read(array, 0, ImageData.ContentLength);
+
+                    requerimiento.imagen = array;
+                }
+                else
+                {
+                    if (modelo.file == "")
+                    {
+                        requerimiento.imagen = null;
+                    }
+                }
+
                 baseDatos.Entry(requerimiento).State = System.Data.Entity.EntityState.Modified;     // Con esta linea se notifica a la base que se hacen los cambios
                 baseDatos.SaveChanges();    // Se guardan los cambios en la base
                 this.AddToastMessage("Requerimiento Modificado", "El requerimiento " + modelo.nombre + " se ha modificado correctamente.", ToastType.Success);      // Se muestra un mensaje de confirmacion
