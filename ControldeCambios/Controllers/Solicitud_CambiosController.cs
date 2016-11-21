@@ -50,7 +50,9 @@ namespace ControldeCambios.Controllers
 
             var model = new Solicitud_CambiosIndexModel();
             model.proyecto = proyecto;
-            var reqs = baseDatos.Requerimientos.Where(m => m.proyecto == proyecto /*&& m.categoria == "Solicitud" && m.creadoPor == m.Usuario.nombre*/).ToList();
+            String userIdentityId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            String usuarioActual = baseDatos.Usuarios.Where(m => m.id == userIdentityId).First().cedula;
+            var reqs = baseDatos.Requerimientos.Where(m => m.proyecto == proyecto && m.categoria == "Solicitud" && m.creadoPor == usuarioActual).ToList();
             int pageSize = 10;
             int pageNumber = (page ?? 1);
             int lastElement = (reqs.Count < pageSize * pageNumber) ? reqs.Count : pageSize * pageNumber;
@@ -91,7 +93,7 @@ namespace ControldeCambios.Controllers
 
             var model = new Solicitud_CambiosIndexModel();
             model.proyecto = proyecto;
-            var reqs = baseDatos.Requerimientos.Where(m => m.proyecto == proyecto /*&& m.categoria == "Solicitud"*/).ToList();
+            var reqs = baseDatos.Requerimientos.Where(m => m.proyecto == proyecto && m.categoria == "Solicitud").ToList();
             int pageSize = 10;
             int pageNumber = (page ?? 1);
             int lastElement = (reqs.Count < pageSize * pageNumber) ? reqs.Count : pageSize * pageNumber;
