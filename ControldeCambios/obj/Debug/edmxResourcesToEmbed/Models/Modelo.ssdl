@@ -125,7 +125,7 @@
     </Key>
     <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="req1" Type="int" Nullable="false" />
-    <Property Name="req2" Type="int" Nullable="false" />
+    <Property Name="req2" Type="int" />
     <Property Name="razon" Type="varchar" MaxLength="200" Nullable="false" />
     <Property Name="solicitadoPor" Type="varchar" MaxLength="11" Nullable="false" />
     <Property Name="solicitadoEn" Type="date" Nullable="false" />
@@ -133,6 +133,7 @@
     <Property Name="aprobadoEn" Type="date" />
     <Property Name="estado" Type="varchar" MaxLength="15" Nullable="false" />
     <Property Name="tipo" Type="varchar" MaxLength="15" Nullable="false" />
+    <Property Name="comentario" Type="varchar" MaxLength="200" />
   </EntityType>
   <EntityType Name="Sprint_Modulos">
     <Key>
@@ -208,7 +209,7 @@
     </ReferentialConstraint>
   </Association>
   <Association Name="fk_CambiosReq2">
-    <End Role="Requerimientos" Type="Self.Requerimientos" Multiplicity="1" />
+    <End Role="Requerimientos" Type="Self.Requerimientos" Multiplicity="0..1" />
     <End Role="Solicitud_Cambios" Type="Self.Solicitud_Cambios" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="Requerimientos">

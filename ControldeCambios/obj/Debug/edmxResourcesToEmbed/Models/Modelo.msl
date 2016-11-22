@@ -171,9 +171,17 @@
         <ScalarProperty Name="id" ColumnName="idReq" />
       </EndProperty>
     </AssociationSetMapping>
+    <EntitySetMapping Name="Tipo_Solicitud">
+      <EntityTypeMapping TypeName="ModeloEntities.Tipo_Solicitud">
+        <MappingFragment StoreEntitySet="Tipo_Solicitud">
+          <ScalarProperty Name="nombre" ColumnName="nombre" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="Solicitud_Cambios">
       <EntityTypeMapping TypeName="ModeloEntities.Solicitud_Cambios">
         <MappingFragment StoreEntitySet="Solicitud_Cambios">
+          <ScalarProperty Name="comentario" ColumnName="comentario" />
           <ScalarProperty Name="tipo" ColumnName="tipo" />
           <ScalarProperty Name="estado" ColumnName="estado" />
           <ScalarProperty Name="aprobadoEn" ColumnName="aprobadoEn" />
@@ -184,13 +192,6 @@
           <ScalarProperty Name="req2" ColumnName="req2" />
           <ScalarProperty Name="req1" ColumnName="req1" />
           <ScalarProperty Name="id" ColumnName="id" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="Tipo_Solicitud">
-      <EntityTypeMapping TypeName="ModeloEntities.Tipo_Solicitud">
-        <MappingFragment StoreEntitySet="Tipo_Solicitud">
-          <ScalarProperty Name="nombre" ColumnName="nombre" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
