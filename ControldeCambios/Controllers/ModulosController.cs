@@ -97,7 +97,7 @@ namespace ControldeCambios.Controllers
         // GET: Modulos/Crear
         public ActionResult Crear(string proyecto)
         {
-            if (!revisarPermisos("Modificar Proyectos"))
+            if (!revisarPermisos("Crear Módulos"))
             {
                 //Despliega mensaje en caso de no poder crear un proyecto
                 this.AddToastMessage("Acceso Denegado", "No tienes permiso para crear módulos!", ToastType.Warning);
@@ -165,10 +165,10 @@ namespace ControldeCambios.Controllers
         // GET: Modulos/Detalles
         public ActionResult Detalles(string proyecto, string numero)
         {
-            if (!revisarPermisos("Modificar Proyectos"))
+            if (!revisarPermisos("Consultar Detalles de Módulos"))
             {
                 //Despliega mensaje en caso de no poder crear un proyecto
-                this.AddToastMessage("Acceso Denegado", "No tienes permiso para modificar módulos!", ToastType.Warning);
+                this.AddToastMessage("Acceso Denegado", "No tienes permiso para ver detalles de módulos!", ToastType.Warning);
                 return RedirectToAction("Index", "Home");
             }
             if (String.IsNullOrEmpty(proyecto) || String.IsNullOrEmpty(numero))
@@ -201,6 +201,10 @@ namespace ControldeCambios.Controllers
                 {
                     model.requerimientos.Add(req.id.ToString());
                 }
+
+                ViewBag.modificar = revisarPermisos("Modificar Módulos");
+                ViewBag.eliminar = revisarPermisos("Eliminar Módulos");
+
                 return View(model);
             }
             else
