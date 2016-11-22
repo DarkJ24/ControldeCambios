@@ -286,10 +286,10 @@ namespace ControldeCambios.Controllers
         // GET: Detalles
         public ActionResult Detalles(int id)    
         {
-            if (!revisarPermisos("Modificar Requerimientos"))   // Revisa los permisos del usuario accediendo a la pantalla
+            if (!revisarPermisos("Consultar Detalles de Requerimiento"))   // Revisa los permisos del usuario accediendo a la pantalla
             {
                 //Despliega mensaje en caso de no poder modificar un requerimiento
-                this.AddToastMessage("Acceso Denegado", "No tienes permiso para modificar requerimientos!", ToastType.Warning);
+                this.AddToastMessage("Acceso Denegado", "No tienes permiso para ver detalles de requerimientos!", ToastType.Warning);
                 return RedirectToAction("Index", "Home");
             }
             if (id == null) // Si no existe el requerimiento, redirecciona a error

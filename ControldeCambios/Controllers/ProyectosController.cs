@@ -206,10 +206,10 @@ namespace ControldeCambios.Controllers
         // GET: Detalles
         public ActionResult Detalles(string id)
         {
-            if (!revisarPermisos("Modificar Proyectos"))
+            if (!revisarPermisos("Consultar Detalles de Proyectos"))
             {
                 //Despliega mensaje en caso de no poder modificar un proyecto
-                this.AddToastMessage("Acceso Denegado", "No tienes permiso para modificar proyectos!", ToastType.Warning);
+                this.AddToastMessage("Acceso Denegado", "No tienes permiso para ver detalles de proyectos!", ToastType.Warning);
                 return RedirectToAction("Index", "Home");
             }
             if (String.IsNullOrEmpty(id))

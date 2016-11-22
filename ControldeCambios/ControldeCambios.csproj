@@ -310,6 +310,7 @@
     <Compile Include="Models\Solicitud_Cambios.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Solicitud_CambiosIndexModel.cs" />
     <Compile Include="Models\Sprint.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
