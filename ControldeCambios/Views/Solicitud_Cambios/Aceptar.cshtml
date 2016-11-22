@@ -1,0 +1,330 @@
+﻿@model ControldeCambios.Models.AceptarSolicitudCambioModelo
+@{
+    ViewBag.Title = "Solicitud de Cambio";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+i = 1;
+
+@*function update_output() {
+	var values = $(".multitextbox")
+              .map(function(){return $(this).val();}).get().filter(v=>v!='').join("|");
+	$("#output").val(values);
+}
+
+function delete_all(button) {
+	$("#" + button.id).remove();
+	update_output();
+}*@
+
+function add_textbox() {
+    $("#textboxes").append("<div class='row'><div id='textbox" + i + "'><div class='col-md-4'><textarea class='multitextbox form-control multitextbox" + i + " editFields' oninput=update_output() cols='30' rows='2' style='border-radius:4px'></textarea></div> <div class='col-md-1'><button onclick='delete_all(this)' class='btn' id='textbox" + i + "'><span class='glyphicon glyphicon-minus' aria-hidden='true'></span></button></div> <br/> <br/> <br />  </div></div>")
+    var tbid = "multitextbox" + i;
+    i++
+    return tbid;
+}
+
+function load_all() {
+    var inputs = $("#output").val().split("|");
+    for (var j = 0; j < inputs.length; j++) {
+        if(j != 0) {
+            var tbid = add_textbox();
+            $("." + tbid).val(inputs[j]);
+        } else {
+            var tbid = "multitextbox0";
+            $("." + tbid).val(inputs[j]);
+        }
+    }
+}
+
+</script>
+
+<h2>Solicitud de Cambios</h2>
+<h4 id="subtitle">@ViewBag.Title</h4>
+<hr />
+    @*pueden ir los botones *@
+}
+<hr />
+
+@using (Html.BeginForm("Aprobar", "Solicitud de Cambio", FormMethod.Post, new { @class = "form-horizontal editFields", role = "form", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.id)
+    @Html.HiddenFor(m => m.proyecto)
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.proyecto, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.DisplayFor(m => m.proyecto, new { @class = "form-control" })
+            @Html.HiddenFor(m => m.proyecto)
+            @Html.ValidationMessageFor(model => model.proyecto, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+
+    <div class="panel panel-info">
+        <div class="panel-heading"><label>Datos de Requerimiento</label></div>
+        <div class="panel-body">
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.codigo, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.DisplayFor(m => m.codigo, new { @class = "form-control" })
+                    @Html.HiddenFor(m => m.codigo)
+                    @Html.ValidationMessageFor(m => m.codigo, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">   
+                @Html.LabelFor(m => m.nombre, new { @class = "col-md-2 control-label" })       
+                <div class="col-md-10">
+                    @Html.DisplayFor(m => m.nombre, new { @class = "form-control" })
+                    @Html.HiddenFor(m => m.nombre)
+                    @Html.ValidationMessageFor(m => m.codigo, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2 required">Descripción:</label>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.descripcion, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
+                    @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.criteriosAceptacion, new { @class = "col-md-2 control-label required" })
+                @Html.HiddenFor(m => m.criteriosAceptacion, new { @id = "output" })
+                <div class="col-md-10" style="margin-bottom:25px">
+                    <div class="editBtns" style="display:none">
+                        <button type="button" onclick="add_textbox()" class="btn editBtns" style="border-radius:4px"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Nuevo Criterio de Aceptación</button>
+                        <br />
+                        <br />
+                    </div>
+                    <div id="textboxes">
+                        <div class='row'><div id='textbox0'><div class='col-md-4'><textarea class='multitextbox form-control multitextbox0 editFields' oninput=update_output() cols='30' rows='2' style='border-radius:4px'></textarea></div> <div class='col-md-1'></div> <br /> <br /> <br />  </div></div>
+                    </div>
+                </div>
+                @Html.ValidationMessageFor(m => m.criteriosAceptacion, "", new { @class = "text-danger" })
+            </div>
+
+
+            <div class="form-group showimgdiv">
+                @Html.Label("Imagen", new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @if (Model.file != "")
+                    {
+                        <label class="" style="cursor:pointer">
+                            <img id="myImg" src="data:image/png;base64,@Html.DisplayFor(m => m.file)" width="100px" data-toggle="modal" data-target="#myModal" class="imagen" />
+                        </label>
+                    }
+                    else
+                    {
+                        @Html.Raw("No hay imagen")
+                    }
+                    @Html.HiddenFor(m => m.file)
+                </div>
+            </div>
+
+            <div class="form-group hidden imgdiv">
+                @Html.Label("Imagen", new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    <label class="" style="cursor:pointer">
+                        <input class="btn btn-default btn-file" type="file" name="ImageData" accept="image/*">
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Observaciones:</label>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.observaciones, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
+                    @Html.ValidationMessageFor(model => model.observaciones, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("Disponibles", new { @class = "col-md-offset-2 col-md-2 control-label", @style = "text-align:center;margin-left:195px;" })
+                @Html.Label("Responsables", new { @class = "col-md-offset-2  col-md-2 control-label required", @style = "text-align:center;margin-left:10px;margin-bottom:10px" })
+                <div class="col-md-offset-2 col-md-10" style="margin-bottom:25px">
+                    @Html.ListBoxFor(m => m.equipo, new MultiSelectList(ViewBag.DesarrolladoresDisp, "cedula", "nombre"), new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;", @disabled = "disabled", @class = "editFields" })
+                    @Html.ValidationMessageFor(model => model.equipo, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="panel panel-info">
+        <div class="panel-heading"><label>Datos de Estimación</label></div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label class="control-label col-md-2 required">Prioridad:</label>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.prioridad, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
+                    @Html.ValidationMessageFor(model => model.prioridad, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2 required">Esfuerzo:</label>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.esfuerzo, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
+                    @Html.ValidationMessageFor(model => model.esfuerzo, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2 required">Fecha Inicial:</label>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.fechaInicial, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
+                    @Html.ValidationMessageFor(model => model.fechaInicial, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Fecha Final:</label>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.fechaFinal, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
+                    @Html.ValidationMessageFor(model => model.fechaFinal, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+                    //FALTA SPRINT Y VERSION
+                    <div class="panel panel-info">
+                        <div class="panel-heading"><label>Datos Generales</label></div>
+                        <div class="panel-body">
+
+                            <div class="form-group">
+                                <label class="control-label col-md-2 required">Estado:</label>
+                                <div class="col-md-10">
+                                    @Html.DropDownListFor(model => model.estado, (SelectList)ViewBag.Estados, new { @class = "col-xs-12 editFields", @disabled = "disabled", @style = "height:30px;border-radius:4px" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-md-2 required">Solicitado Por:</label>
+                                <div class="col-md-10">
+                                    @Html.DropDownListFor(model => model.solicitadoPor, (SelectList)ViewBag.clientes, new { @class = "col-xs-12 editFields", @disabled = "disabled", @style = "height:30px;border-radius:4px" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-md-2 required">Creado Por:</label>
+                                <div class="col-md-10">
+                                    @Html.DropDownListFor(model => model.creadoPor, (SelectList)ViewBag.desarrolladores, new { @class = "form-control editFields", @disabled = "disabled", @style = "height:30px;border-radius:4px" })
+                                    @Html.ValidationMessageFor(model => model.creadoPor, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-md-2 required">Versión:</label>
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.version, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
+                                    @Html.ValidationMessageFor(model => model.version, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <div class="form-group editBtns" style="display:none">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" class="btn btn-success" value="Aceptar" />
+                            <input type="button" class="btn btn-default" value="Cancelar" onclick="location.reload()" />
+                        </div>
+                    </div>
+
+                    <style type="text/css">
+                        .required:after {
+                            content: "*";
+                            font-weight: bold;
+                            color: red;
+                        }
+                    </style>
+                    <script>
+        window.onload = function() {
+            $('#list2').multiSelect();
+            $('.datePicker').datepicker();
+            load_all();
+            $('.editFields').attr("disabled", "disabled");
+        };
+                    </script>
+
+}
+
+@if (Model.eliminarRequerimiento)
+{
+    <!-- Modal -->
+    <div class="modal fade" id="confirmModal" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color:#d61d1d;color:#FFFFFF">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Eliminar Requerimiento</h4>
+                </div>
+                <div class="modal-body" style="padding-bottom:0px">
+                    <p>Seguro que deseas eliminar el requerimiento @(Model.nombre)?</p>
+                    <p style="color:red"><sub>*Esta acción es irreversible</sub></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    @using (Html.BeginForm("Borrar", "Requerimientos", FormMethod.Post, new { @class = "form-horizontal", role = "form", style = "display:inline;padding-left:5px;" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.id)
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+    @@media (min-width: 768px) {
+        .modal-xl {
+            width: 90%;
+            max-width: 1200px;
+            max-height: 90vh;
+        }
+    }
+</style>
+
+<div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-body">
+                <center>
+                    <img src="data:image/png;base64,@Html.DisplayFor(m => m.file)" class="img-responsive" style="width:100%; height:auto">
+                </center>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function centerModal() {
+        $(this).css('display', 'block');
+        var $dialog = $(this).find(".modal-dialog");
+        var offset = ($(window).height() - $dialog.height()) / 2;
+        // Center modal vertically in window
+        $dialog.css("margin-top", offset);
+    }
+
+    $('.modal').on('show.bs.modal', centerModal);
+    $(window).on("resize", function () {
+        $('.modal:visible').each(centerModal);
+    });
+</script>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
