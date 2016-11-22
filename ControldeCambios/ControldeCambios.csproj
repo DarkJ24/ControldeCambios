@@ -298,6 +298,7 @@
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\RequerimientosIndexModel.cs" />
+    <Compile Include="Models\CrearSolicitudModel.cs" />
     <Compile Include="Models\RequerimientosModelo.cs" />
     <Compile Include="Models\Requerimientos_Cri_Acep.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
@@ -496,6 +497,7 @@
     <Content Include="Views\Sprint\Detalles.cshtml" />
     <Content Include="Views\Sprint\Informacion.cshtml" />
     <Content Include="Views\Solicitud_Cambios\Consultar.cshtml" />
+    <Content Include="Views\Solicitud_Cambios\CrearSolicitud.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
