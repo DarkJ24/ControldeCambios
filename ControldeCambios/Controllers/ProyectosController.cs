@@ -368,6 +368,16 @@ namespace ControldeCambios.Controllers
             var model = new ProyectoInfoModel();
             model.proyecto = baseDatos.Proyectos.Find(id);
             model.proyectoLider = baseDatos.Usuarios.Find(model.proyecto.lider).nombre;
+            String userIdentityId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            String usuarioActual = baseDatos.Usuarios.Where(m => m.id == userIdentityId).First().cedula;
+            if (usuarioActual == model.proyecto.lider || System.Web.HttpContext.Current.User.IsInRole("Admin"))
+            {
+                ViewBag.permiso = true;
+            }
+            else
+            {
+                ViewBag.permiso = false;
+            }
             model.proyectoCliente = baseDatos.Usuarios.Find(model.proyecto.cliente).nombre;
             model.proyectoFechaInicio = model.proyecto.fechaInicio.ToString("dd/MM/yyyy");
             model.proyectoFechaFinal = model.proyecto.fechaFinal.ToString("dd/MM/yyyy");
