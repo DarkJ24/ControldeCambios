@@ -66,5 +66,14 @@ namespace ControldeCambios.Models
         public string proyecto { get; set; }
 
         public int id { get; set; }
+
+
+        //COMENTARIOS DEL LIDER
+        [Required(ErrorMessage = "El comentario es un campo obligatorio.")]
+        [Display(Name = "Comentario")]
+        public string comentario { get; set; }
+
+        public string version { get; set; }
+        
     }
 }
