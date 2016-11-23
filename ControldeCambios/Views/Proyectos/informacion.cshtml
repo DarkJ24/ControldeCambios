@@ -92,7 +92,7 @@
                 @Html.ActionLink("Mis solicitudes de cambios", "Index", "Solicitud_Cambios", new { proyecto = Model.proyecto.nombre }, new { @class = "btn btn-info" })
             </p>
         </div>
-        @if (System.Web.HttpContext.Current.User.IsInRole("Lider") || System.Web.HttpContext.Current.User.IsInRole("Admin"))
+        @if (ViewBag.permiso)
         {
         <div class="col-xs-12 col-sm-6">
             <p>
