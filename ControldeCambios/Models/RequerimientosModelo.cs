@@ -32,6 +32,7 @@ namespace ControldeCambios.Models
 
         [StringLength(120, ErrorMessage = "La descripción debe ser de {1} caracteres máximo"), MinLength(1, ErrorMessage = "La descripción debe ser de al menos {1} caracter")]
         [Display(Name = "Descripción")]
+        [Required(ErrorMessage = "La descripcion es un campo requerido.")]
         public string descripcion { get; set; }
         
         [Required(ErrorMessage = "El solicitante es un campo requerido.")]
@@ -52,12 +53,14 @@ namespace ControldeCambios.Models
         public string esfuerzo { get; set; }
 
         [Display(Name = "Fecha de Inicio")]
+        [Required(ErrorMessage = "La fecha inicial es un campo requerido.")]
         public string fechaInicial { get; set; }
 
         [Display(Name = "Fecha Final")]
         public string fechaFinal { get; set; }
 
         [Display(Name = "Estado")]
+        [Required(ErrorMessage = "El estado es un campo requerido.")]
         public string estado { get; set; }
 
         [Display(Name = "Observaciones")]
@@ -70,13 +73,16 @@ namespace ControldeCambios.Models
 
 
         [Display(Name = "Criterios de Aceptación")]
-        [Required]
+        [Required(ErrorMessage = "Es necesario por lo menos un criterio de aceptacion.")]
+        [RegularExpression(@"^(?=\s*\S).*$", ErrorMessage = "Es necesario por lo menos un criterio de aceptacion.")]
         public string criteriosAceptacion { get; set; }
 
         //AGREGAR EQUIPO
+        [Required(ErrorMessage = "Se debe agregar por lo menos un miembro en el equipo.")]
         public List<string> equipo { get; set; }
 
         [Display(Name = "Proyecto")]
+        [Required(ErrorMessage = "Se debe tener un proyecto asociado.")]
         public string proyecto { get; set; }
 
         public int id { get; set; }

@@ -444,6 +444,12 @@ namespace ControldeCambios.Controllers
 
                 baseDatos.Entry(requerimiento).State = System.Data.Entity.EntityState.Modified;     // Con esta linea se notifica a la base que se hacen los cambios
                 baseDatos.SaveChanges();    // Se guardan los cambios en la base
+
+                var sprints = baseDatos.Requerimientos.Find(modelo.id).Modulo1.Sprint_Modulos.Select(x => x.sprint);
+                foreach(var sprint in sprints)
+                {
+                    updateSprintPoints(modelo.proyecto, sprint);
+                }
                 this.AddToastMessage("Requerimiento Modificado", "El requerimiento " + modelo.nombre + " se ha modificado correctamente.", ToastType.Success);      // Se muestra un mensaje de confirmacion
                 return RedirectToAction("Detalles", "Requerimientos", new { id = requerimiento.id });       // Se carga el requerimiento modificado en la pantalla
 

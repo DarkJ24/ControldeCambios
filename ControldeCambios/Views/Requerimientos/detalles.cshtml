@@ -69,6 +69,7 @@ function load_all() {
 <hr />
 @using (Html.BeginForm("Detalles", "Requerimientos", FormMethod.Post, new { @class = "form-horizontal editFields", role = "form", enctype = "multipart/form-data" }))
 {
+    @Html.ValidationSummary()
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m => m.id)
     @Html.HiddenFor(m => m.proyecto)
