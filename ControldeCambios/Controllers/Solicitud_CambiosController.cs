@@ -264,6 +264,16 @@ namespace ControldeCambios.Controllers
                         requerimiento.imagen = null;
                     }
                 }
+                //Se hace el split para separar los criterios de aceptación y meterlos en una lista
+                var criterios = modelo.criteriosAceptacion.Split('|').ToList();
+                //Se crea la lista de criterios de aceptacion que puede ser expandible
+                var criterio_list = new List<Requerimientos_Cri_Acep>();
+                foreach (var criterio in criterios) {
+                    var cri_ac = new Requerimientos_Cri_Acep();
+                    cri_ac.criterio = criterio;
+                    criterio_list.Add(cri_ac);
+                }
+                requerimiento.Requerimientos_Cri_Acep = criterio_list;
                 requerimiento.categoria = "Solicitud";
                 baseDatos.Requerimientos.Add(requerimiento);    // Con esta linea se notifica a la base que se hacen los cambios
                 var solicitud = new Solicitud_Cambios();
