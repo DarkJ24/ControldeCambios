@@ -228,7 +228,7 @@
         <PropertyRef Name="nombre" />
       </Principal>
       <Dependent Role="Solicitud_Cambios">
-        <PropertyRef Name="estado" />
+        <PropertyRef Name="tipo" />
       </Dependent>
     </ReferentialConstraint>
   </Association>

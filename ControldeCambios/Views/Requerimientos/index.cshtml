@@ -68,11 +68,20 @@ req.estado)
             @if (Model.detallesRequerimientos)
             {
                 <td>
+                    @if (req.estado == "Por iniciar             ") {
 
-                    @Html.ActionLink("Consultar", "Detalles", new
-               {
-                   id = req.id
-               })
+                        @Html.ActionLink("Consultar", "Detalles", new
+                           {
+                               id = req.id
+                           })
+                    }
+                    else
+                    {
+                        @Html.ActionLink("Consultar", "CrearSolicitud", "Solicitud_Cambios", new
+                           {
+                               id = req.id
+                           }, new { })
+                    }
                 </td>
             }
         </tr>

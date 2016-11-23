@@ -326,7 +326,7 @@ namespace ControldeCambios.Controllers
 
             //se carga la lista de modulos asociados
             int sprint_numero = Int32.Parse(sprint);
-            ViewBag.modulos = new MultiSelectList(baseDatos.Modulos.Where(m => m.proyecto == proyecto).ToList(), "numero", "nombre");
+            ViewBag.listamodulos = new MultiSelectList(baseDatos.Modulos.Where(m => m.proyecto == proyecto).ToList(), "numero", "nombre");
             model.modulos = new List<string>();
             var listaDeModulosSprint = baseDatos.Sprint_Modulos.Where(m => m.sprint == sprint_numero && m.proyecto == proyecto).ToList();
 

@@ -18,7 +18,7 @@
 <h4 id="subtitle">@ViewBag.Title</h4>
 <hr />
 
-if(ViewBag.modificar) {
+@if(ViewBag.modificar) {
     <button type="button" class="btn btn-primary" onClick="habilitarCampos()">Modificar</button>
 }
 @if (Model.requerimientos.Count == 0)
@@ -61,7 +61,7 @@ if(ViewBag.modificar) {
     <div class="form-group">
         @Html.Label("Requerimientos", new { @class = "col-md-2 control-label" })
     <div class="col-md-10">
-            @Html.ListBoxFor(m => m.requerimientos, new MultiSelectList(ViewBag.requerimientos, "id", "nombre", Model.requerimientos), new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;", @disabled = "disabled", @class = "editFields" })
+            @Html.ListBoxFor(m => m.requerimientos, new MultiSelectList(ViewBag.listarequerimientos, "id", "nombre"), new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;", @disabled = "disabled", @class = "editFields" })
             @Html.ValidationMessageFor(model => model.requerimientos, "", new { @class = "text-danger" })
         </div>
     </div>
