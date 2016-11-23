@@ -37,7 +37,7 @@ else
     <div class="form-group">
         @Html.LabelFor(m => m.proyecto, new { @class = "col-md-2 control-label required" })
         <div class="col-md-10">
-            @Html.DisplayFor(m => m.proyecto, new { @class = "form-control" })
+            @Html.DisplayFor(m => m.proyecto, new { @class = "form-control editFields", @disabled = "disabled" })
             @Html.ValidationMessageFor(model => model.proyecto, "", new { @class = "text-danger" })
             @Html.HiddenFor(model => model.proyecto)
         </div>
@@ -46,7 +46,7 @@ else
     <div class="form-group">
         @Html.LabelFor(m => m.numero, new { @class = "col-md-2 control-label required" })
         <div class="col-md-10">
-            @Html.DisplayFor(m => m.numero, new { @class = "form-control" })
+            @Html.DisplayFor(m => m.numero, new { @class = "form-control editFields", @disabled = "disabled" })
             @Html.ValidationMessageFor(model => model.numero, "", new { @class = "text-danger" })
             @Html.HiddenFor(model => model.numero)
         </div>
@@ -56,7 +56,7 @@ else
     <div class="form-group">
         @Html.LabelFor(m => m.fechaInicio, new { @class = "col-md-2 control-label required" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.fechaInicio, new { @class = "form-control datePicker" })
+            @Html.TextBoxFor(m => m.fechaInicio, new { @class = "form-control datePicker editFields", @disabled = "disabled" })
             @Html.ValidationMessageFor(model => model.fechaInicio, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -64,7 +64,7 @@ else
     <div class="form-group">
         @Html.LabelFor(m => m.fechaFinal, new { @class = "col-md-2 control-label required" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.fechaFinal, new { @class = "form-control datePicker" })
+            @Html.TextBoxFor(m => m.fechaFinal, new { @class = "form-control datePicker editFields", @disabled = "disabled" })
             @Html.ValidationMessageFor(model => model.fechaFinal, "", new { @class = "text-danger" })
         </div>
     </div>
@@ -73,7 +73,7 @@ else
    <div class="form-group">
         @Html.Label("Modulos", new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.ListBoxFor(m => m.modulos, (MultiSelectList)ViewBag.Modulos, new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;" })
+            @Html.ListBoxFor(m => m.modulos, (MultiSelectList)ViewBag.listamodulos, new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;", @class="editFields", @disabled = "disabled" })
             @Html.ValidationMessageFor(model => model.modulos, "", new { @class = "text-danger" })
         </div>
     </div>
