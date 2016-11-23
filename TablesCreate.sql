@@ -37,7 +37,7 @@ ON DELETE CASCADE
 );
 
 CREATE TABLE Estado_Proyecto(
-nombre char(24) primary key --Por iniciar, En ejecuci髇, En pausa, Finalizado, Cerrado
+nombre char(24) primary key --Por iniciar, En ejecuci贸n, En pausa, Finalizado, Cerrado
 );
 
 CREATE TABLE Proyectos(
@@ -59,7 +59,7 @@ ON DELETE NO ACTION,
 );
 
 CREATE TABLE Tipo_Desarrollador(
-nombre char(13) primary key --Tester, Dise馻dor, Programador
+nombre char(13) primary key --Tester, Dise帽ador, Programador
 );
 
 CREATE TABLE Proyecto_Equipo(
@@ -124,7 +124,7 @@ ON DELETE NO ACTION
 );
 
 CREATE TABLE Estado_Requerimientos(
-nombre char(24) primary key --Pendiente de asignaci髇, Asignado, En ejecuci髇, Finalizado, Cerrado
+nombre char(24) primary key --Pendiente de asignaci贸n, Asignado, En ejecuci贸n, Finalizado, Cerrado
 );
 
 CREATE TABLE Categoria_Requerimientos(
@@ -191,7 +191,7 @@ ON DELETE NO ACTION
 );
 
 CREATE TABLE Estado_Solicitud(
-nombre varchar(15) primary key --Aprobado, Rechazado, En revisi髇
+nombre varchar(15) primary key --Aprobado, Rechazado, En revisi贸n
 );
 
 CREATE TABLE Tipo_Solicitud(
@@ -209,7 +209,8 @@ aprobadoPor varchar(11),
 aprobadoEn date,
 estado varchar(15) not null,
 tipo varchar(15) not null,
-comentario varchar(200), --Comentario del L韉er
+comentario varchar(200), --Comentario del L铆der
+proyecto varchar(25) not null,
 constraint fk_CambiosU1 foreign key (aprobadoPor) references Usuarios(cedula)
 ON UPDATE NO ACTION
 ON DELETE NO ACTION,
@@ -219,13 +220,16 @@ ON DELETE NO ACTION,
 constraint fk_CambiosEstado foreign key (estado) references Estado_Solicitud(nombre)
 ON UPDATE CASCADE
 ON DELETE NO ACTION,
-constraint fk_CambiosTipo foreign key (estado) references Tipo_Solicitud(nombre)
+constraint fk_CambiosTipo foreign key (tipo) references Tipo_Solicitud(nombre)
 ON UPDATE CASCADE
 ON DELETE NO ACTION,
 constraint fk_CambiosReq1 foreign key (req1) references Requerimientos(id)
 ON UPDATE NO ACTION
 ON DELETE NO ACTION,
 constraint fk_CambiosReq2 foreign key (req2) references Requerimientos(id)
+ON UPDATE NO ACTION
+ON DELETE NO ACTION,
+constraint fk_CambiosProyecto foreign key (proyecto) references Proyectos(nombre)
 ON UPDATE NO ACTION
 ON DELETE NO ACTION
 );
@@ -242,10 +246,10 @@ VALUES('Crear Usuarios'),
 ('Modificar Proyectos'),
 ('Eliminar Proyectos'),
 ('Consultar Detalles de Proyectos'),
-('Crear M骴ulos'),
-('Modificar M骴ulos'),
-('Eliminar M骴ulos'),
-('Consultar Detalles de M骴ulos'),
+('Crear M贸dulos'),
+('Modificar M贸dulos'),
+('Eliminar M贸dulos'),
+('Consultar Detalles de M贸dulos'),
 ('Crear Sprints'),
 ('Modificar Sprints'),
 ('Eliminar Sprints'),
@@ -258,20 +262,20 @@ VALUES('Crear Usuarios'),
 
 INSERT INTO Estado_Proyecto
 VALUES('Por iniciar'), 
-('En ejecuci髇'),
+('En ejecuci贸n'),
 ('En pausa'),
 ('Finalizado'),
 ('Cerrado');
 
 INSERT INTO Tipo_Desarrollador
 VALUES('Tester'),
-('Dise馻dor'),
+('Dise帽ador'),
 ('Programador');
 
 INSERT INTO Estado_Requerimientos
-VALUES('Pendiente de asignaci髇'), 
+VALUES('Pendiente de asignaci贸n'), 
 ('Asignado'),
-('En ejecuci髇'),
+('En ejecuci贸n'),
 ('Finalizado'),
 ('Cerrado');
 
@@ -283,7 +287,7 @@ VALUES('Actual'),
 
 INSERT INTO Estado_Solicitud
 VALUES('Aprobado'), 
-('En revisi髇'),
+('En revisi贸n'),
 ('Rechazado');
 
 INSERT INTO Tipo_Solicitud

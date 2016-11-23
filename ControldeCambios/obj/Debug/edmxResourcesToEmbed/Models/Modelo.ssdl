@@ -134,6 +134,7 @@
     <Property Name="estado" Type="varchar" MaxLength="15" Nullable="false" />
     <Property Name="tipo" Type="varchar" MaxLength="15" Nullable="false" />
     <Property Name="comentario" Type="varchar" MaxLength="200" />
+    <Property Name="proyecto" Type="varchar" MaxLength="25" Nullable="false" />
   </EntityType>
   <EntityType Name="Sprint_Modulos">
     <Key>
@@ -193,6 +194,18 @@
       </Principal>
       <Dependent Role="Solicitud_Cambios">
         <PropertyRef Name="estado" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_CambiosProyecto">
+    <End Role="Proyectos" Type="Self.Proyectos" Multiplicity="1" />
+    <End Role="Solicitud_Cambios" Type="Self.Solicitud_Cambios" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Proyectos">
+        <PropertyRef Name="nombre" />
+      </Principal>
+      <Dependent Role="Solicitud_Cambios">
+        <PropertyRef Name="proyecto" />
       </Dependent>
     </ReferentialConstraint>
   </Association>
@@ -559,6 +572,10 @@
     <EntitySet Name="Usuarios_Telefonos" EntityType="Self.Usuarios_Telefonos" Schema="dbo" store:Type="Tables" />
     <AssociationSet Name="fk_CambiosEstado" Association="Self.fk_CambiosEstado">
       <End Role="Estado_Solicitud" EntitySet="Estado_Solicitud" />
+      <End Role="Solicitud_Cambios" EntitySet="Solicitud_Cambios" />
+    </AssociationSet>
+    <AssociationSet Name="fk_CambiosProyecto" Association="Self.fk_CambiosProyecto">
+      <End Role="Proyectos" EntitySet="Proyectos" />
       <End Role="Solicitud_Cambios" EntitySet="Solicitud_Cambios" />
     </AssociationSet>
     <AssociationSet Name="fk_CambiosReq1" Association="Self.fk_CambiosReq1">

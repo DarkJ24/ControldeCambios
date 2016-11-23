@@ -30,6 +30,8 @@ public partial class Proyecto
 
         this.Requerimientos = new HashSet<Requerimiento>();
 
+        this.Solicitud_Cambios = new HashSet<Solicitud_Cambios>();
+
     }
 
 
@@ -72,6 +74,10 @@ public partial class Proyecto
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
 
     public virtual ICollection<Requerimiento> Requerimientos { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+
+    public virtual ICollection<Solicitud_Cambios> Solicitud_Cambios { get; set; }
 
 }
 

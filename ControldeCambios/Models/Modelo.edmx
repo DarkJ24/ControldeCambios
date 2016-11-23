@@ -139,6 +139,7 @@
           <Property Name="estado" Type="varchar" MaxLength="15" Nullable="false" />
           <Property Name="tipo" Type="varchar" MaxLength="15" Nullable="false" />
           <Property Name="comentario" Type="varchar" MaxLength="200" />
+          <Property Name="proyecto" Type="varchar" MaxLength="25" Nullable="false" />
         </EntityType>
         <EntityType Name="Sprint_Modulos">
           <Key>
@@ -198,6 +199,18 @@
             </Principal>
             <Dependent Role="Solicitud_Cambios">
               <PropertyRef Name="estado" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_CambiosProyecto">
+          <End Role="Proyectos" Type="Self.Proyectos" Multiplicity="1" />
+          <End Role="Solicitud_Cambios" Type="Self.Solicitud_Cambios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Proyectos">
+              <PropertyRef Name="nombre" />
+            </Principal>
+            <Dependent Role="Solicitud_Cambios">
+              <PropertyRef Name="proyecto" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -566,6 +579,10 @@
             <End Role="Estado_Solicitud" EntitySet="Estado_Solicitud" />
             <End Role="Solicitud_Cambios" EntitySet="Solicitud_Cambios" />
           </AssociationSet>
+          <AssociationSet Name="fk_CambiosProyecto" Association="Self.fk_CambiosProyecto">
+            <End Role="Proyectos" EntitySet="Proyectos" />
+            <End Role="Solicitud_Cambios" EntitySet="Solicitud_Cambios" />
+          </AssociationSet>
           <AssociationSet Name="fk_CambiosReq1" Association="Self.fk_CambiosReq1">
             <End Role="Requerimientos" EntitySet="Requerimientos" />
             <End Role="Solicitud_Cambios" EntitySet="Solicitud_Cambios" />
@@ -787,6 +804,10 @@
             <End Role="Estado_Solicitud" EntitySet="Estado_Solicitud" />
             <End Role="Solicitud_Cambios" EntitySet="Solicitud_Cambios" />
           </AssociationSet>
+          <AssociationSet Name="fk_CambiosProyecto" Association="ModeloEntities.fk_CambiosProyecto">
+            <End Role="Proyecto" EntitySet="Proyectos" />
+            <End Role="Solicitud_Cambios" EntitySet="Solicitud_Cambios" />
+          </AssociationSet>
           <AssociationSet Name="fk_CambiosReq1" Association="ModeloEntities.fk_CambiosReq1">
             <End Role="Requerimiento" EntitySet="Requerimientos" />
             <End Role="Solicitud_Cambios" EntitySet="Solicitud_Cambios" />
@@ -885,6 +906,7 @@
           <NavigationProperty Name="Usuario1" Relationship="ModeloEntities.fk_UserProyCliente" FromRole="Proyecto" ToRole="Usuario" />
           <NavigationProperty Name="Sprints" Relationship="ModeloEntities.fk_UserSprint" FromRole="Proyecto" ToRole="Sprint" />
           <NavigationProperty Name="Requerimientos" Relationship="ModeloEntities.fk_ReqProyecto" FromRole="Proyecto" ToRole="Requerimiento" />
+          <NavigationProperty Name="Solicitud_Cambios" Relationship="ModeloEntities.fk_CambiosProyecto" FromRole="Proyecto" ToRole="Solicitud_Cambios" />
         </EntityType>
         <EntityType Name="Rol_Permisos">
           <Key>
@@ -1291,7 +1313,9 @@
           <Property Name="estado" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
           <Property Name="tipo" Type="String" Nullable="false" MaxLength="15" FixedLength="false" Unicode="false" />
           <Property Name="comentario" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="proyecto" Type="String" Nullable="false" MaxLength="25" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Estado_Solicitud" Relationship="ModeloEntities.fk_CambiosEstado" FromRole="Solicitud_Cambios" ToRole="Estado_Solicitud" />
+          <NavigationProperty Name="Proyecto1" Relationship="ModeloEntities.fk_CambiosProyecto" FromRole="Solicitud_Cambios" ToRole="Proyecto" />
           <NavigationProperty Name="Requerimiento" Relationship="ModeloEntities.fk_CambiosReq1" FromRole="Solicitud_Cambios" ToRole="Requerimiento" />
           <NavigationProperty Name="Requerimiento1" Relationship="ModeloEntities.fk_CambiosReq2" FromRole="Solicitud_Cambios" ToRole="Requerimiento" />
           <NavigationProperty Name="Tipo_Solicitud" Relationship="ModeloEntities.fk_CambiosTipo" FromRole="Solicitud_Cambios" ToRole="Tipo_Solicitud" />
@@ -1307,6 +1331,18 @@
             </Principal>
             <Dependent Role="Solicitud_Cambios">
               <PropertyRef Name="estado" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_CambiosProyecto">
+          <End Type="ModeloEntities.Proyecto" Role="Proyecto" Multiplicity="1" />
+          <End Type="ModeloEntities.Solicitud_Cambios" Role="Solicitud_Cambios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Proyecto">
+              <PropertyRef Name="nombre" />
+            </Principal>
+            <Dependent Role="Solicitud_Cambios">
+              <PropertyRef Name="proyecto" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1556,6 +1592,7 @@
           <EntitySetMapping Name="Solicitud_Cambios">
             <EntityTypeMapping TypeName="ModeloEntities.Solicitud_Cambios">
               <MappingFragment StoreEntitySet="Solicitud_Cambios">
+                <ScalarProperty Name="proyecto" ColumnName="proyecto" />
                 <ScalarProperty Name="comentario" ColumnName="comentario" />
                 <ScalarProperty Name="tipo" ColumnName="tipo" />
                 <ScalarProperty Name="estado" ColumnName="estado" />

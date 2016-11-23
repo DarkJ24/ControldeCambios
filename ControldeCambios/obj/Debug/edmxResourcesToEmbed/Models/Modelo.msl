@@ -181,6 +181,7 @@
     <EntitySetMapping Name="Solicitud_Cambios">
       <EntityTypeMapping TypeName="ModeloEntities.Solicitud_Cambios">
         <MappingFragment StoreEntitySet="Solicitud_Cambios">
+          <ScalarProperty Name="proyecto" ColumnName="proyecto" />
           <ScalarProperty Name="comentario" ColumnName="comentario" />
           <ScalarProperty Name="tipo" ColumnName="tipo" />
           <ScalarProperty Name="estado" ColumnName="estado" />

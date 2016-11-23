@@ -498,6 +498,8 @@
     <Content Include="Views\Sprint\Informacion.cshtml" />
     <Content Include="Views\Solicitud_Cambios\Consultar.cshtml" />
     <Content Include="Views\Solicitud_Cambios\CrearSolicitud.cshtml" />
+    <Content Include="Views\Solicitud_Cambios\index.cshtml" />
+    <Content Include="Views\Solicitud_Cambios\indexAprobacion.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
