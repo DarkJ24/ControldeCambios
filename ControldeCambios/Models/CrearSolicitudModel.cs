@@ -81,7 +81,11 @@ namespace ControldeCambios.Models
         //Razones de Cambio
         [StringLength(200, ErrorMessage = "La razón debe ser de {1} caracteres máximo"), MinLength(1, ErrorMessage = "La razón debe ser de al menos {1} caracter")]
         [Display(Name = "Razón")]
+        [Required(ErrorMessage = "El motivo es un campo requerido.")]
         public string razon { get; set; }
+
+        [StringLength(200, ErrorMessage = "La razón debe ser de {1} caracteres máximo"), MinLength(1, ErrorMessage = "La razón debe ser de al menos {1} caracter")]
+        public string razon2 { get; set; }
 
         public string version { get; set; }
 

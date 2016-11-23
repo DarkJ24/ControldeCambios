@@ -117,11 +117,10 @@ namespace ControldeCambios.Controllers
             var permisoID = baseDatos.Permisos.Where(m => m.nombre == permiso).First().codigo;
             var listaRoles = baseDatos.Rol_Permisos.Where(m => m.permiso == permisoID).ToList().Select(n => n.rol);
             bool userRol = listaRoles.Contains(rol.RoleId);
-
             return userRol;
         }
 
-        // GET: Solicitud_Cambios
+        // GET: Crear Solicitud_Cambios
         public ActionResult CrearSolicitud(string id)
         {
             if (!revisarPermisos("Consultar Detalles de Requerimiento"))   // Revisa los permisos del usuario accediendo a la pantalla
@@ -199,6 +198,98 @@ namespace ControldeCambios.Controllers
             ViewBag.DesarrolladoresDisp = listaDesarrolladores;
             ViewBag.Estados = new SelectList(baseDatos.Estado_Proyecto.ToList(), "nombre", "nombre");
             return View(modelo);        // Se retorna la vista al modelo luego de cargar los datos
+        }
+
+        // POST: Crear Solicitud de Cambio
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CrearSolicitud(CrearSolicitudModel modelo, HttpPostedFileBase ImageData)
+        {
+            if (ModelState.IsValid)     // Verifica si el modelo que entra como parametro es valido para modificar
+            {
+                var requerimientoViejo = baseDatos.Requerimientos.Find(modelo.idReqAnterior);   // Se busca el modelo en la base y se cambian sus datos por los
+                var requerimiento = new Requerimiento();
+                requerimiento.nombre = modelo.nombre;                           // del modelo que entra como parametro
+                requerimiento.codigo = modelo.codigo;
+                requerimiento.version = requerimientoViejo.version + 1;
+                requerimiento.creadoPor = modelo.creadoPor;
+                requerimiento.descripcion = modelo.descripcion;
+                requerimiento.solicitadoPor = modelo.solicitadoPor;
+                requerimiento.prioridad = Int32.Parse(modelo.prioridad);
+                requerimiento.esfuerzo = Int32.Parse(modelo.esfuerzo);
+                requerimiento.creadoEn = DateTime.ParseExact(modelo.fechaInicial, "MM/dd/yyyy", null);
+                if (modelo.fechaFinal != null)
+                {
+                    requerimiento.finalizaEn = DateTime.ParseExact(modelo.fechaFinal, "MM/dd/yyyy", null);
+                }
+                requerimiento.estado = modelo.estado;
+                requerimiento.observaciones = modelo.observaciones;
+                requerimiento.proyecto = modelo.proyecto;
+                requerimiento.Usuarios = new List<Usuario>();
+                baseDatos.SaveChanges();
+                if (modelo.equipo != null)
+                {
+                    foreach (var desarrollador in modelo.equipo)
+                    {
+                        requerimiento.Usuarios.Add(baseDatos.Usuarios.Find(desarrollador));
+                    }
+                }
+
+                if (ImageData != null)
+                {
+                    var array = new Byte[ImageData.ContentLength];
+                    ImageData.InputStream.Position = 0;
+                    ImageData.InputStream.Read(array, 0, ImageData.ContentLength);
+                    requerimiento.imagen = array;
+                }
+                else
+                {
+                    if (modelo.file == "")
+                    {
+                        requerimiento.imagen = null;
+                    }
+                }
+                requerimiento.categoria = "Solicitud";
+                baseDatos.Requerimientos.Add(requerimiento);    // Con esta linea se notifica a la base que se hacen los cambios
+                var solicitud = new Solicitud_Cambios();
+                solicitud.razon = modelo.razon;
+                solicitud.req1 = requerimientoViejo.id;
+                solicitud.req2 = requerimiento.id;
+                solicitud.solicitadoEn = DateTime.Now;
+                solicitud.tipo = "Modificar";
+                solicitud.estado = "En revisión";
+                String userID = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                solicitud.solicitadoPor = baseDatos.Usuarios.Where(m => m.id == userID).First().cedula;
+                baseDatos.Solicitud_Cambios.Add(solicitud);
+                baseDatos.SaveChanges();    // Se guardan los cambios en la base
+                this.AddToastMessage("Solicitud de Cambio Creada", "La solicitud de modificar " + modelo.nombre + " se ha enviado correctamente.", ToastType.Success);      // Se muestra un mensaje de confirmacion
+                return RedirectToAction("index", "Requerimientos", new { proyecto = requerimiento.proyecto });       // Se carga el requerimiento modificado en la pantalla
+            }
+
+            List<Usuario> listaDesarrolladores = new List<Usuario>();
+            List<Usuario> listaClientes = new List<Usuario>();
+            string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
+            string desarrolladorRol = context.Roles.Where(m => m.Name == "Desarrollador").First().Id;
+
+            foreach (var user in context.Users.ToArray())                   // En esta seccion se cargan las listas que despliegan los
+            {                                                               // desarrolladores y usuarios relacionados con el requerimiento
+                if (user.Roles.First().RoleId.Equals(clienteRol))           // para modificarlos
+                {
+                    listaClientes.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
+                }
+                else
+                {
+                    if (user.Roles.First().RoleId.Equals(desarrolladorRol))
+                    {
+                        listaDesarrolladores.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
+                    }
+                }
+            }
+            ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");     // Se hacen unas validaciones de permisos y se
+            ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");                   // cargan los Viewbags necesitados en la vista
+            ViewBag.DesarrolladoresDisp = listaDesarrolladores;
+            ViewBag.Estados = new SelectList(baseDatos.Estado_Proyecto.ToList(), "nombre", "nombre");
+            return View(modelo);    // Se retorna la vista al modelo luego de modificar los datos
         }
     }
 }
