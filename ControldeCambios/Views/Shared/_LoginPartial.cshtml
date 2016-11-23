@@ -7,6 +7,9 @@
 
     <ul class="nav navbar-nav navbar-right">
         <li>
+            <a onclick="introJs().start()" href="#"><i class='fa fa-question-circle-o fa-lg' style="font-size:25px; color:#999999"></i></a>
+        </li>
+        <li>
             @Html.ActionLink("Hola " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
         </li>
         <li><a href="javascript:document.getElementById('logoutForm').submit()">Cerrar sesión</a></li>
@@ -16,6 +19,7 @@
 else
 {
     <ul class="nav navbar-nav navbar-right">
+        <li><a onclick="alert('esto es una buena ayuda')" href="#"><i class='fa fa-question-circle-o fa-lg' style="font-size:25px; color:#999999"></i></a></li>
         <li>@Html.ActionLink("Iniciar sesión", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
     </ul>
 }
