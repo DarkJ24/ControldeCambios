@@ -197,7 +197,7 @@ function load_all() {
             <div class="form-group">
                 <label class="control-label col-md-2 required">Fecha Inicial:</label>
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.fechaInicial, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
+                    @Html.EditorFor(model => model.fechaInicial, new { htmlAttributes = new { @class = "form-control editFields datePicker", @disabled = "disabled" } })
                     @Html.ValidationMessageFor(model => model.fechaInicial, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -205,7 +205,7 @@ function load_all() {
             <div class="form-group">
                 <label class="control-label col-md-2">Fecha Final:</label>
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.fechaFinal, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
+                    @Html.EditorFor(model => model.fechaFinal, new { htmlAttributes = new { @class = "form-control editFields datePicker", @disabled = "disabled" } })
                     @Html.ValidationMessageFor(model => model.fechaFinal, "", new { @class = "text-danger" })
                 </div>
             </div>
