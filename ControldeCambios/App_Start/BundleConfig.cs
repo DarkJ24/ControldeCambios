@@ -50,6 +50,13 @@ namespace ControldeCambios
 
             bundles.Add(new StyleBundle("~/Content/themes/base/css").Include(
               "~/Content/themes/base/all.css"));
+
+            //Intro JS
+            bundles.Add(new ScriptBundle("~/bundles/introjs").Include(
+            "~/Scripts/intro.js"));
+
+            bundles.Add(new StyleBundle("~/Content/introjs").Include(
+              "~/Content/introjs.css"));
         }
     }
 }

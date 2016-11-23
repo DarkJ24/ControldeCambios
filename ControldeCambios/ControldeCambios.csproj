@@ -345,6 +345,14 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\font-awesome.css" />
     <Content Include="Content\font-awesome.min.css" />
+    <Content Include="Content\introjs-dark.css" />
+    <Content Include="Content\introjs-nassim.css" />
+    <Content Include="Content\introjs-nazanin.css" />
+    <Content Include="Content\introjs-royal.css" />
+    <Content Include="Content\introjs-rtl.css" />
+    <Content Include="Content\introjs-rtl.min.css" />
+    <Content Include="Content\introjs.css" />
+    <Content Include="Content\introjs.min.css" />
     <Content Include="Content\multi-select.css" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\themes\base\accordion.css" />
@@ -425,6 +433,8 @@
     <Content Include="fonts\fontawesome-webfont.eot" />
     <None Include="Scripts\jquery-1.12.4.intellisense.js" />
     <Content Include="Scripts\Chart.js" />
+    <Content Include="Scripts\intro.js" />
+    <Content Include="Scripts\intro.min.js" />
     <Content Include="Scripts\jquery-1.12.4.js" />
     <Content Include="Scripts\jquery-1.12.4.min.js" />
     <Content Include="Scripts\jquery-1.12.4.min.map" />
