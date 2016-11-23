@@ -355,6 +355,9 @@ namespace ControldeCambios.Controllers
                     listaClientes.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
                 }
             }
+
+
+
             modelo.eliminarRequerimiento = revisarPermisos("Eliminar Requerimientos");              // Aqui se hacen unas validaciones de permisos 
             modelo.modificarRequerimiento = revisarPermisos("Modificar Requerimientos");            // y se cargan ciertos Viewbags necesitados por la vista
             ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
@@ -419,8 +422,34 @@ namespace ControldeCambios.Controllers
                     }
                 }
 
+                var reqcriacs = baseDatos.Requerimientos.Find(modelo.id).Requerimientos_Cri_Acep.ToList();
+
+                foreach (var reqcriac in reqcriacs)
+                {
+                    baseDatos.Entry(reqcriac).State = System.Data.Entity.EntityState.Deleted;
+                }
+                //Se hace el split para separar los criterios de aceptación y meterlos en una lista
+                var criterios = modelo.criteriosAceptacion.Split('|').ToList();
+
+                //Se crea la lista de criterios de aceptacion que puede ser expandible
+                var criterio_list = new List<Requerimientos_Cri_Acep>();
+                foreach (var criterio in criterios)
+                {
+                    var cri_ac = new Requerimientos_Cri_Acep();
+                    cri_ac.criterio = criterio;
+                    criterio_list.Add(cri_ac);
+                }
+
+                requerimiento.Requerimientos_Cri_Acep = criterio_list;
+
                 baseDatos.Entry(requerimiento).State = System.Data.Entity.EntityState.Modified;     // Con esta linea se notifica a la base que se hacen los cambios
                 baseDatos.SaveChanges();    // Se guardan los cambios en la base
+
+                var sprints = baseDatos.Requerimientos.Find(modelo.id).Modulo1.Sprint_Modulos.Select(x => x.sprint);
+                foreach(var sprint in sprints)
+                {
+                    updateSprintPoints(modelo.proyecto, sprint);
+                }
                 this.AddToastMessage("Requerimiento Modificado", "El requerimiento " + modelo.nombre + " se ha modificado correctamente.", ToastType.Success);      // Se muestra un mensaje de confirmacion
                 return RedirectToAction("Detalles", "Requerimientos", new { id = requerimiento.id });       // Se carga el requerimiento modificado en la pantalla
 

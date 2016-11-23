@@ -14,6 +14,7 @@
         $('#subtitle').html("Modificar Requerimiento");
         $('.imgdiv').removeClass("hidden");
         $('.showimgdiv').addClass("hidden");
+        $('.minusbutton').show();
     }
     </script>
 }
@@ -33,7 +34,7 @@ function delete_all(button) {
 }
 
 function add_textbox() {
-    $("#textboxes").append("<div class='row'><div id='textbox" + i + "'><div class='col-md-4'><textarea class='multitextbox form-control multitextbox" + i + " editFields' oninput=update_output() cols='30' rows='2' style='border-radius:4px'></textarea></div> <div class='col-md-1'><button onclick='delete_all(this)' class='btn' id='textbox" + i + "'><span class='glyphicon glyphicon-minus' aria-hidden='true'></span></button></div> <br/> <br/> <br />  </div></div>")
+    $("#textboxes").append("<div class='row'><div id='textbox" + i + "'><div class='col-md-4'><textarea class='multitextbox form-control multitextbox" + i + " editFields' oninput=update_output() cols='30' rows='2' style='border-radius:4px'></textarea></div> <div class='col-md-1'><button onclick='delete_all(this)' class='btn minusbutton' id='textbox" + i + "'><span class='glyphicon glyphicon-minus' aria-hidden='true'></span></button></div> <br/> <br/> <br />  </div></div>")
     var tbid = "multitextbox" + i;
     i++
     return tbid;
@@ -68,6 +69,7 @@ function load_all() {
 <hr />
 @using (Html.BeginForm("Detalles", "Requerimientos", FormMethod.Post, new { @class = "form-horizontal editFields", role = "form", enctype = "multipart/form-data" }))
 {
+    @Html.ValidationSummary()
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m => m.id)
     @Html.HiddenFor(m => m.proyecto)
@@ -220,14 +222,14 @@ function load_all() {
             <div class="form-group">
                 <label class="control-label col-md-2 required">Estado:</label>
                 <div class="col-md-10">
-                    @Html.DropDownListFor(model => model.estado, (SelectList)ViewBag.Estados, new { @class = "col-xs-12 editFields", @disabled = "disabled", @style = "height:30px;border-radius:4px" })
+                    @Html.DropDownListFor(model => model.estado, (SelectList)ViewBag.Estados, new { @class = "form-control editFields", @disabled = "disabled", @style = "height:30px;border-radius:4px" })
                 </div>
             </div>
 
             <div class="form-group">
                 <label class="control-label col-md-2 required">Solicitado Por:</label>
                 <div class="col-md-10">
-                    @Html.DropDownListFor(model => model.solicitadoPor, (SelectList)ViewBag.clientes, new { @class = "col-xs-12 editFields", @disabled = "disabled", @style = "height:30px;border-radius:4px" })
+                    @Html.DropDownListFor(model => model.solicitadoPor, (SelectList)ViewBag.clientes, new { @class = "form-control editFields", @disabled = "disabled", @style = "height:30px;border-radius:4px" })
                 </div>
             </div>
 
@@ -239,13 +241,17 @@ function load_all() {
                 </div>
             </div>
 
-            <div class="form-group">
+            
+            @*<div class="form-group">
                 <label class="control-label col-md-2 required">Versión:</label>
                 <div class="col-md-10">
                     @Html.EditorFor(model => model.version, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
                     @Html.ValidationMessageFor(model => model.version, "", new { @class = "text-danger" })
                 </div>
-            </div>
+            </div>*@
+
+            @*La version no la muestra ya que siempre debe ser uno*@
+            @Html.HiddenFor(x => x.version)
 
         </div>
     </div>
@@ -271,6 +277,7 @@ function load_all() {
             $('.datePicker').datepicker();
             load_all();
             $('.editFields').attr("disabled", "disabled");
+            $('.minusbutton').hide();
         };
     </script>
 
