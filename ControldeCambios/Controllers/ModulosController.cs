@@ -187,13 +187,13 @@ namespace ControldeCambios.Controllers
                 model.nombre = modulo1.nombre;
                 model.proyecto = proyecto;
                 var requerimientos = baseDatos.Requerimientos.Where(m => m.proyecto == proyecto && m.categoria == "Actual").ToList();
-                ViewBag.requerimientos = new List<ModulosModel.reqInfo>();
+                ViewBag.listarequerimientos = new List<ModulosModel.reqInfo>();
                 foreach (var req in requerimientos)
                 {
                     var req2 = new ModulosModel.reqInfo();
                     req2.id = req.id.ToString();
                     req2.nombre = req.nombre;
-                    ViewBag.requerimientos.Add(req2);
+                    ViewBag.listarequerimientos.Add(req2);
                 }
                 var reqEnProyecto = baseDatos.Requerimientos.Where(m => m.proyecto == proyecto && m.modulo == modulo.numero && m.categoria == "Actual").ToList();
                 model.requerimientos = new List<string>();
