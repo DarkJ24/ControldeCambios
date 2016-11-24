@@ -6,14 +6,16 @@
 @using PagedList.Mvc;
 @using PagedList;
 
-<h2>@ViewBag.Title</h2>
-<h4>Lista de Usuarios</h4>
+<div data-step="1" data-intro="Esta es la pantalla que muestra a los usuarios del sistema">
+    <h2>@ViewBag.Title</h2>
+    <h4>Lista de Usuarios</h4>
+</div>
 <hr />
 
 @if (Model.crearUsuario)
 {
 <p>
-    @Html.ActionLink("Crear usuario", "Crear", new { }, new { @class = "btn btn-primary"})
+    @Html.ActionLink("Crear usuario", "Crear", new { }, new { @class = "btn btn-primary", @data_step="2", @data_intro="Haciendo click aquí se va a la pantalla donde se puede crear el usuario"})
 </p>
 }
 
@@ -65,20 +67,24 @@ user.rol)
            {
                id =
      user.cedula
-           })
+           }, htmlAttributes: new { @data_step = "3", @data_intro = "Haciendo click aquí se puede ver los detalles del usuario, además de modificar la información de ellos" })
             </td>
             }
         </tr>
     }
 </table>
-@Html.PagedListPager((IPagedList)ViewBag.OnePageOfUsers, page => Url.Action("Index", new { page }))
-@Html.Raw("Página:")
- @if (ViewBag.OnePageOfUsers.PageCount < ViewBag.OnePageOfUsers.PageNumber) {
-    @Html.Raw("0")
-        }
-        else
-        {
-            @ViewBag.OnePageOfUsers.PageNumber
-        }
-        @Html.Raw(" de ")
+
+<div data-step="4" data-intro="Haciendo click aquí se pueden ver más usuarios">
+    @Html.PagedListPager((IPagedList)ViewBag.OnePageOfUsers, page => Url.Action("Index", new { page }))
+    @Html.Raw("Página:")
+    @if (ViewBag.OnePageOfUsers.PageCount < ViewBag.OnePageOfUsers.PageNumber)
+    {
+        @Html.Raw("0")
+    }
+    else
+    {
+        @ViewBag.OnePageOfUsers.PageNumber
+    }
+    @Html.Raw(" de ")
     @ViewBag.OnePageOfUsers.PageCount
+</div>
