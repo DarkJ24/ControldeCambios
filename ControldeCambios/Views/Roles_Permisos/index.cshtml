@@ -6,13 +6,15 @@
 
 }
 
-<h2>Gestión de Roles</h2>
-<h4>Administrar Permisos</h4>
+<div data-step="1" data-intro="Esta pantalla permite configurar los permisos individuales de cada rol con respecto al sistema">
+    <h2>Gestión de Roles</h2>
+    <h4>Administrar Permisos</h4>
+</div>
 <hr/>
 @using (Html.BeginForm())
 {
 <table class="table">
-    <tr>
+    <tr data-step="2" data-intro="Cada uno de estos roles son los que se pueden asignar a un usuario del sistema">
         <th>
             Permisos
         </th>
@@ -38,14 +40,22 @@ Model.permisos.ElementAt(i).nombre)
 
                         @Html.HiddenFor(m => m.rolPermisoId[i + Model.permisos.Count * j].permiso)
                         @Html.HiddenFor(m => m.rolPermisoId[i + Model.permisos.Count * j].rol)
+                    @if(i == 0 && j == 0) {
+                        @Html.CheckBoxFor(m => m.rolPermisoId[i + Model.permisos.Count * j].valor, new {
+                        @data_step ="2",
+                        @data_intro ="Si esta caja está seleccionada, el permiso se da para un usuario dado."})
+                    }
+                    else
+                    {
                         @Html.CheckBoxFor(m => m.rolPermisoId[i + Model.permisos.Count * j].valor)
+                    }
                 </th>
             }
         </tr>
     }
 </table>
 <div>
-    <input type="submit" class="btn btn-success" value="Aceptar"/>
-    <button type="button" class="btn btn-default" onclick="location.reload()">Cancelar</button>
+    <input type="submit" class="btn btn-success" value="Aceptar" data-step="3" data-intro="Si se quieren guardar los cambios, se hace click en este botón." data-position="left"/>
+    <button type="button" class="btn btn-default" onclick="location.reload()" data-step="4" data-intro="Si se cometió algún error o no se quiere guardar los cambios, se hace click en este botón." data-position="right">Cancelar</button>
 </div>
 }
