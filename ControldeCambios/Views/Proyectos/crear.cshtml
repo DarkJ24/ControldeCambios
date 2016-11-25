@@ -3,74 +3,76 @@
     ViewBag.Title = "Crear Proyecto";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h2>Gestión de Proyectos</h2>
-<h4>@ViewBag.Title</h4>
+<div data-step="1" data-intro="En esta pantalla podemos crear proyectos nuevos">
+    <h2>Gestión de Proyectos</h2>
+    <h4>@ViewBag.Title</h4>
+</div>    
 <hr />
 @using (Html.BeginForm("Crear", "Proyectos", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
+    <div data-step="2" , data-intro="Aquí se puede llenar la información del proyecto nuevo">
+        <div class="form-group">
+            @Html.LabelFor(m => m.nombre, new { @class = "col-md-2 control-label required" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.nombre, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
+            </div>
+        </div>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.nombre, new { @class = "col-md-2 control-label required" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.nombre, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(m => m.descripcion, new { @class = "col-md-2 control-label required" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.descripcion, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Líder", new { @class = "col-md-2 control-label required" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => m.lider.cedula, (SelectList)ViewBag.Desarrolladores, "Seleccionar Líder", new { @class = "col-xs-12 form-control", @style = "height:30px;border-radius:4px" })
+                @Html.ValidationMessageFor(model => model.lider, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Cliente", new { @class = "col-md-2 control-label required" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => m.cliente.cedula, (SelectList)ViewBag.Clientes, "Seleccionar Cliente", new { @class = "col-xs-12 form-control", @style = "height:30px;border-radius:4px" })
+                @Html.ValidationMessageFor(model => model.cliente, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.fechaInicio, new { @class = "col-md-2 control-label required" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.fechaInicio, new { @class = "form-control datePicker" })
+                @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.fechaFinal, new { @class = "col-md-2 control-label required" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.fechaFinal, new { @class = "form-control datePicker" })
+                @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group" data-step="3" data-intro="Para seleccionar un desarrollador e incluirlo en en proyecto, se hace click y eso lo transfiere a la lista de los seleccionados">
+            @Html.Label("Disponibles", new { @class = "col-md-offset-2 col-md-2 control-label", @style = "text-align:center;margin-left:195px;" })
+            @Html.Label("Equipo", new { @class = "col-md-offset-2  col-md-2 control-label required", @style = "text-align:center;margin-left:10px;margin-bottom:10px" })
+            <div class="col-md-offset-2 col-md-10" style="margin-bottom:25px">
+                @Html.ListBoxFor(m => m.equipo, new MultiSelectList(ViewBag.DesarrolladoresDisp, "cedula", "nombre"), new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;" })
+                @Html.ValidationMessageFor(model => model.cliente, "", new { @class = "text-danger" })
+            </div>
         </div>
     </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.descripcion, new { @class = "col-md-2 control-label required" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.descripcion, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.Label("Líder", new { @class = "col-md-2 control-label required" })
-        <div class="col-md-10">
-            @Html.DropDownListFor(m => m.lider.cedula, (SelectList)ViewBag.Desarrolladores, "Seleccionar Líder", new { @class = "col-xs-12 form-control", @style = "height:30px;border-radius:4px" })
-            @Html.ValidationMessageFor(model => model.lider, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.Label("Cliente", new { @class = "col-md-2 control-label required" })
-        <div class="col-md-10">
-            @Html.DropDownListFor(m => m.cliente.cedula, (SelectList)ViewBag.Clientes, "Seleccionar Cliente", new { @class = "col-xs-12 form-control", @style = "height:30px;border-radius:4px" })
-            @Html.ValidationMessageFor(model => model.cliente, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.fechaInicio, new { @class = "col-md-2 control-label required" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.fechaInicio, new { @class = "form-control datePicker" })
-            @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.fechaFinal, new { @class = "col-md-2 control-label required" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.fechaFinal, new { @class = "form-control datePicker" })
-            @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.Label("Disponibles", new { @class = "col-md-offset-2 col-md-2 control-label", @style="text-align:center;margin-left:195px;" })
-        @Html.Label("Equipo", new { @class = "col-md-offset-2  col-md-2 control-label required", @style="text-align:center;margin-left:10px;margin-bottom:10px"})
-        <div class="col-md-offset-2 col-md-10" style="margin-bottom:25px">
-            @Html.ListBoxFor(m => m.equipo, new MultiSelectList(ViewBag.DesarrolladoresDisp, "cedula","nombre"), new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;" })
-            @Html.ValidationMessageFor(model => model.cliente, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-success" value="Aceptar" />
-            <input type="button" class="btn btn-default" value="Cancelar" onclick="location.reload()" />
+            <input type="submit" class="btn btn-success" value="Aceptar" data-step="4" data-intro ="Cuando se termina de llenar los datos y se quiere crear el proyecto, se hace click aquí" data-position="left" />
+            <input type="button" class="btn btn-default" value="Cancelar" onclick="location.reload()" data-step="5" data-intro="Si sucede un error y se quieren limpiar las entradas, se puede hacer click aquí para hacerlo" data-position="right" />
         </div>
     </div>
 

@@ -1,4 +1,18 @@
 ﻿@using Microsoft.AspNet.Identity
+@using ControldeCambios.Helpers
+
+<script>
+    function startIntroJS() {
+        options = {
+            nextLabel: "Siguiente",
+            prevLabel: "Devolverse",
+            doneLabel: "Terminar",
+            skipLabel: "Saltar",
+        };
+        introJs().setOptions(options).start();
+    }
+</script>
+
 @if (Request.IsAuthenticated)
 {
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
@@ -7,15 +21,37 @@
 
     <ul class="nav navbar-nav navbar-right">
         <li>
+            <a onclick="startIntroJS()" href="#"><i class='fa fa-question-circle-o fa-lg' style="font-size:25px; color:#999999"></i></a>
+        </li>
+        <li>
             @Html.ActionLink("Hola " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
         </li>
-        <li><a href="javascript:document.getElementById('logoutForm').submit()">Cerrar sesión</a></li>
+        <li>
+        @if (Html.IsSelected(actions: "Index", controllers: "Home") == String.Empty)
+        {
+            <a href="javascript:document.getElementById('logoutForm').submit()">Cerrar sesión</a>
+        }
+        else
+        {
+            <a href="javascript:document.getElementById('logoutForm').submit()" data-step="2" data-intro="Haciendo click aquí, se puede cerrar sesión" data-position="left">Cerrar sesión</a>
+        }</li>
     </ul>
     }
 }
 else
 {
     <ul class="nav navbar-nav navbar-right">
-        <li>@Html.ActionLink("Iniciar sesión", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+        <li><a onclick="startIntroJS()" href="#"><i class='fa fa-question-circle-o fa-lg' style="font-size:25px; color:#999999"></i></a></li>
+        @if (Html.IsSelected(actions: "Index", controllers: "Home") == String.Empty)
+        {
+            <li>@Html.ActionLink("Iniciar sesión", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+        }
+        else
+        {
+
+            <li>
+                @Html.ActionLink("Iniciar sesión", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink", @data_step = "2", @data_intro = "Haciendo click aquí, se puede iniciar sesión", @data_position = "left" })
+            </li>
+        }
     </ul>
 }

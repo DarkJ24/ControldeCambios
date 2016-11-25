@@ -52,17 +52,25 @@ namespace ControldeCambios.Controllers
             model.proyecto = proyecto;
             String userIdentityId = System.Web.HttpContext.Current.User.Identity.GetUserId();
             String usuarioActual = baseDatos.Usuarios.Where(m => m.id == userIdentityId).First().cedula;
-            var reqs = baseDatos.Requerimientos.Where(m => m.proyecto == proyecto && m.categoria == "Solicitud" && m.creadoPor == usuarioActual).ToList();
+            var solicitudes = baseDatos.Solicitud_Cambios.Where(m => m.proyecto == proyecto && m.solicitadoPor == usuarioActual).ToList();
             int pageSize = 10;
             int pageNumber = (page ?? 1);
-            int lastElement = (reqs.Count < pageSize * pageNumber) ? reqs.Count : pageSize * pageNumber;
-            model.reqs = new List<Requerimiento>();
+            int lastElement = (solicitudes.Count < pageSize * pageNumber) ? solicitudes.Count : pageSize * pageNumber;
+            model.indexSolicitudInfoList = new List<Solicitud_CambiosIndexModel.solicitudInfo>();
             for (int i = (pageNumber - 1) * pageSize; i < lastElement; i++)
             {
-                model.reqs.Add(reqs.ElementAt(i));
+                var requerimiento = baseDatos.Requerimientos.Find(solicitudes.ElementAt(i).req2);
+                var x = new Solicitud_CambiosIndexModel.solicitudInfo();
+                x.id = solicitudes.ElementAt(i).id;
+                x.nombre = requerimiento.nombre;
+                x.codigo = requerimiento.codigo;
+                x.estado = solicitudes.ElementAt(i).estado;
+                x.fecha = solicitudes.ElementAt(i).solicitadoEn.ToString("MM/dd/yyyy");
+                x.prioridad = requerimiento.prioridad;
+                x.solicitadoPor = baseDatos.Usuarios.Find(solicitudes.ElementAt(i).solicitadoPor).nombre;
+                model.indexSolicitudInfoList.Add(x);
             }
-
-            var reqsAsIPagedList = new StaticPagedList<Requerimiento>(model.reqs, pageNumber, pageSize, reqs.Count);
+            var reqsAsIPagedList = new StaticPagedList<Solicitud_CambiosIndexModel.solicitudInfo>(model.indexSolicitudInfoList, pageNumber, pageSize, solicitudes.Count);
             ViewBag.OnePageOfReqs = reqsAsIPagedList;
             //model.crearRequerimientos = revisarPermisos("Crear Requerimientos");
             //model.detallesRequerimientos = revisarPermisos("Consultar Detalles de Requerimiento");
@@ -93,17 +101,24 @@ namespace ControldeCambios.Controllers
 
             var model = new Solicitud_CambiosIndexModel();
             model.proyecto = proyecto;
-            var reqs = baseDatos.Requerimientos.Where(m => m.proyecto == proyecto && m.categoria == "Solicitud").ToList();
+            var solicitudes = baseDatos.Solicitud_Cambios.Where(m => m.proyecto == proyecto).ToList();
             int pageSize = 10;
             int pageNumber = (page ?? 1);
-            int lastElement = (reqs.Count < pageSize * pageNumber) ? reqs.Count : pageSize * pageNumber;
-            model.reqs = new List<Requerimiento>();
+            int lastElement = (solicitudes.Count < pageSize * pageNumber) ? solicitudes.Count : pageSize * pageNumber;
+            model.indexSolicitudInfoList = new List<Solicitud_CambiosIndexModel.solicitudInfo>();
             for (int i = (pageNumber - 1) * pageSize; i < lastElement; i++)
             {
-                model.reqs.Add(reqs.ElementAt(i));
+                var requerimiento = baseDatos.Requerimientos.Find(solicitudes.ElementAt(i).req2);
+                var x = new Solicitud_CambiosIndexModel.solicitudInfo();
+                x.nombre = requerimiento.nombre;
+                x.codigo = requerimiento.codigo;
+                x.estado = solicitudes.ElementAt(i).estado;
+                x.fecha = solicitudes.ElementAt(i).solicitadoEn.ToString("MM/dd/yyyy");
+                x.prioridad = requerimiento.prioridad;
+                x.solicitadoPor = baseDatos.Usuarios.Find(solicitudes.ElementAt(i).solicitadoPor).nombre;
+                model.indexSolicitudInfoList.Add(x);
             }
-
-            var reqsAsIPagedList = new StaticPagedList<Requerimiento>(model.reqs, pageNumber, pageSize, reqs.Count);
+            var reqsAsIPagedList = new StaticPagedList<Solicitud_CambiosIndexModel.solicitudInfo>(model.indexSolicitudInfoList, pageNumber, pageSize, solicitudes.Count);
             ViewBag.OnePageOfReqs = reqsAsIPagedList;
             //model.crearRequerimientos = revisarPermisos("Crear Requerimientos");
             //model.detallesRequerimientos = revisarPermisos("Consultar Detalles de Requerimiento");
@@ -428,12 +443,23 @@ namespace ControldeCambios.Controllers
                         requerimiento.imagen = null;
                     }
                 }
+                //Se hace el split para separar los criterios de aceptación y meterlos en una lista
+                var criterios = modelo.criteriosAceptacion.Split('|').ToList();
+                //Se crea la lista de criterios de aceptacion que puede ser expandible
+                var criterio_list = new List<Requerimientos_Cri_Acep>();
+                foreach (var criterio in criterios) {
+                    var cri_ac = new Requerimientos_Cri_Acep();
+                    cri_ac.criterio = criterio;
+                    criterio_list.Add(cri_ac);
+                }
+                requerimiento.Requerimientos_Cri_Acep = criterio_list;
                 requerimiento.categoria = "Solicitud";
                 baseDatos.Requerimientos.Add(requerimiento);    // Con esta linea se notifica a la base que se hacen los cambios
                 var solicitud = new Solicitud_Cambios();
                 solicitud.razon = modelo.razon;
                 solicitud.req1 = requerimientoViejo.id;
                 solicitud.req2 = requerimiento.id;
+                solicitud.proyecto = requerimiento.proyecto;
                 solicitud.solicitadoEn = DateTime.Now;
                 solicitud.tipo = "Modificar";
                 solicitud.estado = "En revisión";

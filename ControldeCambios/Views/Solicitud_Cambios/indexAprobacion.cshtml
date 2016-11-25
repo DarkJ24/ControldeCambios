@@ -10,7 +10,7 @@
 <h4>@ViewBag.Title</h4>
 <hr />
 
-@if (Model.reqs.Count() > 0)
+@if (Model.indexSolicitudInfoList.Count() > 0)
 {
     <table class="table">
         <tr>
@@ -24,7 +24,7 @@
                 Prioridad
             </th>
             <th>
-                Esfuerzo
+                Solicitado Por
             </th>
             <th>
                 Estado de Solicitud
@@ -36,7 +36,7 @@
                 Consultar
             </th>
         </tr>
-        @foreach (var req in Model.reqs)
+        @foreach (var req in Model.indexSolicitudInfoList)
         {
             <tr id="@(req.id)">
                 <td>
@@ -49,13 +49,13 @@
                     @Html.DisplayFor(modelItem => req.prioridad)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => req.esfuerzo)
+                    @Html.DisplayFor(modelItem => req.solicitadoPor)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => req.estado)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => req.creadoEn)
+                    @Html.DisplayFor(modelItem => req.fecha)
                 </td>
                 <td>
                     @Html.ActionLink("Consultar", "Detalles", new
@@ -83,7 +83,7 @@
 else
 {
     <div class="row text-center">
-        <label>No hay Requerimientos por aprobar</label>
+        <label>No hay Solicitudes por aprobar</label>
     </div>
 }
 

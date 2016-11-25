@@ -14,6 +14,7 @@
         $('.showimgdiv').addClass("hidden");
         $('.versionDisplayer').hide();
         $('.motivoDiv').show();
+        $('.minusbutton').show();
     }
 </script>
 <script>
@@ -31,7 +32,7 @@
     }
 
     function add_textbox() {
-        $("#textboxes").append("<div class='row'><div id='textbox" + i + "'><div class='col-md-4'><textarea class='multitextbox form-control multitextbox" + i + " editFields' oninput=update_output() cols='30' rows='2' style='border-radius:4px'></textarea></div> <div class='col-md-1'><button onclick='delete_all(this)' class='btn' id='textbox" + i + "'><span class='glyphicon glyphicon-minus' aria-hidden='true'></span></button></div> <br/> <br/> <br />  </div></div>")
+        $("#textboxes").append("<div class='row'><div id='textbox" + i + "'><div class='col-md-4'><textarea class='multitextbox form-control multitextbox" + i + " editFields' oninput=update_output() cols='30' rows='2' style='border-radius:4px'></textarea></div> <div class='col-md-1'><button onclick='delete_all(this)' class='btn minusbutton' id='textbox" + i + "'><span class='glyphicon glyphicon-minus' aria-hidden='true'></span></button></div> <br/> <br/> <br />  </div></div>")
         var tbid = "multitextbox" + i;
         i++
         return tbid;
@@ -65,6 +66,7 @@
 <hr />
 @using (Html.BeginForm("CrearSolicitud", "Solicitud_Cambios", FormMethod.Post, new { @class = "form-horizontal editFields", role = "form", enctype = "multipart/form-data" }))
 {
+    @Html.ValidationSummary()
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m => m.idReqAnterior)
     @Html.HiddenFor(m => m.proyecto)
@@ -181,14 +183,14 @@
             <div class="form-group">
                 <label class="control-label col-md-2 required">Fecha Inicial:</label>
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.fechaInicial, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
+                    @Html.EditorFor(model => model.fechaInicial, new { htmlAttributes = new { @class = "form-control editFields datePicker", @disabled = "disabled" } })
                     @Html.ValidationMessageFor(model => model.fechaInicial, "", new { @class = "text-danger" })
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-md-2">Fecha Final:</label>
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.fechaFinal, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
+                    @Html.EditorFor(model => model.fechaFinal, new { htmlAttributes = new { @class = "form-control editFields datePicker", @disabled = "disabled" } })
                     @Html.ValidationMessageFor(model => model.fechaFinal, "", new { @class = "text-danger" })
                 </div>
             </div>
@@ -260,6 +262,7 @@
             $('.datePicker').datepicker();
             load_all();
             $('.editFields').attr("disabled", "disabled");
+            $('.minusbutton').hide();
         };
     </script>
 

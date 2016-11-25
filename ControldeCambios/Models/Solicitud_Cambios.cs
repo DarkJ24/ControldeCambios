@@ -40,9 +40,13 @@ public partial class Solicitud_Cambios
 
     public string comentario { get; set; }
 
+    public string proyecto { get; set; }
+
 
 
     public virtual Estado_Solicitud Estado_Solicitud { get; set; }
+
+    public virtual Proyecto Proyecto1 { get; set; }
 
     public virtual Requerimiento Requerimiento { get; set; }
 

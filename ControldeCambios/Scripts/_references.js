@@ -2,6 +2,7 @@
 /// <reference path="ai.0.22.9-build00167.min.js" />
 /// <reference path="bootstrap.js" />
 /// <reference path="chart.js" />
+/// <reference path="intro.min.js" />
 /// <reference path="jquery.multi-select.js" />
 /// <reference path="jquery.validate.js" />
 /// <reference path="jquery.validate.unobtrusive.js" />

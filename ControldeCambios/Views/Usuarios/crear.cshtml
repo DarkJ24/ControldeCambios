@@ -2,75 +2,78 @@
 @{
     ViewBag.Title = "Crear Usuario";
 }
+<div data-step="1" data-intro="Esta es la pantalla donde se crea un usuario nuevo" >
+    <h2>Gestión de Usuarios</h2>
+    <h4 id="subtitle">Crear Usuario</h4>
+</div>
 
-<h2>Gestión de Usuarios</h2>
-<h4 id="subtitle">Crear Usuario</h4>
 <hr />
+
 
 @using (Html.BeginForm("Crear", "Usuarios", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.Cedula, new { @class = "col-md-2 control-label required" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Cedula, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.Cedula, "", new { @class = "text-danger" })
+    <div data-step="2" data-intro="Estos campos son la información del usuario que se quiere crear" >
+        <div class="form-group">
+            @Html.LabelFor(m => m.Cedula, new { @class = "col-md-2 control-label required" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Cedula, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Cedula, "", new { @class = "text-danger" })
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.Nombre, new { @class = "col-md-2 control-label required" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(m => m.Nombre, new { @class = "col-md-2 control-label required" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label required" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label required" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.Telefono, new { @class = "col-md-2 control-label required" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Telefono, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.Telefono, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(m => m.Telefono, new { @class = "col-md-2 control-label required" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Telefono, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Telefono, "", new { @class = "text-danger" })
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.Telefono2, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Telefono2, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.Telefono2, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(m => m.Telefono2, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Telefono2, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Telefono2, "", new { @class = "text-danger" })
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.Telefono3, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Telefono3, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.Telefono3, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(m => m.Telefono3, new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Telefono3, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Telefono3, "", new { @class = "text-danger" })
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        @Html.Label("Rol", new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.DropDownListFor(m => m.UserRoles, (SelectList)ViewBag.Name, "Seleccionar Rol", new { @class = "col-xs-12 form-control", @style = "height:30px;border-radius:4px" })
-            @Html.ValidationMessageFor(model => model.UserRoles, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.Label("Rol", new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(m => m.UserRoles, (SelectList)ViewBag.Name, "Seleccionar Rol", new { @class = "col-xs-12 form-control", @style = "height:30px;border-radius:4px" })
+                @Html.ValidationMessageFor(model => model.UserRoles, "", new { @class = "text-danger" })
+            </div>
         </div>
-    </div>
-
+        </div>
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-success" value="Aceptar" />
-            <input type="button" class="btn btn-default" value="Cancelar" onclick="location.reload()" />
+            <input type="submit" class="btn btn-success" value="Aceptar" data-step="3" data-intro="Cuando se termina y se desea crear el usuario, se hace click aquí para guardarlo" data-position="left" />
+            <input type="button" class="btn btn-default" value="Cancelar" onclick="location.reload() data-step="4" data-intro="Si sucede un error y se quieren limpiar las entradas, se puede hacer click aquí para hacerlo" data-position="right" />
         </div>
     </div>
 
@@ -81,7 +84,7 @@
             color: red;
         }
     </style>
-}
+    }
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

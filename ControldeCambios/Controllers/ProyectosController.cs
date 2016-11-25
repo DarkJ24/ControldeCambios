@@ -82,7 +82,6 @@ namespace ControldeCambios.Controllers
                 proyecto.lider = baseDatos.Usuarios.Find(modelo.proyectos.ElementAt(i).lider).nombre;
                 proyecto.cliente = baseDatos.Usuarios.Find(modelo.proyectos.ElementAt(i).cliente).nombre;
                 proyecto.estado = modelo.proyectos.ElementAt(i).estado;
-
                 modelo.indexProyectoInfoList.Add(proyecto);
             }
             modelo.crearProyecto = revisarPermisos("Crear Proyectos");
