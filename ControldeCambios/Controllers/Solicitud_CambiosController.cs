@@ -109,8 +109,12 @@ namespace ControldeCambios.Controllers
             //model.detallesRequerimientos = revisarPermisos("Consultar Detalles de Requerimiento");
             return View(model);
         }
+        
 
-
+        /// <summary>
+        /// Funcionalidad para llenar los datos del requerimiento actual y la solicitud de cambio del requerimiento.
+        /// </summary>
+        // GET: /Solicitud_Cambios/Aceptar
         public ActionResult Aceptar(string id)
         {
             /*if (!revisarPermisos("Aprobar Solicitud de Cambio"))   // Revisa los permisos del usuario accediendo a la pantalla
@@ -124,52 +128,92 @@ namespace ControldeCambios.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             AceptarSolicitudCambioModelo modelo = new AceptarSolicitudCambioModelo();   // Crea un modelo y lo llena con los datos del requerimiento
-            var requerimiento = baseDatos.Requerimientos.Find(Int32.Parse(id));   // que entro como parametro
-            if (requerimiento == null)
+            var solicitud = baseDatos.Solicitud_Cambios.Find(Int32.Parse(id));   // que entro como parametro
+            if (solicitud == null)
             {
                 return HttpNotFound();
             }
-            modelo.id = requerimiento.id;             // Diferentes asignaciones de variables para el modelo creado
-            modelo.codigo = requerimiento.codigo;
-            modelo.nombre = requerimiento.nombre;
-            modelo.creadoPor = requerimiento.creadoPor;
-            modelo.version = requerimiento.version.ToString();
-            modelo.descripcion = requerimiento.descripcion;
-            modelo.prioridad = requerimiento.prioridad.ToString();
-            modelo.esfuerzo = requerimiento.esfuerzo.ToString();
-            modelo.observaciones = requerimiento.observaciones;
-            modelo.fechaInicial = requerimiento.creadoEn.ToString("MM/dd/yyyy");
-            if (requerimiento.finalizaEn != null)
+            var req1 = baseDatos.Requerimientos.Find(solicitud.req1);
+            var req2 = baseDatos.Requerimientos.Find(solicitud.req2);
+            modelo.id1 = req1.id;                                   // Diferentes asignaciones de variables para el modelo creado
+            modelo.id2 = req2.id;
+            modelo.codigo1 = req1.codigo;
+            modelo.codigo2 = req2.codigo;
+            modelo.nombre1 = req1.nombre;
+            modelo.nombre2 = req2.nombre;
+            modelo.creadoPor1 = req1.creadoPor;
+            modelo.creadoPor2 = req2.creadoPor;
+            modelo.version1 = req1.version.ToString();
+            modelo.version2 = req2.version.ToString();
+            modelo.descripcion1 = req1.descripcion;
+            modelo.descripcion2 = req2.descripcion;
+            modelo.prioridad1 = req1.prioridad.ToString();
+            modelo.prioridad2 = req2.prioridad.ToString();
+            modelo.esfuerzo1 = req1.esfuerzo.ToString();
+            modelo.esfuerzo2 = req2.esfuerzo.ToString();
+            modelo.observaciones1 = req1.observaciones;
+            modelo.observaciones2 = req2.observaciones;
+            modelo.fechaInicial1 = req1.creadoEn.ToString("MM/dd/yyyy");
+            modelo.fechaInicial2 = req2.creadoEn.ToString("MM/dd/yyyy");
+            if (req1.finalizaEn != null)
             {
-                modelo.fechaFinal = (requerimiento.finalizaEn ?? DateTime.Now).ToString("MM/dd/yyyy");
+                modelo.fechaFinal1 = (req1.finalizaEn ?? DateTime.Now).ToString("MM/dd/yyyy");
             }
-            modelo.solicitadoPor = requerimiento.solicitadoPor;
-            modelo.estado = requerimiento.estado;
-            modelo.proyecto = requerimiento.proyecto;
-            
-            if(requerimiento.imagen != null)
+            if (req2.finalizaEn != null)
             {
-                modelo.file = HttpUtility.UrlEncode(Convert.ToBase64String(requerimiento.imagen));
+                modelo.fechaFinal2 = (req2.finalizaEn ?? DateTime.Now).ToString("MM/dd/yyyy");
+            }
+            modelo.solicitadoPor1 = req1.solicitadoPor;
+            modelo.solicitadoPor2 = req2.solicitadoPor;
+            modelo.estado1 = req1.estado;
+            modelo.estado2 = req2.estado;
+            modelo.proyecto = req1.proyecto;
+            modelo.solicitadoEn = req2.creadoEn.ToString("MM/dd/yyyy");
+            modelo.razon = solicitud.razon;
+            modelo.comentario = solicitud.comentario;
+           
+            if(req1.imagen != null)
+            {
+                modelo.file1 = HttpUtility.UrlEncode(Convert.ToBase64String(req1.imagen));
             } else
             {
-                modelo.file = "";
+                modelo.file1 = "";
             }
-
-            modelo.equipo = new List<string>();     // Se llena la variable equipo con el equipo ya asignado a este requerimiento, si ya hay uno
-            foreach (var des in requerimiento.Usuarios.ToList())
+           
+            if (req2.imagen != null)
             {
-                modelo.equipo.Add(des.cedula);
+                modelo.file2 = HttpUtility.UrlEncode(Convert.ToBase64String(req2.imagen));
             }
-
-            modelo.criteriosAceptacion = requerimiento.Requerimientos_Cri_Acep.Select(c => c.criterio).Aggregate((acc, x) => acc + "|" + x);    // Se agrega a la lista de criterios de aceptacion 
-                                                                                                                                                // los que ya estan vinculados con este requerimiento
+            else
+            {
+                modelo.file2 = "";
+            }
+            modelo.equipo1 = new List<string>();     // Se llena la variable equipo con el equipo ya asignado a este requerimiento, si ya hay uno
+            foreach (var des in req1.Usuarios.ToList())
+            {
+                modelo.equipo1.Add(des.cedula);
+            }
+            
+            modelo.equipo2 = new List<string>();     // Se llena la variable equipo con el equipo ya asignado a este requerimiento, si ya hay uno
+            foreach (var des in req2.Usuarios.ToList())
+            {
+                modelo.equipo2.Add(des.cedula);
+            }
+            
+            modelo.criteriosAceptacion1 = req1.Requerimientos_Cri_Acep.Select(c => c.criterio).Aggregate((acc, x) => acc + "|" + x);    // Se agrega a la lista de criterios de aceptacion 
+            //modelo.criteriosAceptacion2 = req2.Requerimientos_Cri_Acep.Select(c => c.criterio).Aggregate((acc, x) => acc + "|" + x);
+                                                                                                                        
             List<Usuario> listaDesarrolladores = new List<Usuario>();       // Se inicializan listas que se usan a traves a continuacion
             List<Modulo> listaModulos = new List<Modulo>();
             List<Estado_Requerimientos> listaEstadoRequerimientos = new List<Estado_Requerimientos>();
             List<Usuario> listaClientes = new List<Usuario>();
             string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
             //Requerido para formar el equipo de trabajo
-            foreach (var proyEquipo in baseDatos.Proyectos.Find(requerimiento.proyecto).Proyecto_Equipo)
+            foreach (var proyEquipo in baseDatos.Proyectos.Find(req1.proyecto).Proyecto_Equipo)
+            {
+                listaDesarrolladores.Add(baseDatos.Usuarios.Find(proyEquipo.usuario));
+            }
+            foreach (var proyEquipo in baseDatos.Proyectos.Find(req2.proyecto).Proyecto_Equipo)
             {
                 listaDesarrolladores.Add(baseDatos.Usuarios.Find(proyEquipo.usuario));
             }
@@ -189,6 +233,61 @@ namespace ControldeCambios.Controllers
             return View(modelo);        // Se retorna la vista al modelo luego de cargar los datos
         }
 
+
+        /// <summary>
+        /// Funcionalidad para Aceptar una Solicitud de Cambio.
+        /// </summary>
+        // POST: /Solicitud_Cambios/Aceptar
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Aceptar(AceptarSolicitudCambioModelo model)
+        {
+            if (ModelState.IsValid)
+            {
+                var solicitud = new Solicitud_Cambios();  
+                var req1 = baseDatos.Requerimientos.Find(solicitud.req1);
+                var req2 = baseDatos.Requerimientos.Find(solicitud.req2);
+
+                req1.categoria = "Historial";
+                req2.categoria = "Actual";
+
+                solicitud.Estado_Solicitud.nombre = "Aprobado";
+                String userIdentityId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                String usuarioActual = baseDatos.Usuarios.Where(m => m.id == userIdentityId).First().cedula;
+                solicitud.aprobadoPor = usuarioActual;
+                solicitud.aprobadoEn = DateTime.Now;
+            }
+            
+            return View(model);
+        }
+
+
+         /// <summary>
+        /// Funcionalidad para Rechazar una Solicitud de Cambio.
+        /// </summary>
+        // POST: /Solicitud_Cambios/Rechazar
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Rechazar(AceptarSolicitudCambioModelo model)
+        {
+            if (ModelState.IsValid)
+            {
+                var solicitud = new Solicitud_Cambios();
+                var req1 = baseDatos.Requerimientos.Find(solicitud.req1);
+                var req2 = baseDatos.Requerimientos.Find(solicitud.req2);
+
+                req1.categoria = "Actual";
+                req2.categoria = "Rechazada";
+
+                solicitud.Estado_Solicitud.nombre = "Rechazado";
+                String userIdentityId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                String usuarioActual = baseDatos.Usuarios.Where(m => m.id == userIdentityId).First().cedula;
+                solicitud.aprobadoPor = usuarioActual;
+                solicitud.aprobadoEn = DateTime.Now;
+            }
+
+            return View(model);
+        }
 
         private bool revisarPermisos(string permiso)
         {
