@@ -7,14 +7,16 @@
 @using PagedList.Mvc;
 @using PagedList;
 
-<h2>@ViewBag.Title</h2>
-<h4>Lista de Proyectos</h4>
+<div data-step="1" data-intro="Esta es la pantalla que muestra los proyectos disponibles">
+    <h2>@ViewBag.Title</h2>
+    <h4>Lista de Proyectos</h4>
+</div>
 <hr />
 
 @if (Model.crearProyecto)
 {
     <p>
-        @Html.ActionLink("Crear Proyecto", "Crear", new { }, new { @class = "btn btn-primary" })
+        @Html.ActionLink("Crear Proyecto", "Crear", new { }, new { @class = "btn btn-primary", @data_step = "2", @data_intro = "Haciendo click aquí, se puede crear un proyecto nuevo" })
     </p>
 }
 
@@ -44,6 +46,7 @@
                 </th>
             }
         </tr>
+        @{ bool first = true; }
         @foreach (var proyecto in Model.indexProyectoInfoList)
         {
             <tr id="@(proyecto.nombre)">
@@ -66,28 +69,45 @@ proyecto.estado)
                 @if (Model.detallesProyecto)
                 {
                     <td>
-
-                        @Html.ActionLink("Consultar", "Detalles", new
-                   {
-                       id =
-  proyecto.nombre
-                   })
+                        @if (first)
+                        {
+                            @Html.ActionLink("Consultar", "Detalles", new
+                            {
+                                id = proyecto.nombre
+                            }, htmlAttributes: new { @data_step = "3", @data_intro = "Haciendo click aquí se puede consultar la información acerca del proyecto, además de modificar la información de ellos" })
+                        }
+                        else
+                        {
+                            @Html.ActionLink("Consultar", "Detalles", new
+                               {
+                                   id = proyecto.nombre
+                               })
+                        }
                     </td>
                     <td>
-
-                        @Html.ActionLink("Ver Detalles", "Informacion", new
-                   {
-                       id =
-  proyecto.nombre
-                   })
+                        @if(first) { 
+                            @Html.ActionLink("Ver Detalles", "Informacion", new
+                       {
+                           id = proyecto.nombre
+                       }, htmlAttributes: new { @data_step = "4", @data_intro = "Aquí se puede consultar los detalles de la aplicación, los sprints, módulos y el product backlog." })
+                        { first = false; }
+                        }
+                        else
+                        {
+                            @Html.ActionLink("Ver Detalles", "Informacion", new
+                           {
+                               id = proyecto.nombre
+                           })
+                        }
                     </td>
                 }
             </tr>
         }
     </table>
+    <div data-step="5" data-intro="Para ver más proyectos, se puede hacer click aquí.">
     @Html.PagedListPager((IPagedList)ViewBag.OnePageOfProyectos, page => Url.Action("Index", new { page }))
     @Html.Raw("Página:")
-    if (ViewBag.OnePageOfProyectos.PageCount < ViewBag.OnePageOfProyectos.PageNumber)
+    @if (ViewBag.OnePageOfProyectos.PageCount < ViewBag.OnePageOfProyectos.PageNumber)
     {
         @Html.Raw("0")
     }
@@ -97,6 +117,7 @@ proyecto.estado)
     }
     @Html.Raw(" de ")
     @ViewBag.OnePageOfProyectos.PageCount
+    </div>
 } else {
     <div class="row text-center">
         <label>No hay Proyectos</label>

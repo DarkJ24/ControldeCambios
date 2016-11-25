@@ -7,12 +7,16 @@
 @using PagedList.Mvc;
 @using PagedList;
 
-<h2>Gestión de Proyectos</h2>
-<h4>@ViewBag.Title</h4>
+<div data-step="1" data-intro="En estra pantalla podemos ver los detalles del proyecto, de cada módulo, sprint e ir al product backlog.">
+    <h2>Gestión de Proyectos</h2>
+    <h4>@ViewBag.Title</h4>
+</div>
 <hr />
 
-<div class="row panel panel-info">
-    <div class="panel-heading"><label>Información de Proyecto</label></div>
+@{ int ayudasActuales = 3; }
+
+<div class="row panel panel-info" data-step="2" data-intro="Aquí se puede ver la información básica del proyecto">
+    <div class="panel-heading" ><label>Información de Proyecto</label></div>
     <div class="panel-body">
         <div class="col-xs-12 col-sm-6">
             <div class="col-xs-4">
@@ -80,23 +84,25 @@
             @if (Model.crearRequerimientos)
             {
                 <p>
-                    @Html.ActionLink("Crear Requerimiento", "Crear", "Requerimientos", new { proyecto = Model.proyecto.nombre }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("Crear Requerimiento", "Crear", "Requerimientos", new { proyecto = Model.proyecto.nombre }, new { @class = "btn btn-primary", @data_step = ayudasActuales, @data_intro="Haciendo click aquí se puede crear un requerimiento nuevo para el proyecto" })
+                    @{ ayudasActuales++; }
                 </p>
             }
             <p>
-                @Html.ActionLink("Ver Product Backlog", "Index", "Requerimientos", new { proyecto = Model.proyecto.nombre }, new { @class = "btn btn-info" })
+                @Html.ActionLink("Ver Product Backlog", "Index", "Requerimientos", new { proyecto = Model.proyecto.nombre }, new { @class = "btn btn-info", @data_step = ayudasActuales, @data_intro = "Haciendo click aquí se puede revisar el product backlog" })
+                @{ ayudasActuales++; }
             </p>
         </div>
         <div class="col-xs-12 col-sm-6">
             <p>
-                @Html.ActionLink("Mis solicitudes de cambios", "Index", "Solicitud_Cambios", new { proyecto = Model.proyecto.nombre }, new { @class = "btn btn-info" })
+                @Html.ActionLink("Mis solicitudes de cambios", "Index", "Solicitud_Cambios", new { proyecto = Model.proyecto.nombre }, new { @class = "btn btn-info", @data_step = ayudasActuales++, @data_intro = "Con este botón se puede ver el las solicitudes de cambio que se han creado, para ver si fueron aceptadas o rechazadas." })
             </p>
         </div>
         @if (ViewBag.permiso)
         {
         <div class="col-xs-12 col-sm-6">
             <p>
-                @Html.ActionLink("Solicitudes por aprobar", "IndexAprobacion", "Solicitud_Cambios", new { proyecto = Model.proyecto.nombre }, new { @class = "btn btn-warning" })
+                @Html.ActionLink("Solicitudes por aprobar", "IndexAprobacion", "Solicitud_Cambios", new { proyecto = Model.proyecto.nombre }, new { @class = "btn btn-warning", @data_step=ayudasActuales++, @data_intro = "Si se hace click aquí se puede ver las solicitudes que aún no ha sido aprobadas." })
             </p>
         </div>
         }
@@ -109,16 +115,13 @@
         @if (Model.crearModulos)
         {
             <p>
-                @Html.ActionLink("Crear Módulo", "Crear", "Modulos", new { proyecto = Model.proyecto.nombre }, new { @class = "btn btn-primary" })
+                @Html.ActionLink("Crear Módulo", "Crear", "Modulos", new { proyecto = Model.proyecto.nombre }, new { @class = "btn btn-primary", @data_step=ayudasActuales++, @data_intro="Después de crear requerimientos, haciendo click aquí se puede crear un módulo" })
             </p>
         }
         @if (Model.indexModuloInfoList.Count() > 0)
         {
             <table class="table">
                 <tr>
-                    <th>
-                        Número
-                    </th>
                     <th>
                         Nombre
                     </th>
@@ -135,13 +138,10 @@
                         </th>
                     }
                 </tr>
+                @{ bool first = true; }
                 @foreach (var modulo in Model.indexModuloInfoList)
                 {
                     <tr id="@(modulo.numero)">
-                        <td>
-                            @Html.DisplayFor(modelItem =>
-modulo.numero)
-                        </td>
                         <td>
                             @Html.DisplayFor(modelItem =>
 modulo.nombre)
@@ -157,13 +157,24 @@ modulo.puntaje)
                         @if (Model.detallesModulos)
                     {
                             <td>
-
+                                @if(first) { 
                                 @Html.ActionLink("Consultar", "Detalles", "Modulos", new
                            {
                                numero =
      modulo.numero,
                                proyecto = Model.proyecto.nombre
-                           }, new { })
+                           }, new {@data_step=ayudasActuales++, @data_intro="Haciendo click aquí se puede consultar los detalles o modiciar cada módulo" })
+                                { first = false; }
+                                }
+                                else
+                                {
+                                    @Html.ActionLink("Consultar", "Detalles", "Modulos", new
+                               {
+                                   numero =
+     modulo.numero,
+                                   proyecto = Model.proyecto.nombre
+                               }, new { })
+                                }
                             </td>
                         }
                     </tr>
@@ -198,7 +209,7 @@ modulo.puntaje)
         @if (Model.crearSprints)
         {
             <p>
-                @Html.ActionLink("Crear Sprint", "Crear", "Sprint", new { proyecto = Model.proyecto.nombre }, new { @class = "btn btn-primary" })
+                @Html.ActionLink("Crear Sprint", "Crear", "Sprint", new { proyecto = Model.proyecto.nombre }, new { @class = "btn btn-primary", @data_step=ayudasActuales++, @data_intro="Después de crear requerimientos y módulos, se puede crear un sprint." })
             </p>
         }
         @if (Model.indexSprintInfoList.Count() > 0)
@@ -230,6 +241,7 @@ modulo.puntaje)
                         </th>
                     }
                 </tr>
+                @{ bool first = true; }
                 @foreach (var sprint in Model.indexSprintInfoList)
                 {
                     <tr id="@(sprint.numero)">
@@ -256,20 +268,37 @@ modulo.puntaje)
                         @if (Model.detallesSprints)
                     {
                             <td>
+                                @if(first) { 
                                 @Html.ActionLink("Consultar", "Detalles", "Sprint", new
                            {
-                               sprint =
-         sprint.numero,
+                               sprint = sprint.numero,
                                proyecto = Model.proyecto.nombre
-                           }, new { })
+                           }, new { @data_step=ayudasActuales++, @data_intro="Haciendo click aquí, se puede modificar y consultar detalles del sprint" })
+                                }
+                                else
+                                {
+                                    @Html.ActionLink("Consultar", "Detalles", "Sprint", new
+                                        {
+                                            sprint = sprint.numero,
+                                            proyecto = Model.proyecto.nombre
+                                        }, new { })
+                                }
                             </td>
                             <td>
+                                @if (first) {
                                 @Html.ActionLink("Ver Detalles", "Informacion", "Sprint", new
-                           {
-                               sprint =
-         sprint.numero,
-                               proyecto = Model.proyecto.nombre
-                           }, new { })
+                           { sprint = sprint.numero, proyecto = Model.proyecto.nombre
+                           }, new { @data_step=ayudasActuales++, @data_intro="Haciendo click aquí, se puede ver detalles y estadísticas del sprint" })
+                                    { first = false; }
+                                }
+                                else
+                                {
+                                    @Html.ActionLink("Ver Detalles", "Informacion", "Sprint", new
+                                        {
+                                            sprint =sprint.numero,
+                                            proyecto = Model.proyecto.nombre
+                                        }, new { })
+                                }
                             </td>
                         }
                     </tr>
