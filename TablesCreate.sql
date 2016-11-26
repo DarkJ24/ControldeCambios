@@ -277,7 +277,8 @@ VALUES('Pendiente de asignación'),
 ('Asignado'),
 ('En ejecución'),
 ('Finalizado'),
-('Cerrado');
+('Cerrado'),
+('Por iniciar');
 
 INSERT INTO Categoria_Requerimientos
 VALUES('Actual'), 

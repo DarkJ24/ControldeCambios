@@ -15,6 +15,15 @@
         $('.versionDisplayer').hide();
         $('.motivoDiv').show();
         $('.minusbutton').show();
+        $('#imageInput').change(function(){
+            if (this.files && this.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('.myImageContainer').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
     }
 </script>
 <script>
@@ -71,19 +80,19 @@
     @Html.HiddenFor(m => m.idReqAnterior)
     @Html.HiddenFor(m => m.proyecto)
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.proyecto, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.DisplayFor(m => m.proyecto, new { @class = "form-control" })
-            @Html.HiddenFor(m => m.proyecto)
-            @Html.ValidationMessageFor(model => model.proyecto, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
 
     <div class="panel panel-info">
         <div class="panel-heading"><label>Datos de Requerimiento</label></div>
         <div class="panel-body">
+            <div class="form-group">
+                <label class="control-label col-md-2 required">Proyecto:</label>
+                <div class="col-md-10">
+                    @Html.DisplayFor(m => m.proyecto, new { @class = "form-control" })
+                    @Html.HiddenFor(m => m.proyecto)
+                    @Html.ValidationMessageFor(model => model.proyecto, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
             <div class="form-group">
                 <label class="control-label col-md-2 required">Código:</label>
                 <div class="col-md-10">
@@ -106,7 +115,7 @@
                 </div>
             </div>
             <div class="form-group">
-                @Html.LabelFor(m => m.criteriosAceptacion, new { @class = "col-md-2 control-label required" })
+                <label class="control-label col-md-2 required">Criterios de Aceptación:</label>
                 @Html.HiddenFor(m => m.criteriosAceptacion, new { @id = "output" })
                 <div class="col-md-10" style="margin-bottom:25px">
                     <div class="editBtns" style="display:none">
@@ -121,27 +130,19 @@
                 @Html.ValidationMessageFor(m => m.criteriosAceptacion, "", new { @class = "text-danger" })
             </div>
 
-            <div class="form-group showimgdiv">
-                @Html.Label("Imagen", new { @class = "col-md-2 control-label" })
+            <div class="form-group">
+                @Html.Label("Imagen:", new { @class = "col-md-2 control-label" })
                 <div class="col-md-10">
                     @if (Model.file != "")
                     {
                         <label class="" style="cursor:pointer">
-                            <img id="myImg" src="data:image/png;base64,@Html.DisplayFor(m => m.file)" width="100px" data-toggle="modal" data-target="#myModal" class="imagen" />
+                            <img id="myImg" src="data:image/png;base64,@Html.DisplayFor(m => m.file)" width="100px" data-toggle="modal" data-target="#myModal" class="imagen myImageContainer" />
                         </label>
+                        <br>
+                        @Html.HiddenFor(m => m.file)
                     }
-                    else
-                    {
-                        @Html.Raw("No hay imagen")
-                    }
-                    @Html.HiddenFor(m => m.file)
-                </div>
-            </div>
-            <div class="form-group hidden imgdiv">
-                @Html.Label("Imagen", new { @class = "col-md-2 control-label" })
-                <div class="col-md-10">
-                    <label class="" style="cursor:pointer">
-                        <input class="btn btn-default btn-file" type="file" name="ImageData" accept="image/*">
+                    <label class="hidden imgdiv" style="cursor:pointer">
+                        <input id="imageInput" value="@Html.DisplayFor(m => m.file)" class="btn btn-default btn-file" type="file" name="ImageData" accept="image/*">
                     </label>
                 </div>
             </div>
@@ -314,7 +315,7 @@
         <div class="modal-content">
             <div class="modal-body">
                 <center>
-                    <img src="data:image/png;base64,@Html.DisplayFor(m => m.file)" class="img-responsive" style="width:100%; height:auto">
+                    <img src="data:image/png;base64,@Html.DisplayFor(m => m.file)" class="img-responsive myImageContainer" style="width:100%; height:auto">
                 </center>
             </div>
         </div>

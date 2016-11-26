@@ -244,6 +244,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AprobarSolicitudCambioModelo.cs" />
     <Compile Include="Models\Categoria_Requerimientos.cs">
       <DependentUpon>Modelo.tt</DependentUpon>
     </Compile>
@@ -510,6 +511,7 @@
     <Content Include="Views\Solicitud_Cambios\CrearSolicitud.cshtml" />
     <Content Include="Views\Solicitud_Cambios\index.cshtml" />
     <Content Include="Views\Solicitud_Cambios\indexAprobacion.cshtml" />
+    <Content Include="Views\Solicitud_Cambios\Aprobar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

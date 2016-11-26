@@ -15,6 +15,7 @@ using Chart.Mvc;
 using Chart.Mvc.ComplexChart;
 using PagedList;
 using System.Globalization;
+using System.Text;
 
 namespace ControldeCambios.Controllers
 {
@@ -110,6 +111,7 @@ namespace ControldeCambios.Controllers
             {
                 var requerimiento = baseDatos.Requerimientos.Find(solicitudes.ElementAt(i).req2);
                 var x = new Solicitud_CambiosIndexModel.solicitudInfo();
+                x.id = solicitudes.ElementAt(i).id;
                 x.nombre = requerimiento.nombre;
                 x.codigo = requerimiento.codigo;
                 x.estado = solicitudes.ElementAt(i).estado;
@@ -129,8 +131,8 @@ namespace ControldeCambios.Controllers
         /// <summary>
         /// Funcionalidad para llenar los datos del requerimiento actual y la solicitud de cambio del requerimiento.
         /// </summary>
-        // GET: /Solicitud_Cambios/Aceptar
-        public ActionResult Aceptar(string id)
+        // GET: /Solicitud_Cambios/Aprobar
+        public ActionResult Aprobar(string id)
         {
             /*if (!revisarPermisos("Aprobar Solicitud de Cambio"))   // Revisa los permisos del usuario accediendo a la pantalla
             {
@@ -142,7 +144,7 @@ namespace ControldeCambios.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            AceptarSolicitudCambioModelo modelo = new AceptarSolicitudCambioModelo();   // Crea un modelo y lo llena con los datos del requerimiento
+            AprobarSolicitudCambioModelo modelo = new AprobarSolicitudCambioModelo();   // Crea un modelo y lo llena con los datos del requerimiento
             var solicitud = baseDatos.Solicitud_Cambios.Find(Int32.Parse(id));   // que entro como parametro
             if (solicitud == null)
             {
@@ -156,7 +158,7 @@ namespace ControldeCambios.Controllers
             modelo.codigo2 = req2.codigo;
             modelo.nombre1 = req1.nombre;
             modelo.nombre2 = req2.nombre;
-            modelo.creadoPor1 = req1.creadoPor;
+            modelo.creadoPor1 = baseDatos.Usuarios.Find(req1.creadoPor).nombre;
             modelo.creadoPor2 = req2.creadoPor;
             modelo.version1 = req1.version.ToString();
             modelo.version2 = req2.version.ToString();
@@ -178,12 +180,13 @@ namespace ControldeCambios.Controllers
             {
                 modelo.fechaFinal2 = (req2.finalizaEn ?? DateTime.Now).ToString("MM/dd/yyyy");
             }
-            modelo.solicitadoPor1 = req1.solicitadoPor;
+            modelo.solicitadoPor1 = baseDatos.Usuarios.Find(req1.solicitadoPor).nombre;
             modelo.solicitadoPor2 = req2.solicitadoPor;
             modelo.estado1 = req1.estado;
             modelo.estado2 = req2.estado;
             modelo.proyecto = req1.proyecto;
             modelo.solicitadoEn = req2.creadoEn.ToString("MM/dd/yyyy");
+            modelo.solicitadoPor = baseDatos.Usuarios.Find(solicitud.solicitadoPor).nombre;
             modelo.razon = solicitud.razon;
             modelo.comentario = solicitud.comentario;
            
@@ -216,7 +219,7 @@ namespace ControldeCambios.Controllers
             }
             
             modelo.criteriosAceptacion1 = req1.Requerimientos_Cri_Acep.Select(c => c.criterio).Aggregate((acc, x) => acc + "|" + x);    // Se agrega a la lista de criterios de aceptacion 
-            //modelo.criteriosAceptacion2 = req2.Requerimientos_Cri_Acep.Select(c => c.criterio).Aggregate((acc, x) => acc + "|" + x);
+            modelo.criteriosAceptacion2 = req2.Requerimientos_Cri_Acep.Select(c => c.criterio).Aggregate((acc, x) => acc + "|" + x);
                                                                                                                         
             List<Usuario> listaDesarrolladores = new List<Usuario>();       // Se inicializan listas que se usan a traves a continuacion
             List<Modulo> listaModulos = new List<Modulo>();
@@ -228,10 +231,6 @@ namespace ControldeCambios.Controllers
             {
                 listaDesarrolladores.Add(baseDatos.Usuarios.Find(proyEquipo.usuario));
             }
-            foreach (var proyEquipo in baseDatos.Proyectos.Find(req2.proyecto).Proyecto_Equipo)
-            {
-                listaDesarrolladores.Add(baseDatos.Usuarios.Find(proyEquipo.usuario));
-            }
             foreach (var user in context.Users.ToArray())
             {
                 if (user.Roles.First().RoleId.Equals(clienteRol))
@@ -239,8 +238,8 @@ namespace ControldeCambios.Controllers
                     listaClientes.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
                 }
             }
-            ViewBag.eliminarRequerimiento = revisarPermisos("Eliminar Requerimientos");              // Aqui se hacen unas validaciones de permisos 
-            ViewBag.modificarRequerimiento = revisarPermisos("Modificar Requerimientos");            // y se cargan ciertos Viewbags necesitados por la vista
+            ViewBag.eliminarRequerimiento = revisarPermisos("Eliminar Requerimientos");// Aqui se hacen unas validaciones de permisos 
+            ViewBag.modificarRequerimiento = revisarPermisos("Modificar Requerimientos");// y se cargan ciertos Viewbags necesitados por la vista
             ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
             ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");
             ViewBag.DesarrolladoresDisp = listaDesarrolladores;
@@ -255,7 +254,7 @@ namespace ControldeCambios.Controllers
         // POST: /Solicitud_Cambios/Aceptar
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Aceptar(AceptarSolicitudCambioModelo model)
+        public ActionResult Aprobar(AprobarSolicitudCambioModelo model)
         {
             if (ModelState.IsValid)
             {
@@ -283,7 +282,7 @@ namespace ControldeCambios.Controllers
         // POST: /Solicitud_Cambios/Rechazar
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Rechazar(AceptarSolicitudCambioModelo model)
+        public ActionResult Rechazar(AprobarSolicitudCambioModelo model)
         {
             if (ModelState.IsValid)
             {
@@ -429,18 +428,16 @@ namespace ControldeCambios.Controllers
                     }
                 }
 
-                if (ImageData != null)
-                {
+                if (ImageData != null) {
                     var array = new Byte[ImageData.ContentLength];
                     ImageData.InputStream.Position = 0;
                     ImageData.InputStream.Read(array, 0, ImageData.ContentLength);
                     requerimiento.imagen = array;
-                }
-                else
-                {
-                    if (modelo.file == "")
-                    {
+                } else {
+                    if (modelo.file == "") {
                         requerimiento.imagen = null;
+                    } else {
+                        requerimiento.imagen = Encoding.ASCII.GetBytes(modelo.file);
                     }
                 }
                 //Se hace el split para separar los criterios de aceptación y meterlos en una lista

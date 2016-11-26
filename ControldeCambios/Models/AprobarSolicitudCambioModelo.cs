@@ -6,7 +6,7 @@ using System.Web;
 
 namespace ControldeCambios.Models
 {
-    public class AceptarSolicitudCambioModelo
+    public class AprobarSolicitudCambioModelo
     {
         [Required(ErrorMessage = "El código es un campo requerido.")]
         [StringLength(15, ErrorMessage = "El código debe ser de {1} dígitos"), MinLength(1, ErrorMessage = "El código debe ser de al menos {1} dígito")]
@@ -130,8 +130,12 @@ namespace ControldeCambios.Models
         [Display(Name = "Fecha de Solicitud")]
         public string solicitadoEn { get; set; }
 
-        [Required(ErrorMessage = "La razon es un campo obligatorio.")]
-        [Display(Name = "Razon")]
+        [Required(ErrorMessage = "El solicitante es un campo obligatorio.")]
+        [Display(Name = "Solicitante")]
+        public string solicitadoPor { get; set; }
+
+        [Required(ErrorMessage = "La razón es un campo obligatorio.")]
+        [Display(Name = "Razón")]
         public string razon { get; set; }
     }
 }
