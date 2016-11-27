@@ -3,21 +3,7 @@
     ViewBag.Title = "Consultar Requerimiento";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@if (Model.modificarRequerimiento)
-{
-    <script>
-    function habilitarCampos() {
-        $('.editBtns').show();
-        $('.editFields').attr("disabled", false);
-        $('.ms-elem-selectable').removeClass('disabled');
-        $('.ms-elem-selection').removeClass('disabled');
-        $('#subtitle').html("Modificar Requerimiento");
-        $('.imgdiv').removeClass("hidden");
-        $('.showimgdiv').addClass("hidden");
-        $('.minusbutton').show();
-    }
-    </script>
-}
+
 
 <script>
 i = 1;
@@ -55,16 +41,21 @@ function load_all() {
 
 </script>
 
-<h2>Gestión de Requerimientos</h2>
-<h4 id="subtitle">@ViewBag.Title</h4>
+<div data-step="1" data-intro="En esta pantalla se puede ver los detalles de un requerimiento" class="datastep1">
+    <h2>Gestión de Requerimientos</h2>
+    <h4 id="subtitle">@ViewBag.Title</h4>
+</div>
 <hr />
+@{ int ayudasActuales = 2; }
 @if (Model.modificarRequerimiento)
 {
-    <button type="button" class="btn btn-primary" onClick="habilitarCampos()">Modificar</button>
-}
+    <button type="button" class="btn btn-primary" onClick="habilitarCampos()" data-step=@ayudasActuales data-intro="Haciendo click aquí, se puede modificar los detalles">Modificar</button>
+    {ayudasActuales++;}
+        }
 @if (Model.eliminarRequerimiento)
 {
-    <button type = "button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal">Eliminar</button>
+    <button type = "button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal" data-step=@ayudasActuales data-intro="Haciendo click aquí, se puede eliminar el proyecto">Eliminar</button>
+    {ayudasActuales++;}
 }
 <hr />
 @using (Html.BeginForm("Detalles", "Requerimientos", FormMethod.Post, new { @class = "form-horizontal editFields", role = "form", enctype = "multipart/form-data" }))
@@ -73,7 +64,8 @@ function load_all() {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m => m.id)
     @Html.HiddenFor(m => m.proyecto)
-
+    <div class="camposdiv" data-step=@ayudasActuales data-intro="Estos son los campos que despliegan la información del proyecto">
+    @{ayudasActuales++;}
     <div class="form-group">
         @Html.LabelFor(m => m.proyecto, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
@@ -117,7 +109,7 @@ function load_all() {
                 @Html.HiddenFor(m => m.criteriosAceptacion, new { @id = "output" })
                 <div class="col-md-10" style="margin-bottom:25px">
                     <div class="editBtns" style="display:none">
-                        <button type="button" onclick="add_textbox()" class="btn editBtns" style="border-radius:4px"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Nuevo Criterio de Aceptación</button>
+                        <button type="button" onclick="add_textbox()" class="btn editBtns botcritac" style="border-radius:4px"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Nuevo Criterio de Aceptación</button>
                         <br />
                         <br />
                     </div>
@@ -163,7 +155,7 @@ function load_all() {
                 </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group recursos">
                 @Html.Label("Disponibles", new { @class = "col-md-offset-2 col-md-2 control-label", @style = "text-align:center;margin-left:195px;" })
                 @Html.Label("Responsables", new { @class = "col-md-offset-2  col-md-2 control-label required", @style = "text-align:center;margin-left:10px;margin-bottom:10px" })
                 <div class="col-md-offset-2 col-md-10" style="margin-bottom:25px">
@@ -255,12 +247,12 @@ function load_all() {
 
         </div>
     </div>
-
+    </div>
 
     <div class="form-group editBtns" style="display:none">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-success" value="Aceptar" />
-            <input type="button" class="btn btn-default" value="Cancelar" onclick="location.reload()" />
+            <input type="submit" class="btn btn-success botonaceptar" value="Aceptar" />
+            <input type="button" class="btn btn-default botoncancelar" value="Cancelar" onclick="location.reload()" />
         </div>
     </div>
 
@@ -347,6 +339,42 @@ function load_all() {
         $('.modal:visible').each(centerModal);
     });
 </script>
+
+@if (Model.modificarRequerimiento)
+{
+    <script>
+    function habilitarCampos() {
+        $('.editBtns').show();
+        $('.editFields').attr("disabled", false);
+        $('.ms-elem-selectable').removeClass('disabled');
+        $('.ms-elem-selection').removeClass('disabled');
+        $('#subtitle').html("Modificar Requerimiento");
+        $('.imgdiv').removeClass("hidden");
+        $('.showimgdiv').addClass("hidden");
+        $('.minusbutton').show();
+        cambiarIntro();
+    }
+
+    function cambiarIntro() {
+        $('.datastep1').attr("data-intro", "Esta es la pantalla donde se puede modificar un requerimiento");
+        $('.camposdiv').attr("data-intro", "Estos son los campos donde se puede cambiar la información del usuario");
+        $('.botcritac').attr("data-step", @ayudasActuales);
+        @{ ayudasActuales++; }
+        $('.botcritac').attr("data-intro", "Haciendo click en este botón se pueden agregar más criterios de aceptación")
+        $('.recursos').attr("data-step", @ayudasActuales)
+        @{ ayudasActuales++; }
+        $('.recursos').attr("data-intro", "Para agregar un desarrollador al requerimiento se puede hacer click aquí para llevarlos a la lista de responsables o para devolverlos a los disponibles.")
+        $('.botonaceptar').attr("data-step", @ayudasActuales);
+        $('.botonaceptar').attr("data-intro", "Haciendo click aquí se pueden guardar los cambios.")
+        $('.botonaceptar').attr("data-position", "left")
+        @{ayudasActuales++;}
+        $('.botoncancelar').attr("data-step", @ayudasActuales);
+        $('.botoncancelar').attr("data-intro", "Se se cometió algún error y no se quieren guardar los cambios, haciendo click aquí se pueden deshacer.")
+        $('.botoncancelar').attr("data-position", "right")
+        @{ayudasActuales++;}
+    }
+    </script>
+    }
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
