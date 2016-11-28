@@ -6,13 +6,17 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Gestión de Proyecto</h2>
-<h4>@ViewBag.Title</h4>
+<div data-step="1" data-intro="En esta pantalla se pueden revisar los requerimientos de este proyecto.">
+    <h2>Gestión de Proyecto</h2>
+    <h4>@ViewBag.Title</h4>
+</div>
 <hr />
+@{ int ayudasActuales = 2; }
+
 @if (Model.crearRequerimientos)
 {
     <p>
-        @Html.ActionLink("Crear Requerimiento", "Crear", new { proyecto = Model.proyecto}, new { @class = "btn btn-primary" })
+        @Html.ActionLink("Crear Requerimiento", "Crear", new { proyecto = Model.proyecto }, new { @class = "btn btn-primary", @data_step = ayudasActuales++, @data_intro = "Haciendo click aquí, se puede crear un proyecto nuevo." })
     </p>
 }
 
@@ -42,6 +46,9 @@
             </th>
         }
     </tr>
+    @{ bool firstreq = true; } @* para el primer requerimiento *@
+    @{ bool firstsol = true; } @* para la primera solicitud que no ha sido iniciada *@
+    
     @foreach (var req in Model.reqs)
     {
         <tr id="@(req.id)">
@@ -68,19 +75,42 @@ req.estado)
             @if (Model.detallesRequerimientos)
             {
                 <td>
-                    @if (req.estado == "Por iniciar             ") {
+                    @if (req.estado == "Por iniciar             ")
+                    {
 
+                        if (firstreq)
+                        {
                         @Html.ActionLink("Consultar", "Detalles", new
-                           {
-                               id = req.id
-                           })
+                   {
+                       id = req.id
+                   }, new { @data_step = ayudasActuales++, @data_intro = "Como este requerimiento no se ha iniciado, este se puede modificar sin hacer una solicitud de cambio." })
+                            { firstreq = false; }
+                        }
+                        else
+                        {
+                               @Html.ActionLink("Consultar", "Detalles", new
+                          {
+                              id = req.id
+                          })
+                        }
                     }
                     else
                     {
+                        if (firstsol)
+                        {
                         @Html.ActionLink("Consultar", "CrearSolicitud", "Solicitud_Cambios", new
-                           {
-                               id = req.id
-                           }, new { })
+                   {
+                       id = req.id
+                   }, new { @data_step = ayudasActuales++, @data_intro = "Como este requerimiento ya se inició, hace falta hacer una solicitud de cambio para cambiarlo." })
+                            { firstsol = false; }
+                        }
+                        else
+                        {
+                            @Html.ActionLink("Consultar", "CrearSolicitud", "Solicitud_Cambios", new
+                       {
+                           id = req.id
+                       })
+                        }
                     }
                 </td>
             }
@@ -88,22 +118,24 @@ req.estado)
     }
 </table>
 
-@Html.PagedListPager((IPagedList)ViewBag.OnePageOfReqs, page => Url.Action("Index", new { page, proyecto = Model.proyecto }))
-@Html.Raw("Página:")
-if (ViewBag.OnePageOfReqs.PageCount < ViewBag.OnePageOfReqs.PageNumber)
-{
+<div data-step=@ayudasActuales ++, data-intro="Haciendo click aquí se pueden ver más requerimientos">
+    @Html.PagedListPager((IPagedList)ViewBag.OnePageOfReqs, page => Url.Action("Index", new { page, proyecto = Model.proyecto }))
+    @Html.Raw("Página:")
+    @if (ViewBag.OnePageOfReqs.PageCount < ViewBag.OnePageOfReqs.PageNumber)
+    {
     @Html.Raw("0")
-}
-else
-{
+    }
+    else
+    {
     @ViewBag.OnePageOfReqs.PageNumber
-}
-@Html.Raw(" de ")
-@ViewBag.OnePageOfReqs.PageCount
+    }
+    @Html.Raw(" de ")
+    @ViewBag.OnePageOfReqs.PageCount
+</div>
 }
 else
 {
-    <div class="row text-center">
-        <label>No hay Requerimientos</label>
-    </div>
+<div class="row text-center">
+<label>No hay Requerimientos</label>
+</div>
 }
