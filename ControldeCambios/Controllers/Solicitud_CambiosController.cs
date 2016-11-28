@@ -314,7 +314,7 @@ namespace ControldeCambios.Controllers
         }
 
         // GET: Crear Solicitud_Cambios
-        public ActionResult CrearSolicitud(string id)
+        public ActionResult CrearSolicitud(string id, int? page)
         {
             if (!revisarPermisos("Consultar Detalles de Requerimiento"))   // Revisa los permisos del usuario accediendo a la pantalla
             {
@@ -390,6 +390,42 @@ namespace ControldeCambios.Controllers
             ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");
             ViewBag.DesarrolladoresDisp = listaDesarrolladores;
             ViewBag.Estados = new SelectList(baseDatos.Estado_Proyecto.ToList(), "nombre", "nombre");
+
+            //Indice de Versiones Anteriores
+            var solicitudes = baseDatos.Solicitud_Cambios.Where(m => m.proyecto == requerimiento.proyecto && m.estado == "Aprobado" && (m.req1 == requerimiento.id || m.req2 == requerimiento.id) ).ToList();
+            solicitudes = getRequerimientos(solicitudes);
+            var reqs = new List<Requerimiento>();
+            foreach (var sol in solicitudes)
+            {
+                var req = baseDatos.Requerimientos.Find(sol.req1);
+                if (req.categoria == "Historial")
+                {
+                    if (!reqs.Contains(req))
+                    {
+                        reqs.Add(req);
+                    }
+                }
+                var req2 = baseDatos.Requerimientos.Find(sol.req2);
+                if (req2.categoria == "Historial" || req2.categoria == "Actual")
+                {
+                    if (!reqs.Contains(req2))
+                    {
+                        reqs.Add(req2);
+                    }
+                }
+            }
+            int pageSize = 10;
+            int pageNumber = (page ?? 1);
+            int lastElement = (reqs.Count < pageSize * pageNumber) ? reqs.Count : pageSize * pageNumber;
+            modelo.reqs = new List<Requerimiento>();
+            for (int i = (pageNumber - 1) * pageSize; i < lastElement; i++)
+            {
+                modelo.reqs.Add(reqs.ElementAt(i));
+            }
+
+            var reqsAsIPagedList = new StaticPagedList<Requerimiento>(modelo.reqs, pageNumber, pageSize, reqs.Count);
+            ViewBag.OnePageOfReqs = reqsAsIPagedList;
+
             return View(modelo);        // Se retorna la vista al modelo luego de cargar los datos
         }
 
@@ -492,6 +528,29 @@ namespace ControldeCambios.Controllers
             ViewBag.DesarrolladoresDisp = listaDesarrolladores;
             ViewBag.Estados = new SelectList(baseDatos.Estado_Proyecto.ToList(), "nombre", "nombre");
             return View(modelo);    // Se retorna la vista al modelo luego de modificar los datos
+        }
+
+        List<Solicitud_Cambios> getRequerimientos(List<Solicitud_Cambios> solicitudes)
+        {
+            if (solicitudes != null && solicitudes.Count > 0)
+            {
+                var izquierda = new List<Solicitud_Cambios>();
+                var derecha = new List<Solicitud_Cambios>();
+                foreach (var sol in solicitudes)
+                {
+                    var izq = getRequerimientos(baseDatos.Solicitud_Cambios.Where(m => m.proyecto == sol.proyecto && m.estado == "Aprobado" && m.req2 == sol.req1).ToList());
+                    izquierda.AddRange(izq);
+                    var der = getRequerimientos(baseDatos.Solicitud_Cambios.Where(m => m.proyecto == sol.proyecto && m.estado == "Aprobado" && m.req1 == sol.req2).ToList());
+                    derecha.AddRange(der);
+                }
+                var respuesta = solicitudes;
+                respuesta.AddRange(izquierda);
+                respuesta.AddRange(derecha);
+                return respuesta;
+            } else
+            {
+                return solicitudes;
+            }
         }
     }
 }

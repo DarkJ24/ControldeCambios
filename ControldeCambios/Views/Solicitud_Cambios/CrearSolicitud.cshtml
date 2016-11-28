@@ -1,4 +1,6 @@
 ﻿@model ControldeCambios.Models.CrearSolicitudModel
+@using PagedList;
+@using PagedList.Mvc;
 @{
     ViewBag.Title = "Consultar Requerimiento";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -15,7 +17,7 @@
         $('.versionDisplayer').hide();
         $('.motivoDiv').show();
         $('.minusbutton').show();
-        $('#imageInput').change(function(){
+        $('#imageInput').change(function () {
             if (this.files && this.files[0]) {
                 var reader = new FileReader();
                 reader.onload = function (e) {
@@ -30,14 +32,14 @@
     i = 1;
 
     function update_output() {
-	    var values = $(".multitextbox")
-                  .map(function(){return $(this).val();}).get().filter(v=>v!='').join("|");
-	    $("#output").val(values);
+        var values = $(".multitextbox")
+                  .map(function () { return $(this).val(); }).get().filter(v=>v != '').join("|");
+        $("#output").val(values);
     }
 
     function delete_all(button) {
-	    $("#" + button.id).remove();
-	    update_output();
+        $("#" + button.id).remove();
+        update_output();
     }
 
     function add_textbox() {
@@ -50,7 +52,7 @@
     function load_all() {
         var inputs = $("#output").val().split("|");
         for (var j = 0; j < inputs.length; j++) {
-            if(j != 0) {
+            if (j != 0) {
                 var tbid = add_textbox();
                 $("." + tbid).val(inputs[j]);
             } else {
@@ -249,25 +251,117 @@
             <input type="button" class="btn btn-default" value="Cancelar" onclick="location.reload()" />
         </div>
     </div>
-
     <style type="text/css">
         .required:after {
             content: "*";
             font-weight: bold;
             color: red;
-        }
     </style>
-    <script>
-        window.onload = function() {
-            $('#list2').multiSelect();
-            $('.datePicker').datepicker();
-            load_all();
-            $('.editFields').attr("disabled", "disabled");
-            $('.minusbutton').hide();
-        };
-    </script>
+    }
 
-}
+    @if (Model.reqs.Count() > 0)
+    {
+    <div class="panel panel-info">
+        <div class="panel-heading"><label>Versiones Anteriores</label></div>
+            <div class="panel-body">
+                <table class="table">
+                    <tr>
+                        <th>
+                            Código
+                        </th>
+                        <th>
+                            Nombre
+                        </th>
+                        <th>
+                            Prioridad
+                        </th>
+                        <th>
+                            Esfuerzo
+                        </th>
+                        <th>
+                            Estado
+                        </th>
+                        <th>
+                            Versión
+                        </th>
+                        <th>
+                            Consultar
+                        </th>
+                    </tr>
+                    @foreach (var req in Model.reqs)
+                    {
+                        <tr id="@(req.id)">
+                            <td>
+                                @Html.DisplayFor(modelItem =>
+req.codigo)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem =>
+req.nombre)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem =>
+req.prioridad)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem =>
+req.esfuerzo)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem =>
+req.estado)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem =>
+req.version)
+                            </td>
+                            <td>
+                                @if (req.estado == "Por iniciar             ")
+                                {
+
+                                    @Html.ActionLink("Consultar", "Detalles", new
+                               {
+                                   id = req.id
+                               })
+                                }
+                                else
+                                {
+                                    @Html.ActionLink("Consultar", "CrearSolicitud", "Solicitud_Cambios", new
+                               {
+                                   id = req.id
+                               }, new { })
+                                }
+                            </td>
+                        </tr>
+                    }
+                </table>
+
+                @Html.PagedListPager((IPagedList)ViewBag.OnePageOfReqs, page => Url.Action("CrearSolicitud", new { page, id = Model.idReqAnterior }))
+                @Html.Raw("Página:")
+                if (ViewBag.OnePageOfReqs.PageCount < ViewBag.OnePageOfReqs.PageNumber)
+                {
+                @Html.Raw("0")
+                }
+                else
+                {
+                @ViewBag.OnePageOfReqs.PageNumber
+                }
+                @Html.Raw(" de ")
+                @ViewBag.OnePageOfReqs.PageCount
+                }
+                </div>
+        </div>
+    }
+
+            <script>
+                window.onload = function () {
+                    $('#list2').multiSelect();
+                    $('.datePicker').datepicker();
+                    load_all();
+                    $('.editFields').attr("disabled", "disabled");
+                    $('.minusbutton').hide();
+                };
+            </script>
 @if (Model.eliminarRequerimiento)
 {
     <!-- Modal -->
@@ -295,7 +389,7 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-danger">Eliminar</button>
-                </div>
+                    </div>
                 }
             </div>
         </div>

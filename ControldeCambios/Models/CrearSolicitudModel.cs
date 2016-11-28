@@ -91,5 +91,9 @@ namespace ControldeCambios.Models
 
         public bool crearSolicitud { get; set; }
         public bool eliminarRequerimiento { get; set; }
+
+        //Index
+
+        public List<Requerimiento> reqs { get; set; }
     }
 }
