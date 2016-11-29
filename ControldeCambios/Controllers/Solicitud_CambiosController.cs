@@ -60,16 +60,32 @@ namespace ControldeCambios.Controllers
             model.indexSolicitudInfoList = new List<Solicitud_CambiosIndexModel.solicitudInfo>();
             for (int i = (pageNumber - 1) * pageSize; i < lastElement; i++)
             {
-                var requerimiento = baseDatos.Requerimientos.Find(solicitudes.ElementAt(i).req2);
-                var x = new Solicitud_CambiosIndexModel.solicitudInfo();
-                x.id = solicitudes.ElementAt(i).id;
-                x.nombre = requerimiento.nombre;
-                x.codigo = requerimiento.codigo;
-                x.estado = solicitudes.ElementAt(i).estado;
-                x.fecha = solicitudes.ElementAt(i).solicitadoEn.ToString("MM/dd/yyyy");
-                x.prioridad = requerimiento.prioridad;
-                x.solicitadoPor = baseDatos.Usuarios.Find(solicitudes.ElementAt(i).solicitadoPor).nombre;
-                model.indexSolicitudInfoList.Add(x);
+                if (solicitudes.ElementAt(i).tipo == "Modificar")
+                {
+                    var requerimiento = baseDatos.Requerimientos.Find(solicitudes.ElementAt(i).req2);
+                    var x = new Solicitud_CambiosIndexModel.solicitudInfo();
+                    x.id = solicitudes.ElementAt(i).id;
+                    x.nombre = requerimiento.nombre;
+                    x.codigo = requerimiento.codigo;
+                    x.estado = solicitudes.ElementAt(i).estado;
+                    x.fecha = solicitudes.ElementAt(i).solicitadoEn.ToString("MM/dd/yyyy");
+                    x.prioridad = requerimiento.prioridad;
+                    x.solicitadoPor = baseDatos.Usuarios.Find(solicitudes.ElementAt(i).solicitadoPor).nombre;
+                    x.tipo = solicitudes.ElementAt(i).tipo;
+                    model.indexSolicitudInfoList.Add(x);
+                } else { //Eliminar
+                    var requerimiento = baseDatos.Requerimientos.Find(solicitudes.ElementAt(i).req1);
+                    var x = new Solicitud_CambiosIndexModel.solicitudInfo();
+                    x.id = solicitudes.ElementAt(i).id;
+                    x.nombre = requerimiento.nombre;
+                    x.codigo = requerimiento.codigo;
+                    x.estado = solicitudes.ElementAt(i).estado;
+                    x.fecha = solicitudes.ElementAt(i).solicitadoEn.ToString("MM/dd/yyyy");
+                    x.prioridad = requerimiento.prioridad;
+                    x.solicitadoPor = baseDatos.Usuarios.Find(solicitudes.ElementAt(i).solicitadoPor).nombre;
+                    x.tipo = solicitudes.ElementAt(i).tipo;
+                    model.indexSolicitudInfoList.Add(x);
+                }
             }
             var reqsAsIPagedList = new StaticPagedList<Solicitud_CambiosIndexModel.solicitudInfo>(model.indexSolicitudInfoList, pageNumber, pageSize, solicitudes.Count);
             ViewBag.OnePageOfReqs = reqsAsIPagedList;
@@ -109,16 +125,34 @@ namespace ControldeCambios.Controllers
             model.indexSolicitudInfoList = new List<Solicitud_CambiosIndexModel.solicitudInfo>();
             for (int i = (pageNumber - 1) * pageSize; i < lastElement; i++)
             {
-                var requerimiento = baseDatos.Requerimientos.Find(solicitudes.ElementAt(i).req2);
-                var x = new Solicitud_CambiosIndexModel.solicitudInfo();
-                x.id = solicitudes.ElementAt(i).id;
-                x.nombre = requerimiento.nombre;
-                x.codigo = requerimiento.codigo;
-                x.estado = solicitudes.ElementAt(i).estado;
-                x.fecha = solicitudes.ElementAt(i).solicitadoEn.ToString("MM/dd/yyyy");
-                x.prioridad = requerimiento.prioridad;
-                x.solicitadoPor = baseDatos.Usuarios.Find(solicitudes.ElementAt(i).solicitadoPor).nombre;
-                model.indexSolicitudInfoList.Add(x);
+                if (solicitudes.ElementAt(i).tipo == "Modificar")
+                {
+                    var requerimiento = baseDatos.Requerimientos.Find(solicitudes.ElementAt(i).req2);
+                    var x = new Solicitud_CambiosIndexModel.solicitudInfo();
+                    x.id = solicitudes.ElementAt(i).id;
+                    x.nombre = requerimiento.nombre;
+                    x.codigo = requerimiento.codigo;
+                    x.estado = solicitudes.ElementAt(i).estado;
+                    x.fecha = solicitudes.ElementAt(i).solicitadoEn.ToString("MM/dd/yyyy");
+                    x.prioridad = requerimiento.prioridad;
+                    x.solicitadoPor = baseDatos.Usuarios.Find(solicitudes.ElementAt(i).solicitadoPor).nombre;
+                    x.tipo = solicitudes.ElementAt(i).tipo;
+                    model.indexSolicitudInfoList.Add(x);
+                }
+                else
+                { //Eliminar
+                    var requerimiento = baseDatos.Requerimientos.Find(solicitudes.ElementAt(i).req1);
+                    var x = new Solicitud_CambiosIndexModel.solicitudInfo();
+                    x.id = solicitudes.ElementAt(i).id;
+                    x.nombre = requerimiento.nombre;
+                    x.codigo = requerimiento.codigo;
+                    x.estado = solicitudes.ElementAt(i).estado;
+                    x.fecha = solicitudes.ElementAt(i).solicitadoEn.ToString("MM/dd/yyyy");
+                    x.prioridad = requerimiento.prioridad;
+                    x.solicitadoPor = baseDatos.Usuarios.Find(solicitudes.ElementAt(i).solicitadoPor).nombre;
+                    x.tipo = solicitudes.ElementAt(i).tipo;
+                    model.indexSolicitudInfoList.Add(x);
+                }
             }
             var reqsAsIPagedList = new StaticPagedList<Solicitud_CambiosIndexModel.solicitudInfo>(model.indexSolicitudInfoList, pageNumber, pageSize, solicitudes.Count);
             ViewBag.OnePageOfReqs = reqsAsIPagedList;
@@ -152,7 +186,7 @@ namespace ControldeCambios.Controllers
             }
             var req1 = baseDatos.Requerimientos.Find(solicitud.req1);
             var req2 = baseDatos.Requerimientos.Find(solicitud.req2);
-            modelo.id1 = req1.id;                                   // Diferentes asignaciones de variables para el modelo creado
+            modelo.id1 = req1.id; // Diferentes asignaciones de variables para el modelo creado
             modelo.id2 = req2.id;
             modelo.codigo1 = req1.codigo;
             modelo.codigo2 = req2.codigo;

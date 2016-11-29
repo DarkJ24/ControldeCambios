@@ -30,6 +30,9 @@
                 Estado de Solicitud
             </th>
             <th>
+                Tipo de Solicitud
+            </th>
+            <th>
                 Fecha de Solicitud
             </th>
             <th>
@@ -55,10 +58,13 @@
                     @Html.DisplayFor(modelItem => req.estado)
                 </td>
                 <td>
+                    @Html.DisplayFor(modelItem => req.tipo)
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => req.fecha)
                 </td>
                 <td>
-                    @Html.ActionLink("Consultar", "Aprobar", "Solicitud_Cambios", new
+                    @Html.ActionLink("Consultar", "Aprobar", new
                {
                    id = req.id
                }, new { })
