@@ -14,12 +14,15 @@
     }
 </script>
 
-<h2>Gestión de Proyectos</h2>
-<h4 id="subtitle">@ViewBag.Title</h4>
+<div data-step="1" data-intro="En esta pantalla podemos consultar modulos creados">
+    <h2>Gestión de Proyectos</h2>
+    <h4 id="subtitle">@ViewBag.Title</h4>
+</div>
+
 <hr />
 
 @if(ViewBag.modificar) {
-    <button type="button" class="btn btn-primary" onClick="habilitarCampos()">Modificar</button>
+    <button type="button" class="btn btn-primary" onClick="habilitarCampos()" data-step="2" data-intro="El botón modificar habilita los campos para hacer cambios al modulo">Modificar</button>
 }
 @if (Model.requerimientos.Count == 0)
 {
@@ -39,83 +42,87 @@
 {
     @Html.AntiForgeryToken()
 
-    @Html.HiddenFor(model => model.numero)
-    <div class="form-group">
-        @Html.LabelFor(m => m.proyecto, new { @class = "col-md-2 control-label required" })
-        <div class="col-md-10">
-            @Html.DisplayFor(m => m.proyecto, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.proyecto, "", new { @class = "text-danger" })
-            @Html.HiddenFor(model => model.proyecto)
-        </div>
-    </div>
+    <div data-step="3" data-intro="Aqui se muestran los datos del modulo que se consulta">
 
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.nombre, new { @class = "col-md-2 control-label required" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.nombre, new { @class = "form-control editFields", @disabled = "disabled" })
-            @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.Label("Requerimientos", new { @class = "col-md-2 control-label" })
-    <div class="col-md-10">
-            @Html.ListBoxFor(m => m.requerimientos, new MultiSelectList(ViewBag.listarequerimientos, "id", "nombre"), new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;", @disabled = "disabled", @class = "editFields" })
-            @Html.ValidationMessageFor(model => model.requerimientos, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group editBtns" style="display:none">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-success" value="Aceptar" />
-            <input type="button" class="btn btn-default" value="Cancelar" onclick="location.reload()" />
-        </div>
-    </div>
-}
-
-    <!-- Modal -->
-<div class="modal fade" id="confirmModal" role="dialog">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header" style="background-color:#d61d1d;color:#FFFFFF">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Eliminar Usuario</h4>
+        @Html.HiddenFor(model => model.numero)
+        <div class="form-group">
+            @Html.LabelFor(m => m.proyecto, new { @class = "col-md-2 control-label required" })
+            <div class="col-md-10">
+                @Html.DisplayFor(m => m.proyecto, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.proyecto, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.proyecto)
             </div>
-            <div class="modal-body" style="padding-bottom:0px">
-                <p>Seguro que deseas eliminar a @(Model.nombre)?</p>
-                <p style="color:red"><sub>*Esta acción es irreversible</sub></p>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.nombre, new { @class = "col-md-2 control-label required" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.nombre, new { @class = "form-control editFields", @disabled = "disabled" })
+                @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                @using (Html.BeginForm("Borrar", "Modulos", FormMethod.Post, new { @class = "form-horizontal", role = "form", style = "display:inline;padding-left:5px;" }))
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Requerimientos", new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.ListBoxFor(m => m.requerimientos, new MultiSelectList(ViewBag.listarequerimientos, "id", "nombre"), new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;", @disabled = "disabled", @class = "editFields" })
+                @Html.ValidationMessageFor(model => model.requerimientos, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+    </div>
+
+        <div class="form-group editBtns" style="display:none">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" class="btn btn-success" value="Aceptar" />
+                <input type="button" class="btn btn-default" value="Cancelar" onclick="location.reload()" />
+            </div>
+        </div>
+        }
+
+        <!-- Modal -->
+        <div class="modal fade" id="confirmModal" role="dialog">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color:#d61d1d;color:#FFFFFF">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Eliminar Usuario</h4>
+                    </div>
+                    <div class="modal-body" style="padding-bottom:0px">
+                        <p>Seguro que deseas eliminar a @(Model.nombre)?</p>
+                        <p style="color:red"><sub>*Esta acción es irreversible</sub></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        @using (Html.BeginForm("Borrar", "Modulos", FormMethod.Post, new { @class = "form-horizontal", role = "form", style = "display:inline;padding-left:5px;" }))
                 {
-                    @Html.AntiForgeryToken()
-                    @Html.HiddenFor(m => m.proyecto)
-                    @Html.HiddenFor(m => m.numero)
-                    @Html.HiddenFor(m => m.nombre)
-                    @Html.HiddenFor(m => m.requerimientos)
-                    <button type="submit" class="btn btn-danger">Eliminar</button>
-                }
+                            @Html.AntiForgeryToken()
+                            @Html.HiddenFor(m => m.proyecto)
+                            @Html.HiddenFor(m => m.numero)
+                            @Html.HiddenFor(m => m.nombre)
+                            @Html.HiddenFor(m => m.requerimientos)
+                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                        }
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
 
-<style type="text/css">
-    .required:after {
-        content: "*";
-        font-weight: bold;
-        color: red;
-    }
-</style>
-<script>
-        window.onload = function() {
-            $('#list2').multiSelect();
-            $('[data-toggle="tooltip"]').tooltip();
-        };
-</script>
+        <style type="text/css">
+            .required:after {
+                content: "*";
+                font-weight: bold;
+                color: red;
+            }
+        </style>
+        <script>
+            window.onload = function () {
+                $('#list2').multiSelect();
+                $('[data-toggle="tooltip"]').tooltip();
+            };
+        </script>
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
+        @section Scripts {
+            @Scripts.Render("~/bundles/jqueryval")
+        }

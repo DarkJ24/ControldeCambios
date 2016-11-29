@@ -7,92 +7,99 @@
     }
     <script src="~/Scripts/Chart.js"></script>
 
-    <h2>Gestión de Proyectos</h2>
-    <h4>@ViewBag.Title</h4>
+    <div data-step="1" data-intro="En esta pantalla podemos consultar información adicional del sprint">
+        <h2>Gestión de Proyectos</h2>
+        <h4>@ViewBag.Title</h4>
+    </div>
+
     <hr />
 
-    <div class="row panel panel-info">
-        <div class="panel-heading"><label>Información del Sprint</label></div>
-        <div class="panel-body">
-            <div class="col-xs-12 col-sm-6">
-                <div class="col-xs-4">
-                    @Html.Label("Número", new { @class = "control-label" })
+    <div data-step="2" data-intro="Aqui se despliegan datos relacionados con el sprint">
+        <div class="row panel panel-info">
+            <div class="panel-heading"><label>Información del Sprint</label></div>
+            <div class="panel-body">
+                <div class="col-xs-12 col-sm-6">
+                    <div class="col-xs-4">
+                        @Html.Label("Número", new { @class = "control-label" })
+                    </div>
+                    <div class="col-xs-8">
+                        @Html.DisplayFor(m => m.sprintNumero)
+                    </div>
                 </div>
-                <div class="col-xs-8">
-                    @Html.DisplayFor(m => m.sprintNumero)
+                <div class="col-xs-12 col-sm-6">
+                    <div class="col-xs-4">
+                        @Html.Label("Módulos", new { @class = "control-label" })
+                    </div>
+                    <div class="col-xs-8">
+                        @Html.DisplayFor(m => m.sprintModulos)
+                    </div>
                 </div>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-                <div class="col-xs-4">
-                    @Html.Label("Módulos", new { @class = "control-label" })
+                <div class="col-xs-12 col-sm-6">
+                    <div class="col-xs-4">
+                        @Html.Label("Fecha de Inicio", new { @class = "control-label" })
+                    </div>
+                    <div class="col-xs-8">
+                        @Html.DisplayFor(m => m.sprintFechaInicio)
+                    </div>
                 </div>
-                <div class="col-xs-8">
-                    @Html.DisplayFor(m => m.sprintModulos)
+                <div class="col-xs-12 col-sm-6">
+                    <div class="col-xs-4">
+                        @Html.Label("Fecha Final", new { @class = "control-label" })
+                    </div>
+                    <div class="col-xs-8">
+                        @Html.DisplayFor(m => m.sprintFechaFinal)
+                    </div>
                 </div>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-                <div class="col-xs-4">
-                    @Html.Label("Fecha de Inicio", new { @class = "control-label" })
-                </div>
-                <div class="col-xs-8">
-                    @Html.DisplayFor(m => m.sprintFechaInicio)
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-                <div class="col-xs-4">
-                    @Html.Label("Fecha Final", new { @class = "control-label" })
-                </div>
-                <div class="col-xs-8">
-                    @Html.DisplayFor(m => m.sprintFechaFinal)
-                </div>
-            </div>
-            <div class="col-xs-12 col-sm-6">
-                <div class="col-xs-4">
-                    @Html.Label("Esfuerzo", new { @class = "control-label" })
-                </div>
-                <div class="col-xs-8">
-                    @Html.DisplayFor(m => m.sprintEsfuerzo)
+                <div class="col-xs-12 col-sm-6">
+                    <div class="col-xs-4">
+                        @Html.Label("Esfuerzo", new { @class = "control-label" })
+                    </div>
+                    <div class="col-xs-8">
+                        @Html.DisplayFor(m => m.sprintEsfuerzo)
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row panel panel-info">
-        <div class="panel-heading"><label>Gráfica de Quema</label></div>
-        <div class="panel-body">
-            @{
-                var lineChart = new LineChart();
-                lineChart.ComplexData.Labels.AddRange(ViewBag.dias);
-                lineChart.ComplexData.Datasets.AddRange(new List<ComplexDataset>
-                           {
-                              new ComplexDataset
-                                  {
-                                      Data = ViewBag.esfuerzo_real,
-                                      Label = "My First dataset",
-                                      FillColor = "rgba(220,220,220,0.2)",
-                                      StrokeColor = "rgba(220,220,220,1)",
-                                      PointColor = "rgba(220,220,220,1)",
-                                      PointStrokeColor = "#fff",
-                                      PointHighlightFill = "#fff",
-                                      PointHighlightStroke = "rgba(220,220,220,1)",
-                                  },
-                              new ComplexDataset
-                                  {
-                                      Data = ViewBag.esfuerzo_ideal,
-                                      Label = "My Second dataset",
-                                      FillColor = "rgba(151,187,205,0.2)",
-                                      StrokeColor = "rgba(151,187,205,1)",
-                                      PointColor = "rgba(151,187,205,1)",
-                                      PointStrokeColor = "#fff",
-                                      PointHighlightFill = "#fff",
-                                      PointHighlightStroke = "rgba(151,187,205,1)",
-                                  }
-                          });
-            }
+    <div data-step="3" data-intro="En esta seccion podemos ver una grafica de quema relacionada con el sprint que consultamos">
+        <div class="row panel panel-info">
+            <div class="panel-heading"><label>Gráfica de Quema</label></div>
+            <div class="panel-body">
+                @{
+                    var lineChart = new LineChart();
+                    lineChart.ComplexData.Labels.AddRange(ViewBag.dias);
+                    lineChart.ComplexData.Datasets.AddRange(new List<ComplexDataset>
+                               {
+                                  new ComplexDataset
+                                      {
+                                          Data = ViewBag.esfuerzo_real,
+                                          Label = "My First dataset",
+                                          FillColor = "rgba(220,220,220,0.2)",
+                                          StrokeColor = "rgba(220,220,220,1)",
+                                          PointColor = "rgba(220,220,220,1)",
+                                          PointStrokeColor = "#fff",
+                                          PointHighlightFill = "#fff",
+                                          PointHighlightStroke = "rgba(220,220,220,1)",
+                                      },
+                                  new ComplexDataset
+                                      {
+                                          Data = ViewBag.esfuerzo_ideal,
+                                          Label = "My Second dataset",
+                                          FillColor = "rgba(151,187,205,0.2)",
+                                          StrokeColor = "rgba(151,187,205,1)",
+                                          PointColor = "rgba(151,187,205,1)",
+                                          PointStrokeColor = "#fff",
+                                          PointHighlightFill = "#fff",
+                                          PointHighlightStroke = "rgba(151,187,205,1)",
+                                      }
+                              });
+                }
 
-            <center>
-                <canvas id="myCanvas" width="800" height="400"></canvas>
-                @Html.CreateChart("myCanvas", lineChart)
-            </center>
+                <center>
+                    <canvas id="myCanvas" width="800" height="400"></canvas>
+                    @Html.CreateChart("myCanvas", lineChart)
+                </center>
+            </div>
         </div>
     </div>

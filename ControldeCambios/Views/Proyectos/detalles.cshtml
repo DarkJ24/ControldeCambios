@@ -20,7 +20,7 @@
 }
 @if (Model.eliminarPermitido)
 {
-<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal" data-step=@ayudasActuales data-intro="Haciendo click aquí se puede eliminar el usuario">Eliminar</button>
+<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal" data-step=@ayudasActuales data-intro="Haciendo click aquí se puede eliminar el proyecto">Eliminar</button>
     { ayudasActuales++; }
 }
 @using (Html.BeginForm("Detalles", "Proyectos", FormMethod.Post, new { @class = "form-horizontal editFields", role = "form" }))

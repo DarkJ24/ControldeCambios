@@ -5,79 +5,89 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Gestión de Proyectos</h2>
-<h4>@ViewBag.Title</h4>
+<div data-step="1" data-intro="En esta pantalla podemos crear sprints nuevos">
+    <h2>Gestión de Proyectos</h2>
+    <h4>@ViewBag.Title</h4>
+</div>
+
 <hr />
 
 @using (Html.BeginForm("Crear", "Sprint", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
 
+    <div data-step="2" , data-intro="Aquí se puede llenar la información del sprint nuevo">
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.numero, new { @class = "col-md-2 control-label required" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.numero, new { @class = "form-control" })
-            @Html.ValidationMessageFor(model => model.numero, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(m => m.numero, new { @class = "col-md-2 control-label required" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.numero, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.numero, "", new { @class = "text-danger" })
+            </div>
         </div>
+
+        <div class="form-group">
+            @Html.Label("Proyecto", new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.DisplayFor(m => m.proyecto, new { @class = "form-control" })
+                @Html.HiddenFor(model => model.proyecto)
+                @Html.ValidationMessageFor(model => model.proyecto, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.fechaInicio, new { @class = "col-md-2 control-label required" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.fechaInicio, new { @class = "form-control datePicker" })
+                @Html.ValidationMessageFor(model => model.fechaInicio, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.fechaFinal, new { @class = "col-md-2 control-label required" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.fechaFinal, new { @class = "form-control datePicker" })
+                @Html.ValidationMessageFor(model => model.fechaFinal, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
     </div>
 
-    <div class="form-group">
-        @Html.Label("Proyecto", new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.DisplayFor(m => m.proyecto, new { @class = "form-control" })
-            @Html.HiddenFor(model => model.proyecto)
-            @Html.ValidationMessageFor(model => model.proyecto, "", new { @class = "text-danger" })
+    <div class="form-group" data-step="3" data-intro="Para seleccionar un modulo e incluirlo en el sprint, se hace click y eso lo transfiere a la lista de los seleccionados">
+
+        <div class="form-group">
+            @Html.Label("Modulos", new { @class = "col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.ListBoxFor(m => m.modulos, (MultiSelectList)ViewBag.Modulos, new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;" })
+                @Html.ValidationMessageFor(model => model.modulos, "", new { @class = "text-danger" })
+            </div>
         </div>
+
     </div>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.fechaInicio, new { @class = "col-md-2 control-label required" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.fechaInicio, new { @class = "form-control datePicker" })
-            @Html.ValidationMessageFor(model => model.fechaInicio, "", new { @class = "text-danger" })
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" class="btn btn-success" value="Aceptar" data-step="4" data-intro="Cuando se termina de llenar los datos y se quiere crear el sprint, se hace click aquí" data-position="left" />
+                <input type="button" class="btn btn-default" value="Cancelar" onclick="location.reload()" data-step="5" data-intro="Si sucede un error y se quieren limpiar las entradas, se puede hacer click aquí para hacerlo" data-position="right" />
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        @Html.LabelFor(m => m.fechaFinal, new { @class = "col-md-2 control-label required" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.fechaFinal, new { @class = "form-control datePicker" })
-            @Html.ValidationMessageFor(model => model.fechaFinal, "", new { @class = "text-danger" })
-        </div>
-    </div>
+        <style type="text/css">
+            .required:after {
+                content: "*";
+                font-weight: bold;
+                color: red;
+            }
+        </style>
+        <script>
+            window.onload = function () {
+                $('#list2').multiSelect();
+                $('.datePicker').datepicker();
+            };
+        </script>
 
-    <div class="form-group">
-        @Html.Label("Modulos", new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.ListBoxFor(m => m.modulos, (MultiSelectList) ViewBag.Modulos, new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;" })
-            @Html.ValidationMessageFor(model => model.modulos, "", new { @class = "text-danger" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-success" value="Aceptar" />
-            <input type="button" class="btn btn-default" value="Cancelar" onclick="location.reload()" />
-        </div>
-    </div>
-
-    <style type="text/css">
-        .required:after {
-            content: "*";
-            font-weight: bold;
-            color: red;
         }
-    </style>
-    <script>
-        window.onload = function() {
-            $('#list2').multiSelect();
-            $('.datePicker').datepicker();
-        };
-    </script>
 
-}
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
+        @section Scripts {
+            @Scripts.Render("~/bundles/jqueryval")
+        }
