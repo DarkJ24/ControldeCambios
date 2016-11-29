@@ -126,7 +126,7 @@ namespace ControldeCambios.Controllers
             //model.detallesRequerimientos = revisarPermisos("Consultar Detalles de Requerimiento");
             return View(model);
         }
-        
+
 
         /// <summary>
         /// Funcionalidad para llenar los datos del requerimiento actual y la solicitud de cambio del requerimiento.
@@ -189,15 +189,16 @@ namespace ControldeCambios.Controllers
             modelo.solicitadoPor = baseDatos.Usuarios.Find(solicitud.solicitadoPor).nombre;
             modelo.razon = solicitud.razon;
             modelo.comentario = solicitud.comentario;
-           
-            if(req1.imagen != null)
+
+            if (req1.imagen != null)
             {
                 modelo.file1 = HttpUtility.UrlEncode(Convert.ToBase64String(req1.imagen));
-            } else
+            }
+            else
             {
                 modelo.file1 = "";
             }
-           
+
             if (req2.imagen != null)
             {
                 modelo.file2 = HttpUtility.UrlEncode(Convert.ToBase64String(req2.imagen));
@@ -211,16 +212,16 @@ namespace ControldeCambios.Controllers
             {
                 modelo.equipo1.Add(des.cedula);
             }
-            
+
             modelo.equipo2 = new List<string>();     // Se llena la variable equipo con el equipo ya asignado a este requerimiento, si ya hay uno
             foreach (var des in req2.Usuarios.ToList())
             {
                 modelo.equipo2.Add(des.cedula);
             }
-            
+
             modelo.criteriosAceptacion1 = req1.Requerimientos_Cri_Acep.Select(c => c.criterio).Aggregate((acc, x) => acc + "|" + x);    // Se agrega a la lista de criterios de aceptacion 
             modelo.criteriosAceptacion2 = req2.Requerimientos_Cri_Acep.Select(c => c.criterio).Aggregate((acc, x) => acc + "|" + x);
-                                                                                                                        
+
             List<Usuario> listaDesarrolladores = new List<Usuario>();       // Se inicializan listas que se usan a traves a continuacion
             List<Modulo> listaModulos = new List<Modulo>();
             List<Estado_Requerimientos> listaEstadoRequerimientos = new List<Estado_Requerimientos>();
@@ -258,7 +259,7 @@ namespace ControldeCambios.Controllers
         {
             if (ModelState.IsValid)
             {
-                var solicitud = new Solicitud_Cambios();  
+                var solicitud = new Solicitud_Cambios();
                 var req1 = baseDatos.Requerimientos.Find(solicitud.req1);
                 var req2 = baseDatos.Requerimientos.Find(solicitud.req2);
 
@@ -271,12 +272,12 @@ namespace ControldeCambios.Controllers
                 solicitud.aprobadoPor = usuarioActual;
                 solicitud.aprobadoEn = DateTime.Now;
             }
-            
+
             return View(model);
         }
 
 
-         /// <summary>
+        /// <summary>
         /// Funcionalidad para Rechazar una Solicitud de Cambio.
         /// </summary>
         // POST: /Solicitud_Cambios/Rechazar
@@ -392,7 +393,7 @@ namespace ControldeCambios.Controllers
             ViewBag.Estados = new SelectList(baseDatos.Estado_Proyecto.ToList(), "nombre", "nombre");
 
             //Indice de Versiones Anteriores
-            var solicitudes = baseDatos.Solicitud_Cambios.Where(m => m.proyecto == requerimiento.proyecto && m.estado == "Aprobado" && (m.req1 == requerimiento.id || m.req2 == requerimiento.id) ).ToList();
+            var solicitudes = baseDatos.Solicitud_Cambios.Where(m => m.proyecto == requerimiento.proyecto && m.estado == "Aprobado" && (m.req1 == requerimiento.id || m.req2 == requerimiento.id)).ToList();
             solicitudes = getRequerimientos(solicitudes);
             var reqs = new List<Requerimiento>();
             foreach (var sol in solicitudes)
@@ -464,15 +465,21 @@ namespace ControldeCambios.Controllers
                     }
                 }
 
-                if (ImageData != null) {
+                if (ImageData != null)
+                {
                     var array = new Byte[ImageData.ContentLength];
                     ImageData.InputStream.Position = 0;
                     ImageData.InputStream.Read(array, 0, ImageData.ContentLength);
                     requerimiento.imagen = array;
-                } else {
-                    if (modelo.file == "") {
+                }
+                else
+                {
+                    if (modelo.file == "")
+                    {
                         requerimiento.imagen = null;
-                    } else {
+                    }
+                    else
+                    {
                         requerimiento.imagen = Encoding.ASCII.GetBytes(modelo.file);
                     }
                 }
@@ -480,7 +487,8 @@ namespace ControldeCambios.Controllers
                 var criterios = modelo.criteriosAceptacion.Split('|').ToList();
                 //Se crea la lista de criterios de aceptacion que puede ser expandible
                 var criterio_list = new List<Requerimientos_Cri_Acep>();
-                foreach (var criterio in criterios) {
+                foreach (var criterio in criterios)
+                {
                     var cri_ac = new Requerimientos_Cri_Acep();
                     cri_ac.criterio = criterio;
                     criterio_list.Add(cri_ac);
@@ -501,7 +509,7 @@ namespace ControldeCambios.Controllers
                 baseDatos.Solicitud_Cambios.Add(solicitud);
                 baseDatos.SaveChanges();    // Se guardan los cambios en la base
                 this.AddToastMessage("Solicitud de Cambio Creada", "La solicitud de modificar " + modelo.nombre + " se ha enviado correctamente.", ToastType.Success);      // Se muestra un mensaje de confirmacion
-                return RedirectToAction("index", "Requerimientos", new { proyecto = requerimiento.proyecto });       // Se carga el requerimiento modificado en la pantalla
+                return RedirectToAction("index", "Requerimientos", new { proyecto = requerimiento.proyecto });
             }
 
             List<Usuario> listaDesarrolladores = new List<Usuario>();
@@ -547,10 +555,58 @@ namespace ControldeCambios.Controllers
                 respuesta.AddRange(izquierda);
                 respuesta.AddRange(derecha);
                 return respuesta;
-            } else
+            }
+            else
             {
                 return solicitudes;
             }
+        }
+
+        // POST: Crear Solicitud de Borrado
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CrearSolicitudBorrado(CrearSolicitudModel modelo)
+        {
+            if (!string.IsNullOrWhiteSpace(modelo.razon2))
+            {
+                var requerimiento = baseDatos.Requerimientos.Find(modelo.idReqAnterior);
+                var solicitud = new Solicitud_Cambios();
+                solicitud.razon = modelo.razon2;
+                solicitud.req1 = requerimiento.id;
+                solicitud.proyecto = requerimiento.proyecto;
+                solicitud.solicitadoEn = DateTime.Now;
+                solicitud.tipo = "Eliminar";
+                solicitud.estado = "En revisión";
+                String userID = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                solicitud.solicitadoPor = baseDatos.Usuarios.Where(m => m.id == userID).First().cedula;
+                baseDatos.Solicitud_Cambios.Add(solicitud);
+                baseDatos.SaveChanges();    // Se guardan los cambios en la base
+                this.AddToastMessage("Solicitud de Borrado Creada", "La solicitud de eliminar " + modelo.nombre + " se ha enviado correctamente.", ToastType.Success);      // Se muestra un mensaje de confirmacion
+                return RedirectToAction("index", "Requerimientos", new { proyecto = requerimiento.proyecto });
+            }
+            List<Usuario> listaDesarrolladores = new List<Usuario>();
+            List<Usuario> listaClientes = new List<Usuario>();
+            string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
+            string desarrolladorRol = context.Roles.Where(m => m.Name == "Desarrollador").First().Id;
+            foreach (var user in context.Users.ToArray())                   // En esta seccion se cargan las listas que despliegan los
+            {                                                               // desarrolladores y usuarios relacionados con el requerimiento
+                if (user.Roles.First().RoleId.Equals(clienteRol))           // para modificarlos
+                {
+                    listaClientes.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
+                }
+                else
+                {
+                    if (user.Roles.First().RoleId.Equals(desarrolladorRol))
+                    {
+                        listaDesarrolladores.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
+                    }
+                }
+            }
+            ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");     // Se hacen unas validaciones de permisos y se
+            ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");                   // cargan los Viewbags necesitados en la vista
+            ViewBag.DesarrolladoresDisp = listaDesarrolladores;
+            ViewBag.Estados = new SelectList(baseDatos.Estado_Proyecto.ToList(), "nombre", "nombre");
+            return View(modelo);    // Se retorna la vista al modelo luego de modificar los datos
         }
     }
 }

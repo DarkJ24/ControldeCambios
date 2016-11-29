@@ -372,7 +372,7 @@ req.version)
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title">Eliminar Requerimiento</h4>
                 </div>
-                @using (Html.BeginForm("BorrarSolicitud", "Solicitud_Cambios", FormMethod.Post, new { @class = "form-horizontal", role = "form", style = "display:inline;padding-left:5px;" }))
+                @using (Html.BeginForm("CrearSolicitudBorrado", "Solicitud_Cambios", FormMethod.Post, new { @class = "form-horizontal", role = "form", style = "display:inline;padding-left:5px;" }))
                 {
                     @Html.AntiForgeryToken()
                     @Html.HiddenFor(m => m.idReqAnterior)
