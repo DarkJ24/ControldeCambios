@@ -601,9 +601,10 @@ namespace ControldeCambios.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult CrearSolicitudBorrado(CrearSolicitudModel modelo)
         {
+            Requerimiento requerimiento;
             if (!string.IsNullOrWhiteSpace(modelo.razon2))
             {
-                var requerimiento = baseDatos.Requerimientos.Find(modelo.idReqAnterior);
+                requerimiento = baseDatos.Requerimientos.Find(modelo.idReqAnterior);
                 var solicitud = new Solicitud_Cambios();
                 solicitud.razon = modelo.razon2;
                 solicitud.req1 = requerimiento.id;
@@ -618,29 +619,8 @@ namespace ControldeCambios.Controllers
                 this.AddToastMessage("Solicitud de Borrado Creada", "La solicitud de eliminar " + modelo.nombre + " se ha enviado correctamente.", ToastType.Success);      // Se muestra un mensaje de confirmacion
                 return RedirectToAction("index", "Requerimientos", new { proyecto = requerimiento.proyecto });
             }
-            List<Usuario> listaDesarrolladores = new List<Usuario>();
-            List<Usuario> listaClientes = new List<Usuario>();
-            string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
-            string desarrolladorRol = context.Roles.Where(m => m.Name == "Desarrollador").First().Id;
-            foreach (var user in context.Users.ToArray())                   // En esta seccion se cargan las listas que despliegan los
-            {                                                               // desarrolladores y usuarios relacionados con el requerimiento
-                if (user.Roles.First().RoleId.Equals(clienteRol))           // para modificarlos
-                {
-                    listaClientes.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
-                }
-                else
-                {
-                    if (user.Roles.First().RoleId.Equals(desarrolladorRol))
-                    {
-                        listaDesarrolladores.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
-                    }
-                }
-            }
-            ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");     // Se hacen unas validaciones de permisos y se
-            ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");                   // cargan los Viewbags necesitados en la vista
-            ViewBag.DesarrolladoresDisp = listaDesarrolladores;
-            ViewBag.Estados = new SelectList(baseDatos.Estado_Proyecto.ToList(), "nombre", "nombre");
-            return View(modelo);    // Se retorna la vista al modelo luego de modificar los datos
+            this.AddToastMessage("Error al Crear la Solicitud de Borrado", "El campo de motivo es requerido.", ToastType.Error);      // Se muestra un mensaje de confirmacion
+            return RedirectToAction("CrearSolicitud", new { id= modelo.idReqAnterior });
         }
     }
 }
