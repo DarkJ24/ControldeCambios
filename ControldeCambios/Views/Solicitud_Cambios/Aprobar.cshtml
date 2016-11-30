@@ -43,14 +43,16 @@
                 $("." + tbid).val(inputs[j]);
             }
         }
-        var inputs1 = $("#output2").val().split("|");
-        for (var j = 0; j < inputs.length; j++) {
-            if(j != 0) {
-                var tbid = add_textbox1();
-                $("." + tbid).val(inputs1[j]);
-            } else {
-                var tbid = "multitextbox-0";
-                $("." + tbid).val(inputs1[j]);
+        if ($("#output2").val()) {
+            var inputs1 = $("#output2").val().split("|");
+            for (var j = 0; j < inputs.length; j++) {
+                if (j != 0) {
+                    var tbid = add_textbox1();
+                    $("." + tbid).val(inputs1[j]);
+                } else {
+                    var tbid = "multitextbox-0";
+                    $("." + tbid).val(inputs1[j]);
+                }
             }
         }
     }
@@ -72,186 +74,188 @@
     //***PRIMER ROW***
     <div class="row">
         @*DATOS DE REQUERIMIENTO 1*@
-        <div class="col-xs-6 col-sm-6">
-            <div class="panel panel-info">
-                <div class="panel-heading"><label>Datos del Requerimiento Anterior</label></div>
-                <div class="panel-body">
-
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.proyecto, new { @class = "col-md-4 control-label" })
-                        <div class="col-md-8">
-                            @Html.DisplayFor(m => m.proyecto, new { @class = "form-control" })
-                            @Html.HiddenFor(m => m.proyecto)
-                            @Html.ValidationMessageFor(model => model.proyecto, "", new { @class = "text-danger" })
+        @if (Model.tipo == "Modificar")
+        {
+            @Html.Raw("<div class='col-xs-12 col-sm-6'>");
+        }
+        else
+        {
+            @Html.Raw("<div class='col-xs-12 col-sm-12'>");
+        }
+        <div class="panel panel-info">
+            <div class="panel-heading"><label>Datos del Requerimiento Anterior</label></div>
+            <div class="panel-body">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.proyecto, new { @class = "col-md-4 control-label" })
+                    <div class="col-md-8">
+                        @Html.DisplayFor(m => m.proyecto, new { @class = "form-control" })
+                        @Html.HiddenFor(m => m.proyecto)
+                        @Html.ValidationMessageFor(model => model.proyecto, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group" disabled>
+                    @Html.LabelFor(m => m.codigo1, new { @class = "col-md-4 control-label" })
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(m => m.codigo1, new { @class = "form-control", @disabled = "disabled" })
+                        @Html.ValidationMessageFor(model => model.codigo1, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.nombre1, new { @class = "col-md-4 control-label" })
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(m => m.nombre1, new { @class = "form-control", @disabled = "disabled" })
+                        @Html.ValidationMessageFor(model => model.nombre1, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.descripcion1, new { @class = "col-md-4 control-label" })
+                    <div class="col-md-8">
+                        @Html.TextAreaFor(m => m.descripcion1, new { @class = "form-control", @disabled = "disabled" })
+                        @Html.ValidationMessageFor(model => model.descripcion1, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.criteriosAceptacion1, new { @class = "col-md-4 control-label" })
+                    @Html.HiddenFor(m => m.criteriosAceptacion1, new { @id = "output", @disabled = "disabled" })
+                    <div class="col-md-8" style="margin-bottom:25px">
+                        <div id="textboxes">
+                            <div class='row'><div id='textbox0'><div class='col-md-4'><textarea class='multitextbox form-control multitextbox0' disabled="disabled" oninput=update_output() cols='30' rows='2' style='border-radius:4px'></textarea></div> <div class='col-md-1'></div> <br /> <br /> <br />  </div></div>
                         </div>
                     </div>
+                    @Html.ValidationMessageFor(m => m.criteriosAceptacion1, "", new { @class = "text-danger" })
+                </div>
 
-                    <div class="form-group" disabled>
-                        @Html.LabelFor(m => m.codigo1, new {@class = "col-md-4 control-label"})
-                        <div class="col-md-8">
-                            @Html.TextBoxFor(m => m.codigo1, new { @class = "form-control", @disabled="disabled" })
-                            @Html.ValidationMessageFor(model => model.codigo1, "", new { @class = "text-danger" })
-                        </div>
+                <div class="form-group">
+                    @Html.Label("Imagen", new { @class = "col-md-4 control-label" })
+                    <div class="col-md-8">
+                        @if (Model.file1 != "")
+                        {
+                            <label class="" style="cursor:pointer">
+                                <img id="myImg" src="data:image/png;base64,@Html.DisplayFor(m => m.file1)" width="100px" data-toggle="modal" data-target="#myModal" class="imagen" />
+                            </label>
+                        }
+                        else
+                        {
+                            @Html.Raw("No hay imagen")
+                        }
+                        @Html.HiddenFor(m => m.file1)
                     </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.nombre1, new { @class = "col-md-4 control-label" })
-                        <div class="col-md-8">
-                            @Html.TextBoxFor(m => m.nombre1, new { @class = "form-control", @disabled="disabled" })
-                            @Html.ValidationMessageFor(model => model.nombre1, "", new { @class = "text-danger" })
-                        </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.observaciones1, new { @class = "col-md-4 control-label" })
+                    <div class="col-md-8">
+                        @Html.TextAreaFor(m => m.observaciones1, new { @class = "form-control", @disabled = "disabled" })
+                        @Html.ValidationMessageFor(model => model.observaciones1, "", new { @class = "text-danger" })
                     </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.descripcion1, new { @class = "col-md-4 control-label" })
-                        <div class="col-md-8">
-                            @Html.TextAreaFor(m => m.descripcion1, new { @class = "form-control", @disabled="disabled" })
-                            @Html.ValidationMessageFor(model => model.descripcion1, "", new { @class = "text-danger" })
-                        </div>
+                </div>
+                <div class="form-group">
+                    @Html.Label("Disponibles", new { @class = "col-md-offset-2 col-md-2 control-label", @style = "text-align:center;margin-left:135px;" })
+                    @Html.Label("Responsables", new { @class = "col-md-offset-2  col-md-2 control-label", @style = "text-align:center;margin-left:100px;margin-bottom:10px" })
+                    <div class="col-md-offset-2 col-md-10" style="margin-bottom:25px">
+                        @Html.ListBoxFor(m => m.equipo1, new MultiSelectList(ViewBag.DesarrolladoresDisp, "cedula", "nombre"), new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;", @disabled = "disabled" })
+                        @Html.ValidationMessageFor(model => model.equipo1, "", new { @class = "text-danger" })
                     </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.criteriosAceptacion1, new { @class = "col-md-4 control-label" })
-                        @Html.HiddenFor(m => m.criteriosAceptacion1, new { @id = "output", @disabled="disabled" })
-                        <div class="col-md-8" style="margin-bottom:25px">
-                            <div id="textboxes">
-                                <div class='row'><div id='textbox0'><div class='col-md-4'><textarea class='multitextbox form-control multitextbox0' disabled="disabled" oninput=update_output() cols='30' rows='2' style='border-radius:4px'></textarea></div> <div class='col-md-1'></div> <br /> <br /> <br />  </div></div>
-                            </div>
-                        </div>
-                        @Html.ValidationMessageFor(m => m.criteriosAceptacion1, "", new { @class = "text-danger" })
-                    </div>
-
-
-                    <div class="form-group">
-                        @Html.Label("Imagen", new { @class = "col-md-4 control-label" })
-                        <div class="col-md-8">
-                            @if (Model.file1 != "") {
-                                <label class="" style="cursor:pointer">
-                                    <img id="myImg" src="data:image/png;base64,@Html.DisplayFor(m => m.file1)" width="100px"  data-toggle="modal" data-target="#myModal" class="imagen" /> 
-                                </label>
-                            } else {
-                                @Html.Raw("No hay imagen")
-                            }
-                            @Html.HiddenFor(m => m.file1)
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.observaciones1, new { @class = "col-md-4 control-label" })
-                        <div class="col-md-8">
-                            @Html.TextAreaFor(m => m.observaciones1, new { @class = "form-control", @disabled="disabled" })
-                            @Html.ValidationMessageFor(model => model.observaciones1, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        @Html.Label("Disponibles", new { @class = "col-md-offset-2 col-md-2 control-label", @style = "text-align:center;margin-left:135px;" })
-                        @Html.Label("Responsables", new { @class = "col-md-offset-2  col-md-2 control-label", @style = "text-align:center;margin-left:100px;margin-bottom:10px" })
-                        <div class="col-md-offset-2 col-md-10" style="margin-bottom:25px">
-                            @Html.ListBoxFor(m => m.equipo1, new MultiSelectList(ViewBag.DesarrolladoresDisp, "cedula", "nombre"), new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;", @disabled="disabled" })
-                            @Html.ValidationMessageFor(model => model.equipo1, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </div>
+        @Html.Raw("</div>");
 
         @*DATOS DE REQUERIMIENTO 2*@
-        <div class="col-xs-6 col-sm-6">
-            <div class="panel panel-info">
-                <div class="panel-heading"><label>Datos del Requerimiento Solicitado</label></div>
-                <div class="panel-body">
-
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.proyecto, new { @class = "col-md-4 control-label" })
-                        <div class="col-md-8">
-                            @Html.DisplayFor(m => m.proyecto, new { @class = "form-control" })
-                            @Html.HiddenFor(m => m.proyecto)
-                            @Html.ValidationMessageFor(model => model.proyecto, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.codigo2, new { @class = "col-md-4 control-label required" })
-                        <div class="col-md-8">
-                            @Html.TextBoxFor(m => m.codigo2, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(model => model.codigo2, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.nombre2, new { @class = "col-md-4 control-label required" })
-                        <div class="col-md-8">
-                            @Html.TextBoxFor(m => m.nombre2, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(model => model.nombre2, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.descripcion2, new { @class = "col-md-4 control-label required" })
-                        <div class="col-md-8">
-                            @Html.TextAreaFor(m => m.descripcion2, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(model => model.descripcion2, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.criteriosAceptacion2, new { @class = "col-md-4 control-label required" })
-                        @Html.HiddenFor(m => m.criteriosAceptacion2, new { @id = "output2" })
-                        <div class="col-md-8" style="margin-bottom:25px">
-                            <button type="button" onclick="add_textbox1()" class="btn" style="border-radius:4px"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Nuevo Criterio de Aceptación</button>
-                            <br />
-                            <br />
-
-                            <div id="textboxes1">
-                                <div class='row'><div id='textbox1'><div class='col-md-4'><textarea class='multitextbox2 form-control multitextbox-0' oninput=update_output2() cols='30' rows='2' style='border-radius:4px'></textarea></div> <div class='col-md-1'></div> <br /> <br /> <br />  </div></div>
+        @if (Model.tipo == "Modificar")
+        {
+            <div class='col-xs-12 col-sm-6'>
+                <div class="panel panel-info">
+                    <div class="panel-heading"><label>Datos del Requerimiento Solicitado</label></div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.proyecto, new { @class = "col-md-4 control-label" })
+                            <div class="col-md-8">
+                                @Html.DisplayFor(m => m.proyecto, new { @class = "form-control" })
+                                @Html.HiddenFor(m => m.proyecto)
+                                @Html.ValidationMessageFor(model => model.proyecto, "", new { @class = "text-danger" })
                             </div>
                         </div>
-                        @Html.ValidationMessageFor(m => m.criteriosAceptacion2, "", new { @class = "text-danger" })
-                    </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.codigo2, new { @class = "col-md-4 control-label required" })
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(m => m.codigo2, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.codigo2, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.nombre2, new { @class = "col-md-4 control-label required" })
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(m => m.nombre2, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.nombre2, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.descripcion2, new { @class = "col-md-4 control-label required" })
+                            <div class="col-md-8">
+                                @Html.TextAreaFor(m => m.descripcion2, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.descripcion2, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.criteriosAceptacion2, new { @class = "col-md-4 control-label required" })
+                            @Html.HiddenFor(m => m.criteriosAceptacion2, new { @id = "output2" })
+                            <div class="col-md-8" style="margin-bottom:25px">
+                                <button type="button" onclick="add_textbox1()" class="btn" style="border-radius:4px"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Nuevo Criterio de Aceptación</button>
+                                <br />
+                                <br />
+                                <div id="textboxes1">
+                                    <div class='row'><div id='textbox1'><div class='col-md-4'><textarea class='multitextbox2 form-control multitextbox-0' oninput=update_output2() cols='30' rows='2' style='border-radius:4px'></textarea></div> <div class='col-md-1'></div> <br /> <br /> <br />  </div></div>
+                                </div>
+                            </div>
+                            @Html.ValidationMessageFor(m => m.criteriosAceptacion2, "", new { @class = "text-danger" })
+                        </div>
 
-
-                    <div class="form-group">
-                        @Html.Label("Imagen", new { @class = "col-md-4 control-label" })
-                        <div class="col-md-8">
-                            @if (Model.file2 != "") {
+                        <div class="form-group">
+                            @Html.Label("Imagen", new { @class = "col-md-4 control-label" })
+                            <div class="col-md-8">
+                                @if (Model.file2 != "")
+                                {
+                                    <label class="" style="cursor:pointer">
+                                        <img id="myImg" src="data:image/png;base64,@Html.DisplayFor(m => m.file2)" width="100px" data-toggle="modal" data-target="#myModal2" class="imagen myImageContainer" />
+                                    </label>
+                                }
                                 <label class="" style="cursor:pointer">
-                                    <img id="myImg" src="data:image/png;base64,@Html.DisplayFor(m => m.file2)" width="100px"  data-toggle="modal" data-target="#myModal2" class="imagen myImageContainer" /> 
+                                    <input id="imageInput" value="@Html.DisplayFor(m => m.file2)" class="btn btn-default btn-file" type="file" name="ImageData" accept="image/*" />
                                 </label>
-                            }
-                            <label class="" style="cursor:pointer">
-                                <input id="imageInput" value="@Html.DisplayFor(m => m.file2)" class="btn btn-default btn-file" type="file" name="ImageData" accept="image/*" />
-                            </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.observaciones2, new { @class = "col-md-4 control-label" })
+                            <div class="col-md-8">
+                                @Html.TextAreaFor(m => m.observaciones2, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.observaciones2, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.Label("Disponibles", new { @class = "col-md-offset-2 col-md-2 control-label", @style = "text-align:center;margin-left:135px;" })
+                            @Html.Label("Responsables", new { @class = "col-md-offset-2  col-md-2 control-label", @style = "text-align:center;margin-left:100px;margin-bottom:10px" })
+                            <div class="col-md-offset-2 col-md-10" style="margin-bottom:25px">
+                                @Html.ListBoxFor(m => m.equipo2, new MultiSelectList(ViewBag.DesarrolladoresDisp, "cedula", "nombre"), new { id = "list3", Multiple = "multiple", Size = 15, style = "width: 100%;" })
+                                @Html.ValidationMessageFor(model => model.equipo2, "", new { @class = "text-danger" })
+                            </div>
                         </div>
                     </div>
-
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.observaciones2, new { @class = "col-md-4 control-label" })
-                        <div class="col-md-8">
-                            @Html.TextAreaFor(m => m.observaciones2, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(model => model.observaciones2, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        @Html.Label("Disponibles", new { @class = "col-md-offset-2 col-md-2 control-label", @style = "text-align:center;margin-left:135px;" })
-                        @Html.Label("Responsables", new { @class = "col-md-offset-2  col-md-2 control-label", @style = "text-align:center;margin-left:100px;margin-bottom:10px" })
-                        <div class="col-md-offset-2 col-md-10" style="margin-bottom:25px">
-                            @Html.ListBoxFor(m => m.equipo2, new MultiSelectList(ViewBag.DesarrolladoresDisp, "cedula", "nombre"), new { id = "list3", Multiple = "multiple", Size = 15, style = "width: 100%;" })
-                            @Html.ValidationMessageFor(model => model.equipo2, "", new { @class = "text-danger" })
-                        </div>
-                    </div>
-
                 </div>
             </div>
-        </div>
+        }
     </div>
 
     //***SEGUNDO ROW***
     <div class="row">
         @*DATOS DE ESTIMACION 1*@
-        <div class="col-xs-6 col-sm-6">
+        @if (Model.tipo == "Modificar")
+        {
+            @Html.Raw("<div class='col-xs-12 col-sm-6'>");
+        }
+        else
+        {
+            @Html.Raw("<div class='col-xs-12 col-sm-12'>");
+        }
             <div class="panel panel-info">
                 <div class="panel-heading"><label>Datos de Estimación del Requerimiento Anterior</label></div>
                 <div class="panel-body">
@@ -288,53 +292,63 @@
                     </div>
                 </div>
             </div>
-        </div>
+        @Html.Raw("</div>");
 
         @*DATOS DE ESTIMACION 2*@
-        <div class="col-xs-6 col-sm-6">
-            <div class="panel panel-info">
-                <div class="panel-heading"><label>Datos de Estimación del Requerimiento Solicitado</label></div>
-                <div class="panel-body">
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.prioridad2, new { @class = "col-md-4 control-label required" })
-                        <div class="col-md-8">
-                            @Html.TextBoxFor(m => m.prioridad2, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(model => model.prioridad2, "", new { @class = "text-danger" })
+        @if (Model.tipo == "Modificar")
+        {
+            <div class="col-xs-12 col-sm-6">
+                <div class="panel panel-info">
+                    <div class="panel-heading"><label>Datos de Estimación del Requerimiento Solicitado</label></div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.prioridad2, new { @class = "col-md-4 control-label required" })
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(m => m.prioridad2, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.prioridad2, "", new { @class = "text-danger" })
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.esfuerzo2, new { @class = "col-md-4 control-label required" })
-                        <div class="col-md-8">
-                            @Html.TextBoxFor(m => m.esfuerzo2, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(model => model.esfuerzo2, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.esfuerzo2, new { @class = "col-md-4 control-label required" })
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(m => m.esfuerzo2, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.esfuerzo2, "", new { @class = "text-danger" })
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.fechaInicial2, new { @class = "col-md-4 control-label required" })
-                        <div class="col-md-8">
-                            @Html.TextBoxFor(m => m.fechaInicial2, new { @class = "form-control datePicker" })
-                            @Html.ValidationMessageFor(model => model.fechaInicial2, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.fechaInicial2, new { @class = "col-md-4 control-label required" })
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(m => m.fechaInicial2, new { @class = "form-control datePicker" })
+                                @Html.ValidationMessageFor(model => model.fechaInicial2, "", new { @class = "text-danger" })
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        @Html.LabelFor(m => m.fechaFinal2, new { @class = "col-md-4 control-label" })
-                        <div class="col-md-8">
-                            @Html.TextBoxFor(m => m.fechaFinal2, new { @class = "form-control datePicker" })
-                            @Html.ValidationMessageFor(model => model.fechaFinal2, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.fechaFinal2, new { @class = "col-md-4 control-label" })
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(m => m.fechaFinal2, new { @class = "form-control datePicker" })
+                                @Html.ValidationMessageFor(model => model.fechaFinal2, "", new { @class = "text-danger" })
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        }
     </div>
 
     //***TERCER ROW***
     <div class="row">
         @*DATOS GENERALES 1*@
-        <div class="col-xs-6 col-sm-6">
+        @if (Model.tipo == "Modificar")
+        {
+            @Html.Raw("<div class='col-xs-12 col-sm-6'>");
+        }
+        else
+        {
+            @Html.Raw("<div class='col-xs-12 col-sm-12'>");
+        }
             <div class="panel panel-info">
                 <div class="panel-heading"><label>Datos Generales del Requerimiento Anterior</label></div>
                 <div class="panel-body">
@@ -364,46 +378,65 @@
                     </div>
                 </div>
             </div>
-        </div>
+        @Html.Raw("</div>");
 
         @*DATOS GENERALES 2*@
-        <div class="col-xs-6 col-sm-6">
-            <div class="panel panel-info">
-                <div class="panel-heading"><label>Datos Generales del Requerimiento Solicitado</label></div>
-                <div class="panel-body">
+        @if (Model.tipo == "Modificar")
+        {
+            <div class="col-xs-12 col-sm-6">
+                <div class="panel panel-info">
+                    <div class="panel-heading"><label>Datos Generales del Requerimiento Solicitado</label></div>
+                    <div class="panel-body">
 
-                    <div class="form-group">
-                        @Html.Label("Estado", new { @class = "col-md-4 control-label required" })
-                        <div class="col-md-8">
-                            @Html.DropDownListFor(m => m.estado2, (SelectList)ViewBag.Estados, "Seleccionar Estado ", new { @class = "col-xs-12 form-control", @style = "height:30px;border-radius:4px" })
-                            @Html.ValidationMessageFor(model => model.estado2, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            @Html.Label("Estado", new { @class = "col-md-4 control-label required" })
+                            <div class="col-md-8">
+                                @Html.DropDownListFor(m => m.estado2, (SelectList)ViewBag.Estados, "Seleccionar Estado ", new { @class = "col-xs-12 form-control", @style = "height:30px;border-radius:4px" })
+                                @Html.ValidationMessageFor(model => model.estado2, "", new { @class = "text-danger" })
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        @Html.Label("Solicitado Por", new { @class = "col-md-4 control-label required" })
-                        <div class="col-md-8">
-                            @Html.DropDownListFor(m => m.solicitadoPor2, (SelectList)ViewBag.Clientes, "Seleccionar Solicitante ", new { @class = "col-xs-12 form-control", @style = "height:30px;border-radius:4px" })
-                            @Html.ValidationMessageFor(model => model.solicitadoPor2, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            @Html.Label("Solicitado Por", new { @class = "col-md-4 control-label required" })
+                            <div class="col-md-8">
+                                @Html.DropDownListFor(m => m.solicitadoPor2, (SelectList)ViewBag.Clientes, "Seleccionar Solicitante ", new { @class = "col-xs-12 form-control", @style = "height:30px;border-radius:4px" })
+                                @Html.ValidationMessageFor(model => model.solicitadoPor2, "", new { @class = "text-danger" })
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        @Html.Label("Creado Por", new { @class = "col-md-4 control-label required" })
-                        <div class="col-md-8">
-                            @Html.DropDownListFor(m => m.creadoPor2, (SelectList)ViewBag.Desarrolladores, "Seleccionar Creador ", new { @class = "col-xs-12 form-control", @style = "height:30px;border-radius:4px" })
-                            @Html.ValidationMessageFor(model => model.creadoPor2, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            @Html.Label("Creado Por", new { @class = "col-md-4 control-label required" })
+                            <div class="col-md-8">
+                                @Html.DropDownListFor(m => m.creadoPor2, (SelectList)ViewBag.Desarrolladores, "Seleccionar Creador ", new { @class = "col-xs-12 form-control", @style = "height:30px;border-radius:4px" })
+                                @Html.ValidationMessageFor(model => model.creadoPor2, "", new { @class = "text-danger" })
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        }
     </div>
 
     //INFORMACION DEL CAMBIO
     <div class="panel panel-info">
         <div class="panel-heading"><label>Datos de la Solicitud de Cambio</label></div>
         <div class="panel-body">
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.estado, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.estado, new { @class = "form-control", @disabled = "disabled" })
+                    @Html.ValidationMessageFor(model => model.estado, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.tipo, new { @class = "col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.tipo, new { @class = "form-control", @disabled = "disabled" })
+                    @Html.ValidationMessageFor(model => model.tipo, "", new { @class = "text-danger" })
+                </div>
+            </div>
             
             <div class="form-group">
                 @Html.LabelFor(m => m.solicitadoEn, new { @class = "col-md-2 control-label" })
@@ -412,7 +445,7 @@
                     @Html.ValidationMessageFor(model => model.solicitadoEn, "", new { @class = "text-danger" })
                 </div>
             </div>
-
+            
             <div class="form-group">
                 @Html.LabelFor(m => m.solicitadoPor, new { @class = "col-md-2 control-label" })
                 <div class="col-md-10">
@@ -427,7 +460,7 @@
                     @Html.TextAreaFor(m => m.razon, new { @class = "form-control", @disabled="disabled" })
                     @Html.ValidationMessageFor(model => model.razon, "", new { @class = "text-danger" })
                 </div>
-            </div> 
+            </div>
 
             <div class="form-group">
                 @Html.LabelFor(m => m.comentario, new { @class = "col-md-2 control-label required" })
@@ -439,8 +472,8 @@
                   
         </div>
     </div>
-            
-    
+
+
     <style type="text/css">
         .required:after {
             content: "*";
@@ -450,11 +483,15 @@
     </style>
     <script>
         window.onload = function () {
+            @if (Model.tipo == "Eliminar")
+            {
+                @Html.Raw("$('.col-md-4').addClass('col-md-2').removeClass('col-md-4');");
+            }
             $('#list2').multiSelect();
             $('#list3').multiSelect();
             $('.datePicker').datepicker();
             load_all();
-            $('#imageInput').change(function(){
+            $('#imageInput').change(function () {
                 if (this.files && this.files[0]) {
                     var reader = new FileReader();
                     reader.onload = function (e) {

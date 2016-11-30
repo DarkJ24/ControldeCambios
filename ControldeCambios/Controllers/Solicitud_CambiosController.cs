@@ -184,46 +184,65 @@ namespace ControldeCambios.Controllers
             {
                 return HttpNotFound();
             }
+            
             var req1 = baseDatos.Requerimientos.Find(solicitud.req1);
-            var req2 = baseDatos.Requerimientos.Find(solicitud.req2);
+            if (solicitud.tipo == "Modificar")
+            {
+                var req2 = baseDatos.Requerimientos.Find(solicitud.req2);
+                modelo.id2 = req2.id;
+                modelo.codigo2 = req2.codigo;
+                modelo.nombre2 = req2.nombre;
+                modelo.creadoPor2 = req2.creadoPor;
+                modelo.version2 = req2.version.ToString();
+                modelo.descripcion2 = req2.descripcion;
+                modelo.prioridad2 = req2.prioridad.ToString();
+                modelo.esfuerzo2 = req2.esfuerzo.ToString();
+                modelo.observaciones2 = req2.observaciones;
+                modelo.fechaInicial2 = req2.creadoEn.ToString("MM/dd/yyyy");
+                if (req2.finalizaEn != null)
+                {
+                    modelo.fechaFinal2 = (req2.finalizaEn ?? DateTime.Now).ToString("MM/dd/yyyy");
+                }
+                modelo.solicitadoPor2 = req2.solicitadoPor;
+                modelo.estado2 = req2.estado;
+                if (req2.imagen != null)
+                {
+                    modelo.file2 = HttpUtility.UrlEncode(Convert.ToBase64String(req2.imagen));
+                }
+                else
+                {
+                    modelo.file2 = "";
+                }
+                modelo.equipo2 = new List<string>();     // Se llena la variable equipo con el equipo ya asignado a este requerimiento, si ya hay uno
+                foreach (var des in req2.Usuarios.ToList())
+                {
+                    modelo.equipo2.Add(des.cedula);
+                }
+                modelo.criteriosAceptacion2 = req2.Requerimientos_Cri_Acep.Select(c => c.criterio).Aggregate((acc, x) => acc + "|" + x);
+            }
             modelo.id1 = req1.id; // Diferentes asignaciones de variables para el modelo creado
-            modelo.id2 = req2.id;
             modelo.codigo1 = req1.codigo;
-            modelo.codigo2 = req2.codigo;
             modelo.nombre1 = req1.nombre;
-            modelo.nombre2 = req2.nombre;
             modelo.creadoPor1 = baseDatos.Usuarios.Find(req1.creadoPor).nombre;
-            modelo.creadoPor2 = req2.creadoPor;
             modelo.version1 = req1.version.ToString();
-            modelo.version2 = req2.version.ToString();
             modelo.descripcion1 = req1.descripcion;
-            modelo.descripcion2 = req2.descripcion;
             modelo.prioridad1 = req1.prioridad.ToString();
-            modelo.prioridad2 = req2.prioridad.ToString();
             modelo.esfuerzo1 = req1.esfuerzo.ToString();
-            modelo.esfuerzo2 = req2.esfuerzo.ToString();
             modelo.observaciones1 = req1.observaciones;
-            modelo.observaciones2 = req2.observaciones;
             modelo.fechaInicial1 = req1.creadoEn.ToString("MM/dd/yyyy");
-            modelo.fechaInicial2 = req2.creadoEn.ToString("MM/dd/yyyy");
             if (req1.finalizaEn != null)
             {
                 modelo.fechaFinal1 = (req1.finalizaEn ?? DateTime.Now).ToString("MM/dd/yyyy");
             }
-            if (req2.finalizaEn != null)
-            {
-                modelo.fechaFinal2 = (req2.finalizaEn ?? DateTime.Now).ToString("MM/dd/yyyy");
-            }
             modelo.solicitadoPor1 = baseDatos.Usuarios.Find(req1.solicitadoPor).nombre;
-            modelo.solicitadoPor2 = req2.solicitadoPor;
             modelo.estado1 = req1.estado;
-            modelo.estado2 = req2.estado;
             modelo.proyecto = req1.proyecto;
-            modelo.solicitadoEn = req2.creadoEn.ToString("MM/dd/yyyy");
+            modelo.tipo = solicitud.tipo;
+            modelo.estado = solicitud.estado;
+            modelo.solicitadoEn = solicitud.solicitadoEn.ToString("MM/dd/yyyy");
             modelo.solicitadoPor = baseDatos.Usuarios.Find(solicitud.solicitadoPor).nombre;
             modelo.razon = solicitud.razon;
             modelo.comentario = solicitud.comentario;
-
             if (req1.imagen != null)
             {
                 modelo.file1 = HttpUtility.UrlEncode(Convert.ToBase64String(req1.imagen));
@@ -232,30 +251,13 @@ namespace ControldeCambios.Controllers
             {
                 modelo.file1 = "";
             }
-
-            if (req2.imagen != null)
-            {
-                modelo.file2 = HttpUtility.UrlEncode(Convert.ToBase64String(req2.imagen));
-            }
-            else
-            {
-                modelo.file2 = "";
-            }
             modelo.equipo1 = new List<string>();     // Se llena la variable equipo con el equipo ya asignado a este requerimiento, si ya hay uno
             foreach (var des in req1.Usuarios.ToList())
             {
                 modelo.equipo1.Add(des.cedula);
             }
-
-            modelo.equipo2 = new List<string>();     // Se llena la variable equipo con el equipo ya asignado a este requerimiento, si ya hay uno
-            foreach (var des in req2.Usuarios.ToList())
-            {
-                modelo.equipo2.Add(des.cedula);
-            }
-
             modelo.criteriosAceptacion1 = req1.Requerimientos_Cri_Acep.Select(c => c.criterio).Aggregate((acc, x) => acc + "|" + x);    // Se agrega a la lista de criterios de aceptacion 
-            modelo.criteriosAceptacion2 = req2.Requerimientos_Cri_Acep.Select(c => c.criterio).Aggregate((acc, x) => acc + "|" + x);
-
+            
             List<Usuario> listaDesarrolladores = new List<Usuario>();       // Se inicializan listas que se usan a traves a continuacion
             List<Modulo> listaModulos = new List<Modulo>();
             List<Estado_Requerimientos> listaEstadoRequerimientos = new List<Estado_Requerimientos>();
