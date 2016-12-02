@@ -80,36 +80,24 @@ req.estado)
 
                         if (firstreq)
                         {
-                        @Html.ActionLink("Consultar", "Detalles", new
-                   {
-                       id = req.id
-                   }, new { @data_step = ayudasActuales++, @data_intro = "Como este requerimiento no se ha iniciado, este se puede modificar sin hacer una solicitud de cambio." })
+                            @Html.ActionLink("Consultar", "Detalles", new { id = req.id }, new { @data_step = ayudasActuales++, @data_intro = "Como este requerimiento no se ha iniciado, este se puede modificar sin hacer una solicitud de cambio." })
                             { firstreq = false; }
                         }
                         else
                         {
-                               @Html.ActionLink("Consultar", "Detalles", new
-                          {
-                              id = req.id
-                          })
+                               @Html.ActionLink("Consultar", "Detalles", new { id = req.id })
                         }
                     }
                     else
                     {
                         if (firstsol)
                         {
-                        @Html.ActionLink("Consultar", "CrearSolicitud", "Solicitud_Cambios", new
-                   {
-                       id = req.id
-                   }, new { @data_step = ayudasActuales++, @data_intro = "Como este requerimiento ya se inició, hace falta hacer una solicitud de cambio para cambiarlo." })
+                            @Html.ActionLink("Consultar", "CrearSolicitud", "Solicitud_Cambios", new { id = req.id }, new { @data_step = ayudasActuales++, @data_intro = "Como este requerimiento ya se inició, hace falta hacer una solicitud de cambio para cambiarlo." })
                             { firstsol = false; }
                         }
                         else
                         {
-                            @Html.ActionLink("Consultar", "CrearSolicitud", "Solicitud_Cambios", new
-                       {
-                           id = req.id
-                       })
+                            @Html.ActionLink("Consultar", "CrearSolicitud", "Solicitud_Cambios", new { id = req.id }, new { })
                         }
                     }
                 </td>
