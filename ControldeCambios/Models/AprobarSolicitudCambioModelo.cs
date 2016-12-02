@@ -64,13 +64,16 @@ namespace ControldeCambios.Models
 
         [Display(Name = "Esfuerzo")]
         [RegularExpression(@"^[0-9\s]+$", ErrorMessage = "El esfuerzo solo pueden contener números y espacios")]
+        [Required(ErrorMessage = "El esfuerzo es un campo requerido.")]
         public string esfuerzo1 { get; set; }
 
         [Display(Name = "Esfuerzo")]
+        [Required(ErrorMessage = "El esfuerzo es un campo requerido.")]
         [RegularExpression(@"^[0-9\s]+$", ErrorMessage = "El esfuerzo solo pueden contener números y espacios")]
         public string esfuerzo2 { get; set; }
 
         [Display(Name = "Fecha de Inicio")]
+        [Required(ErrorMessage = "La fecha de inicio es un campo requerido.")]
         public string fechaInicial1 { get; set; }
 
         [Display(Name = "Fecha de Inicio")]
@@ -83,9 +86,11 @@ namespace ControldeCambios.Models
         public string fechaFinal2 { get; set; }
 
         [Display(Name = "Estado")]
+        [Required(ErrorMessage = "El estado es un campo requerido.")]
         public string estado1 { get; set; }
 
         [Display(Name = "Estado")]
+        [Required(ErrorMessage = "El estado es un campo requerido.")]
         public string estado2 { get; set; }
 
         [Display(Name = "Observaciones")]
@@ -101,11 +106,11 @@ namespace ControldeCambios.Models
         public string file2 { get; set; }
 
         [Display(Name = "Criterios de Aceptación")]
-        [Required]
+        [Required(ErrorMessage = "Los criterios de aceptación son un campo requerido.")]
         public string criteriosAceptacion1 { get; set; }
 
         [Display(Name = "Criterios de Aceptación")]
-        [Required]
+        [Required(ErrorMessage = "Los criterios de aceptación son un campo requerido.")]
         public string criteriosAceptacion2 { get; set; }
 
         //AGREGAR EQUIPO
@@ -113,6 +118,7 @@ namespace ControldeCambios.Models
         public List<string> equipo2 { get; set; }
 
         [Display(Name = "Proyecto")]
+        [Required(ErrorMessage = "El proyecto es un campo requerido.")]
         public string proyecto { get; set; }
 
         public int id1 { get; set; }
@@ -129,6 +135,14 @@ namespace ControldeCambios.Models
         [Required(ErrorMessage = "La fecha de la solicitud es un campo obligatorio.")]
         [Display(Name = "Fecha de Solicitud")]
         public string solicitadoEn { get; set; }
+
+        [Required(ErrorMessage = "El estado de la solicitud es un campo obligatorio.")]
+        [Display(Name = "Estado de Solicitud")]
+        public string estado { get; set; }
+
+        [Required(ErrorMessage = "El tipo de solicitud es un campo obligatorio.")]
+        [Display(Name = "Tipo de Solicitud")]
+        public string tipo { get; set; }
 
         [Required(ErrorMessage = "El solicitante es un campo obligatorio.")]
         [Display(Name = "Solicitante")]

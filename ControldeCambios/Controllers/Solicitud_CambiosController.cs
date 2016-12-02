@@ -60,16 +60,32 @@ namespace ControldeCambios.Controllers
             model.indexSolicitudInfoList = new List<Solicitud_CambiosIndexModel.solicitudInfo>();
             for (int i = (pageNumber - 1) * pageSize; i < lastElement; i++)
             {
-                var requerimiento = baseDatos.Requerimientos.Find(solicitudes.ElementAt(i).req2);
-                var x = new Solicitud_CambiosIndexModel.solicitudInfo();
-                x.id = solicitudes.ElementAt(i).id;
-                x.nombre = requerimiento.nombre;
-                x.codigo = requerimiento.codigo;
-                x.estado = solicitudes.ElementAt(i).estado;
-                x.fecha = solicitudes.ElementAt(i).solicitadoEn.ToString("MM/dd/yyyy");
-                x.prioridad = requerimiento.prioridad;
-                x.solicitadoPor = baseDatos.Usuarios.Find(solicitudes.ElementAt(i).solicitadoPor).nombre;
-                model.indexSolicitudInfoList.Add(x);
+                if (solicitudes.ElementAt(i).tipo == "Modificar")
+                {
+                    var requerimiento = baseDatos.Requerimientos.Find(solicitudes.ElementAt(i).req2);
+                    var x = new Solicitud_CambiosIndexModel.solicitudInfo();
+                    x.id = solicitudes.ElementAt(i).id;
+                    x.nombre = requerimiento.nombre;
+                    x.codigo = requerimiento.codigo;
+                    x.estado = solicitudes.ElementAt(i).estado;
+                    x.fecha = solicitudes.ElementAt(i).solicitadoEn.ToString("MM/dd/yyyy");
+                    x.prioridad = requerimiento.prioridad;
+                    x.solicitadoPor = baseDatos.Usuarios.Find(solicitudes.ElementAt(i).solicitadoPor).nombre;
+                    x.tipo = solicitudes.ElementAt(i).tipo;
+                    model.indexSolicitudInfoList.Add(x);
+                } else { //Eliminar
+                    var requerimiento = baseDatos.Requerimientos.Find(solicitudes.ElementAt(i).req1);
+                    var x = new Solicitud_CambiosIndexModel.solicitudInfo();
+                    x.id = solicitudes.ElementAt(i).id;
+                    x.nombre = requerimiento.nombre;
+                    x.codigo = requerimiento.codigo;
+                    x.estado = solicitudes.ElementAt(i).estado;
+                    x.fecha = solicitudes.ElementAt(i).solicitadoEn.ToString("MM/dd/yyyy");
+                    x.prioridad = requerimiento.prioridad;
+                    x.solicitadoPor = baseDatos.Usuarios.Find(solicitudes.ElementAt(i).solicitadoPor).nombre;
+                    x.tipo = solicitudes.ElementAt(i).tipo;
+                    model.indexSolicitudInfoList.Add(x);
+                }
             }
             var reqsAsIPagedList = new StaticPagedList<Solicitud_CambiosIndexModel.solicitudInfo>(model.indexSolicitudInfoList, pageNumber, pageSize, solicitudes.Count);
             ViewBag.OnePageOfReqs = reqsAsIPagedList;
@@ -109,16 +125,34 @@ namespace ControldeCambios.Controllers
             model.indexSolicitudInfoList = new List<Solicitud_CambiosIndexModel.solicitudInfo>();
             for (int i = (pageNumber - 1) * pageSize; i < lastElement; i++)
             {
-                var requerimiento = baseDatos.Requerimientos.Find(solicitudes.ElementAt(i).req2);
-                var x = new Solicitud_CambiosIndexModel.solicitudInfo();
-                x.id = solicitudes.ElementAt(i).id;
-                x.nombre = requerimiento.nombre;
-                x.codigo = requerimiento.codigo;
-                x.estado = solicitudes.ElementAt(i).estado;
-                x.fecha = solicitudes.ElementAt(i).solicitadoEn.ToString("MM/dd/yyyy");
-                x.prioridad = requerimiento.prioridad;
-                x.solicitadoPor = baseDatos.Usuarios.Find(solicitudes.ElementAt(i).solicitadoPor).nombre;
-                model.indexSolicitudInfoList.Add(x);
+                if (solicitudes.ElementAt(i).tipo == "Modificar")
+                {
+                    var requerimiento = baseDatos.Requerimientos.Find(solicitudes.ElementAt(i).req2);
+                    var x = new Solicitud_CambiosIndexModel.solicitudInfo();
+                    x.id = solicitudes.ElementAt(i).id;
+                    x.nombre = requerimiento.nombre;
+                    x.codigo = requerimiento.codigo;
+                    x.estado = solicitudes.ElementAt(i).estado;
+                    x.fecha = solicitudes.ElementAt(i).solicitadoEn.ToString("MM/dd/yyyy");
+                    x.prioridad = requerimiento.prioridad;
+                    x.solicitadoPor = baseDatos.Usuarios.Find(solicitudes.ElementAt(i).solicitadoPor).nombre;
+                    x.tipo = solicitudes.ElementAt(i).tipo;
+                    model.indexSolicitudInfoList.Add(x);
+                }
+                else
+                { //Eliminar
+                    var requerimiento = baseDatos.Requerimientos.Find(solicitudes.ElementAt(i).req1);
+                    var x = new Solicitud_CambiosIndexModel.solicitudInfo();
+                    x.id = solicitudes.ElementAt(i).id;
+                    x.nombre = requerimiento.nombre;
+                    x.codigo = requerimiento.codigo;
+                    x.estado = solicitudes.ElementAt(i).estado;
+                    x.fecha = solicitudes.ElementAt(i).solicitadoEn.ToString("MM/dd/yyyy");
+                    x.prioridad = requerimiento.prioridad;
+                    x.solicitadoPor = baseDatos.Usuarios.Find(solicitudes.ElementAt(i).solicitadoPor).nombre;
+                    x.tipo = solicitudes.ElementAt(i).tipo;
+                    model.indexSolicitudInfoList.Add(x);
+                }
             }
             var reqsAsIPagedList = new StaticPagedList<Solicitud_CambiosIndexModel.solicitudInfo>(model.indexSolicitudInfoList, pageNumber, pageSize, solicitudes.Count);
             ViewBag.OnePageOfReqs = reqsAsIPagedList;
@@ -126,7 +160,7 @@ namespace ControldeCambios.Controllers
             //model.detallesRequerimientos = revisarPermisos("Consultar Detalles de Requerimiento");
             return View(model);
         }
-        
+
 
         /// <summary>
         /// Funcionalidad para llenar los datos del requerimiento actual y la solicitud de cambio del requerimiento.
@@ -150,77 +184,80 @@ namespace ControldeCambios.Controllers
             {
                 return HttpNotFound();
             }
+            
             var req1 = baseDatos.Requerimientos.Find(solicitud.req1);
-            var req2 = baseDatos.Requerimientos.Find(solicitud.req2);
-            modelo.id1 = req1.id;                                   // Diferentes asignaciones de variables para el modelo creado
-            modelo.id2 = req2.id;
+            if (solicitud.tipo == "Modificar")
+            {
+                var req2 = baseDatos.Requerimientos.Find(solicitud.req2);
+                modelo.id2 = req2.id;
+                modelo.codigo2 = req2.codigo;
+                modelo.nombre2 = req2.nombre;
+                modelo.creadoPor2 = req2.creadoPor;
+                modelo.version2 = req2.version.ToString();
+                modelo.descripcion2 = req2.descripcion;
+                modelo.prioridad2 = req2.prioridad.ToString();
+                modelo.esfuerzo2 = req2.esfuerzo.ToString();
+                modelo.observaciones2 = req2.observaciones;
+                modelo.fechaInicial2 = req2.creadoEn.ToString("MM/dd/yyyy");
+                if (req2.finalizaEn != null)
+                {
+                    modelo.fechaFinal2 = (req2.finalizaEn ?? DateTime.Now).ToString("MM/dd/yyyy");
+                }
+                modelo.solicitadoPor2 = req2.solicitadoPor;
+                modelo.estado2 = req2.estado;
+                if (req2.imagen != null)
+                {
+                    modelo.file2 = HttpUtility.UrlEncode(Convert.ToBase64String(req2.imagen));
+                }
+                else
+                {
+                    modelo.file2 = "";
+                }
+                modelo.equipo2 = new List<string>();     // Se llena la variable equipo con el equipo ya asignado a este requerimiento, si ya hay uno
+                foreach (var des in req2.Usuarios.ToList())
+                {
+                    modelo.equipo2.Add(des.cedula);
+                }
+                modelo.criteriosAceptacion2 = req2.Requerimientos_Cri_Acep.Select(c => c.criterio).Aggregate((acc, x) => acc + "|" + x);
+            }
+            modelo.id1 = req1.id; // Diferentes asignaciones de variables para el modelo creado
             modelo.codigo1 = req1.codigo;
-            modelo.codigo2 = req2.codigo;
             modelo.nombre1 = req1.nombre;
-            modelo.nombre2 = req2.nombre;
             modelo.creadoPor1 = baseDatos.Usuarios.Find(req1.creadoPor).nombre;
-            modelo.creadoPor2 = req2.creadoPor;
             modelo.version1 = req1.version.ToString();
-            modelo.version2 = req2.version.ToString();
             modelo.descripcion1 = req1.descripcion;
-            modelo.descripcion2 = req2.descripcion;
             modelo.prioridad1 = req1.prioridad.ToString();
-            modelo.prioridad2 = req2.prioridad.ToString();
             modelo.esfuerzo1 = req1.esfuerzo.ToString();
-            modelo.esfuerzo2 = req2.esfuerzo.ToString();
             modelo.observaciones1 = req1.observaciones;
-            modelo.observaciones2 = req2.observaciones;
             modelo.fechaInicial1 = req1.creadoEn.ToString("MM/dd/yyyy");
-            modelo.fechaInicial2 = req2.creadoEn.ToString("MM/dd/yyyy");
             if (req1.finalizaEn != null)
             {
                 modelo.fechaFinal1 = (req1.finalizaEn ?? DateTime.Now).ToString("MM/dd/yyyy");
             }
-            if (req2.finalizaEn != null)
-            {
-                modelo.fechaFinal2 = (req2.finalizaEn ?? DateTime.Now).ToString("MM/dd/yyyy");
-            }
             modelo.solicitadoPor1 = baseDatos.Usuarios.Find(req1.solicitadoPor).nombre;
-            modelo.solicitadoPor2 = req2.solicitadoPor;
             modelo.estado1 = req1.estado;
-            modelo.estado2 = req2.estado;
             modelo.proyecto = req1.proyecto;
-            modelo.solicitadoEn = req2.creadoEn.ToString("MM/dd/yyyy");
+            modelo.tipo = solicitud.tipo;
+            modelo.estado = solicitud.estado;
+            modelo.solicitadoEn = solicitud.solicitadoEn.ToString("MM/dd/yyyy");
             modelo.solicitadoPor = baseDatos.Usuarios.Find(solicitud.solicitadoPor).nombre;
             modelo.razon = solicitud.razon;
             modelo.comentario = solicitud.comentario;
-           
-            if(req1.imagen != null)
+            if (req1.imagen != null)
             {
                 modelo.file1 = HttpUtility.UrlEncode(Convert.ToBase64String(req1.imagen));
-            } else
-            {
-                modelo.file1 = "";
-            }
-           
-            if (req2.imagen != null)
-            {
-                modelo.file2 = HttpUtility.UrlEncode(Convert.ToBase64String(req2.imagen));
             }
             else
             {
-                modelo.file2 = "";
+                modelo.file1 = "";
             }
             modelo.equipo1 = new List<string>();     // Se llena la variable equipo con el equipo ya asignado a este requerimiento, si ya hay uno
             foreach (var des in req1.Usuarios.ToList())
             {
                 modelo.equipo1.Add(des.cedula);
             }
-            
-            modelo.equipo2 = new List<string>();     // Se llena la variable equipo con el equipo ya asignado a este requerimiento, si ya hay uno
-            foreach (var des in req2.Usuarios.ToList())
-            {
-                modelo.equipo2.Add(des.cedula);
-            }
-            
             modelo.criteriosAceptacion1 = req1.Requerimientos_Cri_Acep.Select(c => c.criterio).Aggregate((acc, x) => acc + "|" + x);    // Se agrega a la lista de criterios de aceptacion 
-            modelo.criteriosAceptacion2 = req2.Requerimientos_Cri_Acep.Select(c => c.criterio).Aggregate((acc, x) => acc + "|" + x);
-                                                                                                                        
+            
             List<Usuario> listaDesarrolladores = new List<Usuario>();       // Se inicializan listas que se usan a traves a continuacion
             List<Modulo> listaModulos = new List<Modulo>();
             List<Estado_Requerimientos> listaEstadoRequerimientos = new List<Estado_Requerimientos>();
@@ -258,7 +295,7 @@ namespace ControldeCambios.Controllers
         {
             if (ModelState.IsValid)
             {
-                var solicitud = new Solicitud_Cambios();  
+                var solicitud = new Solicitud_Cambios();
                 var req1 = baseDatos.Requerimientos.Find(solicitud.req1);
                 var req2 = baseDatos.Requerimientos.Find(solicitud.req2);
 
@@ -271,12 +308,12 @@ namespace ControldeCambios.Controllers
                 solicitud.aprobadoPor = usuarioActual;
                 solicitud.aprobadoEn = DateTime.Now;
             }
-            
+
             return View(model);
         }
 
 
-         /// <summary>
+        /// <summary>
         /// Funcionalidad para Rechazar una Solicitud de Cambio.
         /// </summary>
         // POST: /Solicitud_Cambios/Rechazar
@@ -392,7 +429,7 @@ namespace ControldeCambios.Controllers
             ViewBag.Estados = new SelectList(baseDatos.Estado_Proyecto.ToList(), "nombre", "nombre");
 
             //Indice de Versiones Anteriores
-            var solicitudes = baseDatos.Solicitud_Cambios.Where(m => m.proyecto == requerimiento.proyecto && m.estado == "Aprobado" && (m.req1 == requerimiento.id || m.req2 == requerimiento.id) ).ToList();
+            var solicitudes = baseDatos.Solicitud_Cambios.Where(m => m.proyecto == requerimiento.proyecto && m.estado == "Aprobado" && (m.req1 == requerimiento.id || m.req2 == requerimiento.id)).ToList();
             solicitudes = getRequerimientos(solicitudes);
             var reqs = new List<Requerimiento>();
             foreach (var sol in solicitudes)
@@ -464,15 +501,21 @@ namespace ControldeCambios.Controllers
                     }
                 }
 
-                if (ImageData != null) {
+                if (ImageData != null)
+                {
                     var array = new Byte[ImageData.ContentLength];
                     ImageData.InputStream.Position = 0;
                     ImageData.InputStream.Read(array, 0, ImageData.ContentLength);
                     requerimiento.imagen = array;
-                } else {
-                    if (modelo.file == "") {
+                }
+                else
+                {
+                    if (modelo.file == "")
+                    {
                         requerimiento.imagen = null;
-                    } else {
+                    }
+                    else
+                    {
                         requerimiento.imagen = Encoding.ASCII.GetBytes(modelo.file);
                     }
                 }
@@ -480,7 +523,8 @@ namespace ControldeCambios.Controllers
                 var criterios = modelo.criteriosAceptacion.Split('|').ToList();
                 //Se crea la lista de criterios de aceptacion que puede ser expandible
                 var criterio_list = new List<Requerimientos_Cri_Acep>();
-                foreach (var criterio in criterios) {
+                foreach (var criterio in criterios)
+                {
                     var cri_ac = new Requerimientos_Cri_Acep();
                     cri_ac.criterio = criterio;
                     criterio_list.Add(cri_ac);
@@ -501,7 +545,7 @@ namespace ControldeCambios.Controllers
                 baseDatos.Solicitud_Cambios.Add(solicitud);
                 baseDatos.SaveChanges();    // Se guardan los cambios en la base
                 this.AddToastMessage("Solicitud de Cambio Creada", "La solicitud de modificar " + modelo.nombre + " se ha enviado correctamente.", ToastType.Success);      // Se muestra un mensaje de confirmacion
-                return RedirectToAction("index", "Requerimientos", new { proyecto = requerimiento.proyecto });       // Se carga el requerimiento modificado en la pantalla
+                return RedirectToAction("index", "Requerimientos", new { proyecto = requerimiento.proyecto });
             }
 
             List<Usuario> listaDesarrolladores = new List<Usuario>();
@@ -530,8 +574,33 @@ namespace ControldeCambios.Controllers
             return View(modelo);    // Se retorna la vista al modelo luego de modificar los datos
         }
 
+        List<Solicitud_Cambios> getRequerimientos(List<Solicitud_Cambios> solicitudes)
+        {
+            if (solicitudes != null && solicitudes.Count > 0)
+            {
+                var izquierda = new List<Solicitud_Cambios>();
+                var derecha = new List<Solicitud_Cambios>();
+                foreach (var sol in solicitudes)
+                {
+                    var izq = getRequerimientos(baseDatos.Solicitud_Cambios.Where(m => m.proyecto == sol.proyecto && m.estado == "Aprobado" && m.req2 == sol.req1).ToList());
+                    izquierda.AddRange(izq);
+                    var der = getRequerimientos(baseDatos.Solicitud_Cambios.Where(m => m.proyecto == sol.proyecto && m.estado == "Aprobado" && m.req1 == sol.req2).ToList());
+                    derecha.AddRange(der);
+                }
+                var respuesta = solicitudes;
+                respuesta.AddRange(izquierda);
+                respuesta.AddRange(derecha);
+                return respuesta;
+            }
+            else
+            {
+                return solicitudes;
+            }
+        }
 
-
+		
+		
+		
         // GET: Crear Solicitud_Cambios
         public ActionResult Detalles(string id, int? page)
         {
@@ -791,12 +860,14 @@ namespace ControldeCambios.Controllers
                 respuesta.AddRange(izquierda);
                 respuesta.AddRange(derecha);
                 return respuesta;
-            } else
+            }
+            else
             {
                 return solicitudes;
             }
         }
 
+<<<<<<< HEAD
 
         /// <summary>
         /// Cuenta la cantidad de puntos que están "en progreso"
@@ -855,5 +926,35 @@ namespace ControldeCambios.Controllers
         }
 
 
+		
+		
+		
+		
+        // POST: Crear Solicitud de Borrado
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CrearSolicitudBorrado(CrearSolicitudModel modelo)
+        {
+            Requerimiento requerimiento;
+            if (!string.IsNullOrWhiteSpace(modelo.razon2))
+            {
+                requerimiento = baseDatos.Requerimientos.Find(modelo.idReqAnterior);
+                var solicitud = new Solicitud_Cambios();
+                solicitud.razon = modelo.razon2;
+                solicitud.req1 = requerimiento.id;
+                solicitud.proyecto = requerimiento.proyecto;
+                solicitud.solicitadoEn = DateTime.Now;
+                solicitud.tipo = "Eliminar";
+                solicitud.estado = "En revisión";
+                String userID = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                solicitud.solicitadoPor = baseDatos.Usuarios.Where(m => m.id == userID).First().cedula;
+                baseDatos.Solicitud_Cambios.Add(solicitud);
+                baseDatos.SaveChanges();    // Se guardan los cambios en la base
+                this.AddToastMessage("Solicitud de Borrado Creada", "La solicitud de eliminar " + modelo.nombre + " se ha enviado correctamente.", ToastType.Success);      // Se muestra un mensaje de confirmacion
+                return RedirectToAction("index", "Requerimientos", new { proyecto = requerimiento.proyecto });
+            }
+            this.AddToastMessage("Error al Crear la Solicitud de Borrado", "El campo de motivo es requerido.", ToastType.Error);      // Se muestra un mensaje de confirmacion
+            return RedirectToAction("CrearSolicitud", new { id= modelo.idReqAnterior });
+        }
     }
 }

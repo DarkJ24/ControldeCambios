@@ -16,6 +16,7 @@ namespace ControldeCambios.Models
             public int prioridad;
             public string solicitadoPor;
             public string estado;
+            public string tipo;
             public string fecha;
         }
         public List<Solicitud_Cambios> solicitudes;
