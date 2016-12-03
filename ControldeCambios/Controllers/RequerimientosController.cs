@@ -363,7 +363,7 @@ namespace ControldeCambios.Controllers
             ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
             ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");
             ViewBag.DesarrolladoresDisp = listaDesarrolladores;
-            ViewBag.Estados = new SelectList(baseDatos.Estado_Proyecto.ToList(), "nombre", "nombre");
+            ViewBag.Estados = new SelectList(baseDatos.Estado_Requerimientos.ToList(), "nombre", "nombre");
             return View(modelo);        // Se retorna la vista al modelo luego de cargar los datos
         }
 
@@ -445,11 +445,33 @@ namespace ControldeCambios.Controllers
                 baseDatos.Entry(requerimiento).State = System.Data.Entity.EntityState.Modified;     // Con esta linea se notifica a la base que se hacen los cambios
                 baseDatos.SaveChanges();    // Se guardan los cambios en la base
 
-                var sprints = baseDatos.Requerimientos.Find(modelo.id).Modulo1.Sprint_Modulos.Select(x => x.sprint);
+
+                if (requerimiento.Modulo1 != null)
+                {
+
+                    var sprint_modulo = baseDatos.Requerimientos.Find(modelo.id).Modulo1.Sprint_Modulos;
+
+                    if (sprint_modulo != null)
+                    {
+                        var sprints = sprint_modulo.Select(x => x.sprint);
+                        if (sprints != null)
+                        {
+                            foreach (var sprint in sprints)
+                            {
+                                updateSprintPoints(modelo.proyecto, sprint);
+                            }
+                        }
+
+                    }
+
+                }
+
+
+                /*var sprints = baseDatos.Requerimientos.Find(modelo.id).Modulo1.Sprint_Modulos.Select(x => x.sprint);
                 foreach(var sprint in sprints)
                 {
                     updateSprintPoints(modelo.proyecto, sprint);
-                }
+                }*/
                 this.AddToastMessage("Requerimiento Modificado", "El requerimiento " + modelo.nombre + " se ha modificado correctamente.", ToastType.Success);      // Se muestra un mensaje de confirmacion
                 return RedirectToAction("Detalles", "Requerimientos", new { id = requerimiento.id });       // Se carga el requerimiento modificado en la pantalla
 

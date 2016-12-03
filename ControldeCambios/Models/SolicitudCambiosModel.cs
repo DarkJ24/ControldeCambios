@@ -44,7 +44,11 @@ namespace ControldeCambios.Models
         //[Required(ErrorMessage = "El nombre de la persona que aprueba es un campo requerido.")]
         public string aprobadoPor { get; set; }
 
+<<<<<<< HEAD
+
+=======
         
+>>>>>>> cd308be48d81646752c8c35a6f6a383e36f0cd26
 
         /// <summary>
         /// Datos del Requerimiento
@@ -97,7 +101,11 @@ namespace ControldeCambios.Models
         [Display(Name = "Estado")]
         public string estado { get; set; }
 
+<<<<<<< HEAD
+
+=======
     
+>>>>>>> cd308be48d81646752c8c35a6f6a383e36f0cd26
 
 
         [Display(Name = "Observaciones")]

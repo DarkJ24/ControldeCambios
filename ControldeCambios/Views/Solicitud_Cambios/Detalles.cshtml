@@ -43,7 +43,11 @@ function load_all() {
 
 </script>
 
+<<<<<<< HEAD
+<div data-step="1" data-intro="En esta pantalla se puede ver los detalles de una solicitud de cambio" class="datastep1">
+=======
 <div data-step="1" data-intro="En esta pantalla se puede ver los detalles de un requerimiento" class="datastep1">
+>>>>>>> cd308be48d81646752c8c35a6f6a383e36f0cd26
     <h2>Gestión de Requerimientos</h2>
     <h4 id="subtitle">@ViewBag.Title</h4>
 </div>
@@ -70,11 +74,19 @@ function load_all() {
     @Html.HiddenFor(m => m.idReqSolicitud)
     <div class="camposdiv" data-step=@ayudasActuales data-intro="Estos son los campos que despliegan la información del proyecto">
         @{ayudasActuales++;}
+<<<<<<< HEAD
+
+
+
+
+
+=======
         
 
 
 
         
+>>>>>>> cd308be48d81646752c8c35a6f6a383e36f0cd26
 
         <div class="panel panel-info">
             <div class="panel-heading"><label>Datos de la Solicitud</label></div>
@@ -89,6 +101,9 @@ function load_all() {
                     </div>
                 </div>
 
+<<<<<<< HEAD
+
+=======
                 <div class="form-group">
                     @Html.LabelFor(m => m.solicitadoPorSolicitud, new { @class = "col-md-2 control-label" })
                     <div class="col-md-10">
@@ -97,6 +112,7 @@ function load_all() {
                         @Html.ValidationMessageFor(model => model.solicitadoPorSolicitud, "", new { @class = "text-danger" })
                     </div>
                 </div>
+>>>>>>> cd308be48d81646752c8c35a6f6a383e36f0cd26
 
                 <div class="form-group">
                     <label class="control-label col-md-2 required">Fecha en que se solicito:</label>
@@ -125,7 +141,11 @@ function load_all() {
                     </div>
                 </div>
 
+<<<<<<< HEAD
+
+=======
                 
+>>>>>>> cd308be48d81646752c8c35a6f6a383e36f0cd26
 
                 <div class="form-group">
                     <label class="control-label col-md-2">Razon:</label>
@@ -135,14 +155,346 @@ function load_all() {
                     </div>
                 </div>
 
+<<<<<<< HEAD
+
+
+
+
+=======
                 
 
                 
              
+>>>>>>> cd308be48d81646752c8c35a6f6a383e36f0cd26
 
             </div>
         </div>
 
+<<<<<<< HEAD
+
+
+        @if (Model.tipoSolicitud.Equals("Modificar"))
+        {
+            <div class="panel panel-info">
+                <div class="panel-heading"><label>Datos de la Solicitud de Cambio</label></div>
+                <div class="panel-body">
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2 required">Código:</label>
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.codigo, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
+                            @Html.ValidationMessageFor(model => model.codigo, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2 required">Nombre:</label>
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
+                            @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2 required">Descripción:</label>
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.descripcion, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
+                            @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.criteriosAceptacion, new { @class = "col-md-2 control-label required" })
+                        @Html.HiddenFor(m => m.criteriosAceptacion, new { @id = "output" })
+                        <div class="col-md-10" style="margin-bottom:25px">
+                            <div class="editBtns" style="display:none">
+                                <button type="button" onclick="add_textbox()" class="btn editBtns botcritac" style="border-radius:4px"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Nuevo Criterio de Aceptación</button>
+                                <br />
+                                <br />
+                            </div>
+                            <div id="textboxes">
+                                <div class='row'><div id='textbox0'><div class='col-md-4'><textarea class='multitextbox form-control multitextbox0 editFields' oninput=update_output() cols='30' rows='2' style='border-radius:4px'></textarea></div> <div class='col-md-1'></div> <br /> <br /> <br />  </div></div>
+                            </div>
+                        </div>
+                        @Html.ValidationMessageFor(m => m.criteriosAceptacion, "", new { @class = "text-danger" })
+                    </div>
+
+
+                    <div class="form-group showimgdiv">
+                        @Html.Label("Imagen", new { @class = "col-md-2 control-label" })
+                        <div class="col-md-10">
+                            @if (Model.file != "")
+                        {
+                        <label class="" style="cursor:pointer">
+                            <img id="myImg" src="data:image/png;base64,@Html.DisplayFor(m => m.file)" width="100px" data-toggle="modal" data-target="#myModal" class="imagen" />
+                        </label>
+                        }
+                        else
+                        {
+                        @Html.Raw("No hay imagen")
+                        }
+                            @Html.HiddenFor(m => m.file)
+                        </div>
+                    </div>
+
+                    <div class="form-group hidden imgdiv">
+                        @Html.Label("Imagen", new { @class = "col-md-2 control-label" })
+                        <div class="col-md-10">
+                            <label class="" style="cursor:pointer">
+                                <input class="btn btn-default btn-file" type="file" name="ImageData" accept="image/*">
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2">Observaciones:</label>
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.observaciones, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
+                            @Html.ValidationMessageFor(model => model.observaciones, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group recursos">
+                        @Html.Label("Disponibles", new { @class = "col-md-offset-2 col-md-2 control-label", @style = "text-align:center;margin-left:195px;" })
+                        @Html.Label("Responsables", new { @class = "col-md-offset-2  col-md-2 control-label required", @style = "text-align:center;margin-left:10px;margin-bottom:10px" })
+                        <div class="col-md-offset-2 col-md-10" style="margin-bottom:25px">
+                            @Html.ListBoxFor(m => m.equipo, new MultiSelectList(ViewBag.DesarrolladoresDisp, "cedula", "nombre"), new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;", @disabled = "disabled", @class = "editFields" })
+                            @Html.ValidationMessageFor(model => model.equipo, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="panel panel-info">
+                <div class="panel-heading"><label>Datos de Estimación</label></div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="control-label col-md-2 required">Prioridad:</label>
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.prioridad, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
+                            @Html.ValidationMessageFor(model => model.prioridad, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2 required">Esfuerzo:</label>
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.esfuerzo, new { htmlAttributes = new { @class = "form-control editFields", @disabled = "disabled" } })
+                            @Html.ValidationMessageFor(model => model.esfuerzo, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2 required">Fecha Inicial:</label>
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.fechaInicial, new { htmlAttributes = new { @class = "form-control editFields datePicker", @disabled = "disabled" } })
+                            @Html.ValidationMessageFor(model => model.fechaInicial, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2">Fecha Final:</label>
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.fechaFinal, new { htmlAttributes = new { @class = "form-control editFields datePicker", @disabled = "disabled" } })
+                            @Html.ValidationMessageFor(model => model.fechaFinal, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="panel panel-info">
+                <div class="panel-heading"><label>Datos Generales</label></div>
+                <div class="panel-body">
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2 required">Estado:</label>
+                        <div class="col-md-10">
+                            @Html.DropDownListFor(model => model.estado, (SelectList)ViewBag.Estados, new { @class = "form-control editFields", @disabled = "disabled", @style = "height:30px;border-radius:4px" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2 required">Solicitado Por:</label>
+                        <div class="col-md-10">
+                            @Html.DropDownListFor(model => model.solicitadoPor, (SelectList)ViewBag.clientes, new { @class = "form-control editFields", @disabled = "disabled", @style = "height:30px;border-radius:4px" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2 required">Creado Por:</label>
+                        <div class="col-md-10">
+                            @Html.DropDownListFor(model => model.creadoPor, (SelectList)ViewBag.desarrolladores, new { @class = "form-control editFields", @disabled = "disabled", @style = "height:30px;border-radius:4px" })
+                            @Html.ValidationMessageFor(model => model.creadoPor, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        }
+
+
+        @if (Model.tipoSolicitud.Equals("Eliminar"))
+        {
+            <div class="panel panel-info">
+                <div class="panel-heading"><label>Datos de la Solicitud de Cambio</label></div>
+                <div class="panel-body">
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2 required">Código:</label>
+                        <div class="col-md-10">
+                            @Html.DisplayFor(m => m.codigo, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.codigo, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2 required">Nombre:</label>
+                        <div class="col-md-10">
+                            @Html.DisplayFor(m => m.proyecto, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-2 required">Descripción:</label>
+                        <div class="col-md-10">
+                            @Html.DisplayFor(m => m.descripcion, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.descripcion, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.criteriosAceptacion, new { @class = "col-md-2 control-label required" })
+                        @Html.HiddenFor(m => m.criteriosAceptacion, new { @id = "output" })
+                        <div class="col-md-10" style="margin-bottom:25px">
+                            <div id="textboxes">
+                                <div class='row'><div id='textbox0'><div class='col-md-4'><textarea class='multitextbox form-control multitextbox0 something ' disabled="true" oninput=update_output() cols='30' rows='2' style='border-radius:4px'></textarea></div> <div class='col-md-1'></div> <br /> <br /> <br />  </div></div>
+                            </div>
+                        </div>
+                        @Html.ValidationMessageFor(m => m.criteriosAceptacion, "", new { @class = "text-danger" })
+                    </div>
+
+
+                    <div class="form-group showimgdiv">
+                        @Html.Label("Imagen", new { @class = "col-md-2 control-label" })
+                        <div class="col-md-10">
+                            @if (Model.file != "")
+                    {
+                                <label class="" style="cursor:pointer">
+                                    <img id="myImg" src="data:image/png;base64,@Html.DisplayFor(m => m.file)" width="100px" data-toggle="modal" data-target="#myModal" class="imagen" />
+                                </label>
+                            }
+                            else
+                            {
+                                @Html.Raw("No hay imagen")
+                            }
+                            @Html.HiddenFor(m => m.file)
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2">Observaciones:</label>
+                        <div class="col-md-10">
+                            @Html.DisplayFor(m => m.observaciones, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.observaciones, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group recursos">
+                        @Html.Label("Disponibles", new { @class = "col-md-offset-2 col-md-2 control-label", @style = "text-align:center;margin-left:195px;" })
+                        @Html.Label("Responsables", new { @class = "col-md-offset-2  col-md-2 control-label required", @style = "text-align:center;margin-left:10px;margin-bottom:10px" })
+                        <div class="col-md-offset-2 col-md-10" style="margin-bottom:25px">
+                            @Html.ListBoxFor(m => m.equipo, new MultiSelectList(ViewBag.DesarrolladoresDisp, "cedula", "nombre"), new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;",  @disabled = "true",  @class = "something" })
+                            @Html.ValidationMessageFor(model => model.equipo, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="panel panel-info">
+                <div class="panel-heading"><label>Datos de Estimación</label></div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="control-label col-md-2 required">Prioridad:</label>
+                        <div class="col-md-10">
+                            @Html.DisplayFor(m => m.prioridad, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.prioridad, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2 required">Esfuerzo:</label>
+                        <div class="col-md-10">
+                            @Html.DisplayFor(m => m.esfuerzo, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.esfuerzo, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2 required">Fecha Inicial:</label>
+                        <div class="col-md-10">
+                            @Html.DisplayFor(m => m.fechaInicial, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.fechaInicial, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2">Fecha Final:</label>
+                        <div class="col-md-10">
+                            @Html.DisplayFor(m => m.fechaFinal, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.fechaFinal, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <div class="panel panel-info">
+                <div class="panel-heading"><label>Datos Generales</label></div>
+                <div class="panel-body">
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2 required">Estado:</label>
+                        <div class="col-md-10">
+                            @Html.DropDownListFor(model => model.estado, (SelectList)ViewBag.Estados, new { @class = "form-control something", @disabled = "disabled", @style = "height:30px;border-radius:4px" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2 required">Solicitado Por:</label>
+                        <div class="col-md-10">
+                            @Html.DropDownListFor(model => model.solicitadoPor, (SelectList)ViewBag.clientes, new { @class = "form-control something", @disabled = "disabled", @style = "height:30px;border-radius:4px" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-2 required">Creado Por:</label>
+                        <div class="col-md-10">
+                            @Html.DropDownListFor(model => model.creadoPor, (SelectList)ViewBag.desarrolladores, new { @class = "form-control something", @disabled = "disabled", @style = "height:30px;border-radius:4px" })
+                            @Html.ValidationMessageFor(model => model.creadoPor, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        }
+
+    </div>
+
+
+
+
+=======
         
 
 
@@ -306,6 +658,7 @@ function load_all() {
           </div>
         </div>
     </div>
+>>>>>>> cd308be48d81646752c8c35a6f6a383e36f0cd26
 
     <div class="form-group editBtns" style="display:none">
         <div class="col-md-offset-2 col-md-10">
@@ -331,6 +684,11 @@ function load_all() {
         };
     </script>
 
+<<<<<<< HEAD
+
+
+=======
+>>>>>>> cd308be48d81646752c8c35a6f6a383e36f0cd26
             }
 
 @if (Model.estadoSolicitud.Equals("En revisión"))
@@ -341,10 +699,17 @@ function load_all() {
             <div class="modal-content">
                 <div class="modal-header" style="background-color:#d61d1d;color:#FFFFFF">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
+<<<<<<< HEAD
+                    <h4 class="modal-title">Eliminar Solicitud de Cambio</h4>
+                </div>
+                <div class="modal-body" style="padding-bottom:0px">
+                    <p>Seguro que deseas eliminar la solicitud de cambio @(Model.nombre)?</p>
+=======
                     <h4 class="modal-title">Eliminar Requerimiento</h4>
                 </div>
                 <div class="modal-body" style="padding-bottom:0px">
                     <p>Seguro que deseas eliminar el requerimiento @(Model.nombre)?</p>
+>>>>>>> cd308be48d81646752c8c35a6f6a383e36f0cd26
                     <p style="color:red"><sub>*Esta acción es irreversible</sub></p>
                 </div>
                 <div class="modal-footer">
@@ -355,6 +720,10 @@ function load_all() {
                         @Html.HiddenFor(m => m.id)
                         @Html.HiddenFor(m => m.idReqActual)
                         @Html.HiddenFor(m => m.idReqSolicitud)
+<<<<<<< HEAD
+                        @Html.HiddenFor(m => m.proyecto)
+=======
+>>>>>>> cd308be48d81646752c8c35a6f6a383e36f0cd26
                         <button type="submit" class="btn btn-danger">Eliminar</button>
                     }
                 </div>
@@ -408,7 +777,11 @@ function load_all() {
         $('.editFields').attr("disabled", false);
         $('.ms-elem-selectable').removeClass('disabled');
         $('.ms-elem-selection').removeClass('disabled');
+<<<<<<< HEAD
+        $('#subtitle').html("Modificar Solicitud");
+=======
         $('#subtitle').html("Modificar Requerimiento");
+>>>>>>> cd308be48d81646752c8c35a6f6a383e36f0cd26
         $('.imgdiv').removeClass("hidden");
         $('.showimgdiv').addClass("hidden");
         $('.minusbutton').show();
@@ -416,7 +789,11 @@ function load_all() {
     }
 
     function cambiarIntro() {
+<<<<<<< HEAD
+        $('.datastep1').attr("data-intro", "Esta es la pantalla donde se puede modificar una solicitud de cambio");
+=======
         $('.datastep1').attr("data-intro", "Esta es la pantalla donde se puede modificar un requerimiento");
+>>>>>>> cd308be48d81646752c8c35a6f6a383e36f0cd26
         $('.camposdiv').attr("data-intro", "Estos son los campos donde se puede cambiar la información del usuario");
         $('.botcritac').attr("data-step", @ayudasActuales);
         @{ ayudasActuales++; }
