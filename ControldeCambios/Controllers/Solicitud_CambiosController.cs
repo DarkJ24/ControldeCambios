@@ -576,6 +576,317 @@ namespace ControldeCambios.Controllers
             return View(modelo);    // Se retorna la vista al modelo luego de modificar los datos
         }
 
+
+
+
+        // GET: Crear Solicitud_Cambios
+        public ActionResult Detalles(string id, int? page)
+        {
+            if (!revisarPermisos("Consultar Detalles de Requerimiento"))   // Revisa los permisos del usuario accediendo a la pantalla
+            {
+                //Despliega mensaje en caso de no poder modificar un requerimiento
+                this.AddToastMessage("Acceso Denegado", "No tienes permiso para ver detalles de requerimientos!", ToastType.Warning);
+                return RedirectToAction("Index", "Home");
+            }
+            if (id == null) // Si no existe el requerimiento, redirecciona a error
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            SolicitudCambiosModel modelo = new SolicitudCambiosModel();   // Crea un modelo y lo llena con los datos del requerimiento
+            var solicitud_cambio = baseDatos.Solicitud_Cambios.Find(Int32.Parse(id));
+            if (solicitud_cambio == null)
+            {
+                return HttpNotFound();
+            }
+            modelo.id = solicitud_cambio.id;
+            modelo.proyecto = solicitud_cambio.proyecto;
+            modelo.estadoSolicitud = solicitud_cambio.estado;
+            modelo.tipoSolicitud = solicitud_cambio.tipo;
+            modelo.razon = solicitud_cambio.razon;
+            modelo.solicitadoPorSolicitud = solicitud_cambio.solicitadoPor;
+            modelo.solicitadoEn = solicitud_cambio.solicitadoEn.ToString("MM/dd/yyyy");
+
+            if (solicitud_cambio.aprobadoEn != null)
+            {
+                modelo.aprobadoEn = solicitud_cambio.aprobadoEn.Value.ToString("MM/dd/yyyy");
+            }
+            modelo.aprobadoPor = solicitud_cambio.aprobadoPor;
+            modelo.idReqActual = solicitud_cambio.req1;
+            modelo.idReqSolicitud = solicitud_cambio.req2;
+
+            int? idReq;
+
+            if (solicitud_cambio.tipo == "Modificar")
+            {
+                idReq = modelo.idReqSolicitud;
+            }else
+            {
+                idReq = modelo.idReqActual;
+            }
+
+            var requerimiento = baseDatos.Requerimientos.Find(idReq);   // que entro como parametro
+            if (requerimiento == null)
+            {
+                return HttpNotFound();
+            }
+
+            /*******************/
+            modelo.codigo = requerimiento.codigo;
+            modelo.nombre = requerimiento.nombre;
+            modelo.descripcion = requerimiento.descripcion;
+            modelo.solicitadoPor = requerimiento.solicitadoPor;
+            modelo.creadoPor = requerimiento.creadoPor;
+            modelo.prioridad = requerimiento.prioridad.ToString();
+            modelo.esfuerzo = requerimiento.esfuerzo.ToString();
+            modelo.fechaInicial = requerimiento.creadoEn.ToString("MM/dd/yyyy");
+            if (requerimiento.finalizaEn != null)
+            {
+                modelo.fechaFinal = (requerimiento.finalizaEn ?? DateTime.Now).ToString("MM/dd/yyyy");
+            }
+            modelo.estado = requerimiento.estado;
+            modelo.observaciones = requerimiento.observaciones;
+
+
+            if (requerimiento.imagen != null)
+            {
+                modelo.file = HttpUtility.UrlEncode(Convert.ToBase64String(requerimiento.imagen));
+            }
+            else
+            {
+                modelo.file = "";
+            }
+
+            modelo.equipo = new List<string>();     // Se llena la variable equipo con el equipo ya asignado a este requerimiento, si ya hay uno
+            foreach (var des in requerimiento.Usuarios.ToList())
+            {
+                modelo.equipo.Add(des.cedula);
+            }
+
+            modelo.criteriosAceptacion = requerimiento.Requerimientos_Cri_Acep.Select(c => c.criterio).Aggregate((acc, x) => acc + "|" + x);    // Se agrega a la lista de criterios de aceptacion 
+            List<Usuario> listaDesarrolladores = new List<Usuario>();       // Se inicializan listas que se usan a traves a continuacion
+            List<Modulo> listaModulos = new List<Modulo>();
+            List<Estado_Requerimientos> listaEstadoRequerimientos = new List<Estado_Requerimientos>();
+            List<Usuario> listaClientes = new List<Usuario>();
+            string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
+            //Requerido para formar el equipo de trabajo
+            foreach (var proyEquipo in baseDatos.Proyectos.Find(requerimiento.proyecto).Proyecto_Equipo)
+            {
+                listaDesarrolladores.Add(baseDatos.Usuarios.Find(proyEquipo.usuario));
+            }
+            foreach (var user in context.Users.ToArray())
+            {
+                if (user.Roles.First().RoleId.Equals(clienteRol))
+                {
+                    listaClientes.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
+                }
+            }
+
+
+
+            ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
+            ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");
+            ViewBag.DesarrolladoresDisp = listaDesarrolladores;
+            ViewBag.Estados = new SelectList(baseDatos.Estado_Proyecto.ToList(), "nombre", "nombre");
+            return View(modelo);        // Se retorna la vista al modelo luego de cargar los datos
+            /*******************/
+
+
+        }
+
+        // POST: Crear Solicitud de Cambio
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Detalles(SolicitudCambiosModel modelo, HttpPostedFileBase ImageData)
+        {
+            if (ModelState.IsValid)     // Verifica si el modelo que entra como parametro es valido para modificar
+            {
+
+                var solicitud_cambio = baseDatos.Solicitud_Cambios.Find(modelo.id);
+                if (solicitud_cambio == null)
+                {
+                    return HttpNotFound();
+                }
+                solicitud_cambio.id = modelo.id;
+                solicitud_cambio.proyecto = modelo.proyecto;
+                solicitud_cambio.estado = modelo.estado;
+                solicitud_cambio.tipo = modelo.tipoSolicitud;
+                solicitud_cambio.razon = modelo.razon;
+                solicitud_cambio.solicitadoPor = modelo.solicitadoPor;
+                solicitud_cambio.solicitadoEn = DateTime.ParseExact(modelo.solicitadoEn, "MM/dd/yyyy", null);
+                if (solicitud_cambio.aprobadoEn != null)
+                {
+                    solicitud_cambio.aprobadoEn = DateTime.ParseExact(modelo.aprobadoEn, "MM/dd/yyyy", null);
+                }
+
+                solicitud_cambio.aprobadoPor = modelo.aprobadoPor;
+                solicitud_cambio.req1 = modelo.idReqActual;
+                solicitud_cambio.req2 = modelo.idReqSolicitud;
+
+                var estado = baseDatos.Estado_Solicitud.Find(modelo.estadoSolicitud);
+                solicitud_cambio.Estado_Solicitud = estado;
+                var requerimiento = baseDatos.Requerimientos.Find(modelo.idReqSolicitud);   // Se busca el modelo en la base y se cambian sus datos por los
+                requerimiento.nombre = modelo.nombre;                           // del modelo que entra como parametro
+                requerimiento.codigo = modelo.codigo;
+                requerimiento.creadoPor = modelo.creadoPor;
+                requerimiento.descripcion = modelo.descripcion;
+                requerimiento.solicitadoPor = modelo.solicitadoPor;
+                requerimiento.prioridad = Int32.Parse(modelo.prioridad);
+                requerimiento.esfuerzo = Int32.Parse(modelo.esfuerzo);
+                requerimiento.creadoEn = DateTime.ParseExact(modelo.fechaInicial, "MM/dd/yyyy", null);
+                if (modelo.fechaFinal != null)
+                {
+                    requerimiento.finalizaEn = DateTime.ParseExact(modelo.fechaFinal, "MM/dd/yyyy", null);
+                }
+                requerimiento.estado = modelo.estado;
+                requerimiento.observaciones = modelo.observaciones;
+                requerimiento.proyecto = modelo.proyecto;
+                requerimiento.Usuarios = new List<Usuario>();
+                if (modelo.equipo != null)
+                {
+                    foreach (var desarrollador in modelo.equipo)
+                    {
+                        requerimiento.Usuarios.Add(baseDatos.Usuarios.Find(desarrollador));
+                    }
+                }
+
+                if (ImageData != null)
+                {
+                    var array = new Byte[ImageData.ContentLength];
+                    ImageData.InputStream.Position = 0;
+                    ImageData.InputStream.Read(array, 0, ImageData.ContentLength);
+
+                    requerimiento.imagen = array;
+                }
+                else
+                {
+                    if (modelo.file == "")
+                    {
+                        requerimiento.imagen = null;
+                    }
+                }
+
+                var reqcriacs = baseDatos.Requerimientos.Find(modelo.id).Requerimientos_Cri_Acep.ToList();
+
+                foreach (var reqcriac in reqcriacs)
+                {
+                    baseDatos.Entry(reqcriac).State = System.Data.Entity.EntityState.Deleted;
+                }
+                //Se hace el split para separar los criterios de aceptación y meterlos en una lista
+                var criterios = modelo.criteriosAceptacion.Split('|').ToList();
+
+                //Se crea la lista de criterios de aceptacion que puede ser expandible
+                var criterio_list = new List<Requerimientos_Cri_Acep>();
+                foreach (var criterio in criterios)
+                {
+                    var cri_ac = new Requerimientos_Cri_Acep();
+                    cri_ac.criterio = criterio;
+                    criterio_list.Add(cri_ac);
+                }
+
+                requerimiento.Requerimientos_Cri_Acep = criterio_list;
+
+
+                baseDatos.Entry(solicitud_cambio).State = System.Data.Entity.EntityState.Modified;     // Con esta linea se notifica a la base que se hacen los cambios
+                baseDatos.Entry(requerimiento).State = System.Data.Entity.EntityState.Modified;     // Con esta linea se notifica a la base que se hacen los cambios
+                baseDatos.SaveChanges();    // Se guardan los cambios en la base
+
+                var sprints = baseDatos.Requerimientos.Find(modelo.idReqActual).Modulo1.Sprint_Modulos.Select(x => x.sprint);
+                foreach (var sprint in sprints)
+                {
+                    updateSprintPoints(modelo.proyecto, sprint);
+                }
+                this.AddToastMessage("Requerimiento Modificado", "La solicitud de cambio del requerimiento " + modelo.nombre + " se ha modificado correctamente.", ToastType.Success);      // Se muestra un mensaje de confirmacion
+                return RedirectToAction("Detalles", "Solicitud_Cambios", new { id = solicitud_cambio.id });       // Se carga el requerimiento modificado en la pantalla
+
+            }
+
+            List<Usuario> listaDesarrolladores = new List<Usuario>();
+            List<Usuario> listaClientes = new List<Usuario>();
+            string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
+            string desarrolladorRol = context.Roles.Where(m => m.Name == "Desarrollador").First().Id;
+
+            foreach (var user in context.Users.ToArray())                   // En esta seccion se cargan las listas que despliegan los
+            {                                                               // desarrolladores y usuarios relacionados con el requerimiento
+                if (user.Roles.First().RoleId.Equals(clienteRol))           // para modificarlos
+                {
+                    listaClientes.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
+                }
+                else
+                {
+                    if (user.Roles.First().RoleId.Equals(desarrolladorRol))
+                    {
+                        listaDesarrolladores.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
+                    }
+                }
+            }
+
+            ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");     // Se hacen unas validaciones de permisos y se
+            ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");                   // cargan los Viewbags necesitados en la vista
+            ViewBag.DesarrolladoresDisp = listaDesarrolladores;
+            ViewBag.Estados = new SelectList(baseDatos.Estado_Proyecto.ToList(), "nombre", "nombre"); ;
+
+            return View(modelo);    // Se retorna la vista al modelo luego de modificar los datos
+        }
+
+
+
+        /// <summary>
+        /// Cuenta la cantidad de puntos que están "en progreso"
+        /// </summary>
+        /// <param name="Proyecto"> El proyecto de donde se va a contar.</param>
+        /// <param name="sprint"> El sprint de donde se va a contar.</param>
+        private void updateSprintPoints(string Proyecto, int sprint)
+        {
+
+            var sprint_actual = baseDatos.Sprints.Find(Proyecto, sprint);
+            // busca el dia actual o el dia donde comienza el sprint, el que sea el maximo
+            var hoy = DateTime.Today < sprint_actual.fechaInicio ? sprint_actual.fechaInicio : DateTime.Today;
+
+            //encontrar la tupla en la tabla Progreso_Sprint que cumple que el día es igual al maximo entre hoy y el primer día del sprint,
+            // y esta en el proyecto y sprint pedido
+            var progreso_hoy = baseDatos.Progreso_Sprint.Where(x => x.sprintProyecto == Proyecto && x.sprintNumero == sprint &&
+            x.fecha.Year == hoy.Year
+            && x.fecha.Month == hoy.Month
+            && x.fecha.Day == hoy.Day
+            ).FirstOrDefault();
+
+            //sirve para revisar si se ha modificado la tupla
+            var modificado = true;
+
+            // si no hay un progreso_sprint creado para ese día, crearlo
+            if (progreso_hoy == default(Progreso_Sprint))
+            {
+                progreso_hoy = new Progreso_Sprint();
+                progreso_hoy.fecha = hoy;
+                progreso_hoy.sprintNumero = sprint;
+                progreso_hoy.sprintProyecto = Proyecto;
+                modificado = false;
+            }
+
+            // luego contar los puntos para ese progreso_sprint
+            var puntos = sprint_actual.Sprint_Modulos
+                .Select(m => baseDatos.Modulos
+                    .Find(m.proyecto, m.modulo).Requerimientos
+                        .Select(x => x.estado == "Finalizado" ? 0 : (x.esfuerzo ?? 0))
+                        .Sum())
+                .Sum();
+            // asignar los puntos
+            progreso_hoy.puntos = puntos;
+
+            //actualizar si fue modificado, sino agregarlo
+            if (modificado)
+            {
+                baseDatos.Entry(progreso_hoy).State = System.Data.Entity.EntityState.Modified;
+            }
+            else
+            {
+                baseDatos.Progreso_Sprint.Add(progreso_hoy);
+            }
+
+            baseDatos.SaveChanges();
+        }
+
+
         List<Solicitud_Cambios> getRequerimientos(List<Solicitud_Cambios> solicitudes)
         {
             if (solicitudes != null && solicitudes.Count > 0)
@@ -600,6 +911,363 @@ namespace ControldeCambios.Controllers
             }
         }
 
+<<<<<<< HEAD
+
+        /// <summary>
+        /// Funcionalidad de borrar requerimientos.
+        /// </summary>
+        /// <returns>Pagina de Index</returns>
+        /// <param name="model"> Modelo con la informacion del Usuario a borrar.</param>
+        //POST: Delete
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Borrar(SolicitudCambiosModel modelo)
+        {
+            var solicitud = baseDatos.Solicitud_Cambios.Find(modelo.id);
+            String proyecto = solicitud.proyecto;
+
+            baseDatos.Entry(solicitud).State = System.Data.Entity.EntityState.Deleted;
+            baseDatos.SaveChanges();
+
+            this.AddToastMessage("Solicitud de Cambio Borrada", "La solicitud de cambio " + modelo.nombre + " se ha borrado correctamente.", ToastType.Success);
+            return RedirectToAction("Index", "Solicitud_Cambios", new { proyecto = proyecto });
+=======
+		
+		
+		
+        // GET: Crear Solicitud_Cambios
+        public ActionResult Detalles(string id, int? page)
+        {
+            if (!revisarPermisos("Consultar Detalles de Requerimiento"))   // Revisa los permisos del usuario accediendo a la pantalla
+            {
+                //Despliega mensaje en caso de no poder modificar un requerimiento
+                this.AddToastMessage("Acceso Denegado", "No tienes permiso para ver detalles de requerimientos!", ToastType.Warning);
+                return RedirectToAction("Index", "Home");
+            }
+            if (id == null) // Si no existe el requerimiento, redirecciona a error
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            SolicitudCambiosModel modelo = new SolicitudCambiosModel();   // Crea un modelo y lo llena con los datos del requerimiento
+            var solicitud_cambio = baseDatos.Solicitud_Cambios.Find(Int32.Parse(id));
+            if (solicitud_cambio == null)
+            {
+                return HttpNotFound();
+            }
+            modelo.id = solicitud_cambio.id;
+            modelo.proyecto = solicitud_cambio.proyecto;
+            modelo.estadoSolicitud = solicitud_cambio.estado;
+            modelo.tipoSolicitud = solicitud_cambio.tipo;
+            modelo.razon = solicitud_cambio.razon;
+            modelo.solicitadoPorSolicitud = solicitud_cambio.solicitadoPor;
+            modelo.solicitadoEn = solicitud_cambio.solicitadoEn.ToString("MM/dd/yyyy");
+
+            if (solicitud_cambio.aprobadoEn != null)
+            {
+                modelo.aprobadoEn = solicitud_cambio.aprobadoEn.Value.ToString("MM/dd/yyyy");
+            }
+            modelo.aprobadoPor = solicitud_cambio.aprobadoPor;
+            modelo.idReqActual = solicitud_cambio.req1;
+            modelo.idReqSolicitud = solicitud_cambio.req2;
+            
+
+            var requerimiento = baseDatos.Requerimientos.Find(modelo.idReqSolicitud);   // que entro como parametro
+            if (requerimiento == null)
+            {
+                return HttpNotFound();
+            }
+
+            /*******************/
+            modelo.codigo = requerimiento.codigo;
+            modelo.nombre = requerimiento.nombre;
+            modelo.descripcion = requerimiento.descripcion;
+            modelo.solicitadoPor = requerimiento.solicitadoPor;
+            modelo.creadoPor = requerimiento.creadoPor;
+            modelo.prioridad = requerimiento.prioridad.ToString();
+            modelo.esfuerzo = requerimiento.esfuerzo.ToString();
+            modelo.fechaInicial = requerimiento.creadoEn.ToString("MM/dd/yyyy");
+            if (requerimiento.finalizaEn != null)
+            {
+                modelo.fechaFinal = (requerimiento.finalizaEn ?? DateTime.Now).ToString("MM/dd/yyyy");
+            }
+            modelo.estado = requerimiento.estado;
+            modelo.observaciones = requerimiento.observaciones;
+
+
+            if (requerimiento.imagen != null)
+            {
+                modelo.file = HttpUtility.UrlEncode(Convert.ToBase64String(requerimiento.imagen));
+            }
+            else
+            {
+                modelo.file = "";
+            }
+
+            modelo.equipo = new List<string>();     // Se llena la variable equipo con el equipo ya asignado a este requerimiento, si ya hay uno
+            foreach (var des in requerimiento.Usuarios.ToList())
+            {
+                modelo.equipo.Add(des.cedula);
+            }
+
+            modelo.criteriosAceptacion = requerimiento.Requerimientos_Cri_Acep.Select(c => c.criterio).Aggregate((acc, x) => acc + "|" + x);    // Se agrega a la lista de criterios de aceptacion 
+            List<Usuario> listaDesarrolladores = new List<Usuario>();       // Se inicializan listas que se usan a traves a continuacion
+            List<Modulo> listaModulos = new List<Modulo>();
+            List<Estado_Requerimientos> listaEstadoRequerimientos = new List<Estado_Requerimientos>();
+            List<Usuario> listaClientes = new List<Usuario>();
+            string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
+            //Requerido para formar el equipo de trabajo
+            foreach (var proyEquipo in baseDatos.Proyectos.Find(requerimiento.proyecto).Proyecto_Equipo)
+            {
+                listaDesarrolladores.Add(baseDatos.Usuarios.Find(proyEquipo.usuario));
+            }
+            foreach (var user in context.Users.ToArray())
+            {
+                if (user.Roles.First().RoleId.Equals(clienteRol))
+                {
+                    listaClientes.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
+                }
+            }
+
+
+
+            ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
+            ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");
+            ViewBag.DesarrolladoresDisp = listaDesarrolladores;
+            ViewBag.Estados = new SelectList(baseDatos.Estado_Proyecto.ToList(), "nombre", "nombre");
+            return View(modelo);        // Se retorna la vista al modelo luego de cargar los datos
+            /*******************/
+
+
+        }
+
+        // POST: Crear Solicitud de Cambio
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Detalles(SolicitudCambiosModel modelo, HttpPostedFileBase ImageData)
+        {
+            if (ModelState.IsValid)     // Verifica si el modelo que entra como parametro es valido para modificar
+            {
+
+                var solicitud_cambio = baseDatos.Solicitud_Cambios.Find(modelo.id);
+                if (solicitud_cambio == null)
+                {
+                    return HttpNotFound();
+                }
+                solicitud_cambio.id = modelo.id;
+                solicitud_cambio.proyecto = modelo.proyecto;
+                solicitud_cambio.estado = modelo.estado;
+                solicitud_cambio.tipo = modelo.tipoSolicitud;
+                solicitud_cambio.razon = modelo.razon;
+                solicitud_cambio.solicitadoPor = modelo.solicitadoPor;
+                solicitud_cambio.solicitadoEn = DateTime.ParseExact(modelo.solicitadoEn, "MM/dd/yyyy", null);
+                if (solicitud_cambio.aprobadoEn!= null)
+                {
+                    solicitud_cambio.aprobadoEn = DateTime.ParseExact(modelo.aprobadoEn, "MM/dd/yyyy", null);
+                }
+                
+                solicitud_cambio.aprobadoPor = modelo.aprobadoPor;
+                solicitud_cambio.req1 = modelo.idReqActual;
+                solicitud_cambio.req2 = modelo.idReqSolicitud;
+                
+
+                var requerimiento = baseDatos.Requerimientos.Find(modelo.idReqSolicitud);   // Se busca el modelo en la base y se cambian sus datos por los
+                requerimiento.nombre = modelo.nombre;                           // del modelo que entra como parametro
+                requerimiento.codigo = modelo.codigo;
+                requerimiento.creadoPor = modelo.creadoPor;
+                requerimiento.descripcion = modelo.descripcion;
+                requerimiento.solicitadoPor = modelo.solicitadoPor;
+                requerimiento.prioridad = Int32.Parse(modelo.prioridad);
+                requerimiento.esfuerzo = Int32.Parse(modelo.esfuerzo);
+                requerimiento.creadoEn = DateTime.ParseExact(modelo.fechaInicial, "MM/dd/yyyy", null);
+                if (modelo.fechaFinal != null)
+                {
+                    requerimiento.finalizaEn = DateTime.ParseExact(modelo.fechaFinal, "MM/dd/yyyy", null);
+                }
+                requerimiento.estado = modelo.estado;
+                requerimiento.observaciones = modelo.observaciones;
+                requerimiento.proyecto = modelo.proyecto;
+                requerimiento.Usuarios = new List<Usuario>();
+                if (modelo.equipo != null)
+                {
+                    foreach (var desarrollador in modelo.equipo)
+                    {
+                        requerimiento.Usuarios.Add(baseDatos.Usuarios.Find(desarrollador));
+                    }
+                }
+
+                if (ImageData != null)
+                {
+                    var array = new Byte[ImageData.ContentLength];
+                    ImageData.InputStream.Position = 0;
+                    ImageData.InputStream.Read(array, 0, ImageData.ContentLength);
+
+                    requerimiento.imagen = array;
+                }
+                else
+                {
+                    if (modelo.file == "")
+                    {
+                        requerimiento.imagen = null;
+                    }
+                }
+
+                var reqcriacs = baseDatos.Requerimientos.Find(modelo.id).Requerimientos_Cri_Acep.ToList();
+
+                foreach (var reqcriac in reqcriacs)
+                {
+                    baseDatos.Entry(reqcriac).State = System.Data.Entity.EntityState.Deleted;
+                }
+                //Se hace el split para separar los criterios de aceptación y meterlos en una lista
+                var criterios = modelo.criteriosAceptacion.Split('|').ToList();
+
+                //Se crea la lista de criterios de aceptacion que puede ser expandible
+                var criterio_list = new List<Requerimientos_Cri_Acep>();
+                foreach (var criterio in criterios)
+                {
+                    var cri_ac = new Requerimientos_Cri_Acep();
+                    cri_ac.criterio = criterio;
+                    criterio_list.Add(cri_ac);
+                }
+
+                requerimiento.Requerimientos_Cri_Acep = criterio_list;
+
+
+                baseDatos.Entry(solicitud_cambio).State = System.Data.Entity.EntityState.Modified;     // Con esta linea se notifica a la base que se hacen los cambios
+                baseDatos.Entry(requerimiento).State = System.Data.Entity.EntityState.Modified;     // Con esta linea se notifica a la base que se hacen los cambios
+                baseDatos.SaveChanges();    // Se guardan los cambios en la base
+
+                var sprints = baseDatos.Requerimientos.Find(modelo.idReqActual).Modulo1.Sprint_Modulos.Select(x => x.sprint);
+                foreach (var sprint in sprints)
+                {
+                    updateSprintPoints(modelo.proyecto, sprint);
+                }
+                this.AddToastMessage("Requerimiento Modificado", "La solicitud de cambio del requerimiento " + modelo.nombre + " se ha modificado correctamente.", ToastType.Success);      // Se muestra un mensaje de confirmacion
+                return RedirectToAction("Detalles", "Solicitud_Cambios", new { id = solicitud_cambio.id });       // Se carga el requerimiento modificado en la pantalla
+
+            }
+
+            List<Usuario> listaDesarrolladores = new List<Usuario>();
+            List<Usuario> listaClientes = new List<Usuario>();
+            string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
+            string desarrolladorRol = context.Roles.Where(m => m.Name == "Desarrollador").First().Id;
+
+            foreach (var user in context.Users.ToArray())                   // En esta seccion se cargan las listas que despliegan los
+            {                                                               // desarrolladores y usuarios relacionados con el requerimiento
+                if (user.Roles.First().RoleId.Equals(clienteRol))           // para modificarlos
+                {
+                    listaClientes.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
+                }
+                else
+                {
+                    if (user.Roles.First().RoleId.Equals(desarrolladorRol))
+                    {
+                        listaDesarrolladores.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
+                    }
+                }
+            }
+
+            ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");     // Se hacen unas validaciones de permisos y se
+            ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");                   // cargan los Viewbags necesitados en la vista
+            ViewBag.DesarrolladoresDisp = listaDesarrolladores;
+            ViewBag.Estados = new SelectList(baseDatos.Estado_Proyecto.ToList(), "nombre", "nombre"); ;
+
+            return View(modelo);    // Se retorna la vista al modelo luego de modificar los datos
+>>>>>>> cd308be48d81646752c8c35a6f6a383e36f0cd26
+        }
+
+
+
+<<<<<<< HEAD
+=======
+
+        List<Solicitud_Cambios> getRequerimientos(List<Solicitud_Cambios> solicitudes)
+        {
+            if (solicitudes != null && solicitudes.Count > 0)
+            {
+                var izquierda = new List<Solicitud_Cambios>();
+                var derecha = new List<Solicitud_Cambios>();
+                foreach (var sol in solicitudes)
+                {
+                    var izq = getRequerimientos(baseDatos.Solicitud_Cambios.Where(m => m.proyecto == sol.proyecto && m.estado == "Aprobado" && m.req2 == sol.req1).ToList());
+                    izquierda.AddRange(izq);
+                    var der = getRequerimientos(baseDatos.Solicitud_Cambios.Where(m => m.proyecto == sol.proyecto && m.estado == "Aprobado" && m.req1 == sol.req2).ToList());
+                    derecha.AddRange(der);
+                }
+                var respuesta = solicitudes;
+                respuesta.AddRange(izquierda);
+                respuesta.AddRange(derecha);
+                return respuesta;
+            }
+            else
+            {
+                return solicitudes;
+            }
+        }
+
+<<<<<<< HEAD
+
+        /// <summary>
+        /// Cuenta la cantidad de puntos que están "en progreso"
+        /// </summary>
+        /// <param name="Proyecto"> El proyecto de donde se va a contar.</param>
+        /// <param name="sprint"> El sprint de donde se va a contar.</param>
+        private void updateSprintPoints(string Proyecto, int sprint)
+        {
+
+            var sprint_actual = baseDatos.Sprints.Find(Proyecto, sprint);
+            // busca el dia actual o el dia donde comienza el sprint, el que sea el maximo
+            var hoy = DateTime.Today < sprint_actual.fechaInicio ? sprint_actual.fechaInicio : DateTime.Today;
+
+            //encontrar la tupla en la tabla Progreso_Sprint que cumple que el día es igual al maximo entre hoy y el primer día del sprint,
+            // y esta en el proyecto y sprint pedido
+            var progreso_hoy = baseDatos.Progreso_Sprint.Where(x => x.sprintProyecto == Proyecto && x.sprintNumero == sprint &&
+            x.fecha.Year == hoy.Year
+            && x.fecha.Month == hoy.Month
+            && x.fecha.Day == hoy.Day
+            ).FirstOrDefault();
+
+            //sirve para revisar si se ha modificado la tupla
+            var modificado = true;
+
+            // si no hay un progreso_sprint creado para ese día, crearlo
+            if (progreso_hoy == default(Progreso_Sprint))
+            {
+                progreso_hoy = new Progreso_Sprint();
+                progreso_hoy.fecha = hoy;
+                progreso_hoy.sprintNumero = sprint;
+                progreso_hoy.sprintProyecto = Proyecto;
+                modificado = false;
+            }
+
+            // luego contar los puntos para ese progreso_sprint
+            var puntos = sprint_actual.Sprint_Modulos
+                .Select(m => baseDatos.Modulos
+                    .Find(m.proyecto, m.modulo).Requerimientos
+                        .Select(x => x.estado == "Finalizado" ? 0 : (x.esfuerzo ?? 0))
+                        .Sum())
+                .Sum();
+            // asignar los puntos
+            progreso_hoy.puntos = puntos;
+
+            //actualizar si fue modificado, sino agregarlo
+            if (modificado)
+            {
+                baseDatos.Entry(progreso_hoy).State = System.Data.Entity.EntityState.Modified;
+            }
+            else
+            {
+                baseDatos.Progreso_Sprint.Add(progreso_hoy);
+            }
+
+            baseDatos.SaveChanges();
+        }
+
+
+		
+		
+		
+		
+>>>>>>> cd308be48d81646752c8c35a6f6a383e36f0cd26
         // POST: Crear Solicitud de Borrado
         [HttpPost]
         [ValidateAntiForgeryToken]

@@ -139,6 +139,7 @@ namespace ControldeCambios.Controllers
                 {
                     foreach (var req in model.requerimientos)
                     {
+
                         var requerimiento = baseDatos.Requerimientos.Find(Int32.Parse(req));
                         requerimiento.modulo = modulo.numero;
                         baseDatos.Entry(requerimiento).State = System.Data.Entity.EntityState.Modified;
@@ -147,9 +148,12 @@ namespace ControldeCambios.Controllers
                         {
                             foreach (var solicitud in solicitudesDeCambio)
                             {
-                                var requerimiento2 = baseDatos.Requerimientos.Find(solicitud.req2);
-                                requerimiento2.modulo = modulo.numero;
-                                baseDatos.Entry(requerimiento2).State = System.Data.Entity.EntityState.Modified;
+                                if (solicitud.tipo == "Modificar")
+                                {
+                                    var requerimiento2 = baseDatos.Requerimientos.Find(solicitud.req2);
+                                    requerimiento2.modulo = modulo.numero;
+                                    baseDatos.Entry(requerimiento2).State = System.Data.Entity.EntityState.Modified;
+                                }
                             }
                         }
                     }

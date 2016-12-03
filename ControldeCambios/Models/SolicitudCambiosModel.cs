@@ -8,6 +8,59 @@ namespace ControldeCambios.Models
 {
     public class SolicitudCambiosModel
     {
+
+
+        /// <summary>
+        /// Datos de la solicitud
+        /// </summary>
+        /// 
+        public int id { get; set; }
+
+        [Display(Name = "Proyecto")]
+        public string proyecto { get; set; }
+
+        [Display(Name = "Estado Solicitud")]
+        public string estadoSolicitud { get; set; }
+
+        [Display(Name = "Tipo Solicitud")]
+        public string tipoSolicitud { get; set; }
+
+
+        //Razones de Cambio
+        [StringLength(200, ErrorMessage = "La razón debe ser de {1} caracteres máximo"), MinLength(1, ErrorMessage = "La razón debe ser de al menos {1} caracter")]
+        [Display(Name = "Razón")]
+        [Required(ErrorMessage = "La razón es un campo requerido.")]
+        public string razon { get; set; }
+
+        [Display(Name = "Solicitado por")]
+        [Required(ErrorMessage = "El nombre del solicitante es un campo requerido.")]
+        public string solicitadoPorSolicitud { get; set; }
+
+        public string solicitadoEn { get; set; }
+
+        public string aprobadoEn { get; set; }
+
+        [Display(Name = "Aprobrado por")]
+        //[Required(ErrorMessage = "El nombre de la persona que aprueba es un campo requerido.")]
+        public string aprobadoPor { get; set; }
+
+<<<<<<< HEAD
+
+=======
+        
+>>>>>>> cd308be48d81646752c8c35a6f6a383e36f0cd26
+
+        /// <summary>
+        /// Datos del Requerimiento
+        /// </summary>
+
+        [Required(ErrorMessage = "El id de requerimiento actual es un campo requerido.")]
+        public int idReqActual { get; set; }
+
+        //[Required(ErrorMessage = "El id de requerimiento anterior es un campo requerido.")]
+        public int? idReqSolicitud { get; set; }
+
+
         [Required(ErrorMessage = "El código es un campo requerido.")]
         [StringLength(15, ErrorMessage = "El código debe ser de {1} dígitos"), MinLength(1, ErrorMessage = "El código debe ser de al menos {1} dígito")]
         [Display(Name = "Código")]
@@ -48,6 +101,13 @@ namespace ControldeCambios.Models
         [Display(Name = "Estado")]
         public string estado { get; set; }
 
+<<<<<<< HEAD
+
+=======
+    
+>>>>>>> cd308be48d81646752c8c35a6f6a383e36f0cd26
+
+
         [Display(Name = "Observaciones")]
         [RegularExpression(@"^[A-Za-z0-9\s]+$", ErrorMessage = "Las observaciones solo pueden contener números, letras y espacios")]
         public string observaciones { get; set; }
@@ -64,9 +124,7 @@ namespace ControldeCambios.Models
         //AGREGAR EQUIPO
         public List<string> equipo { get; set; }
 
-        [Display(Name = "Proyecto")]
-        public string proyecto { get; set; }
 
-        public int id { get; set; }
+
     }
 }
