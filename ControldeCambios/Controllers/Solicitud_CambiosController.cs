@@ -291,14 +291,14 @@ namespace ControldeCambios.Controllers
         // POST: /Solicitud_Cambios/Aceptar
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Aprobar(AprobarSolicitudCambioModelo model)
+        public ActionResult Aprobar(AprobarSolicitudCambioModelo model, string id)
         {
+            var solicitud = baseDatos.Solicitud_Cambios.Find(Int32.Parse(id));
+            var req1 = baseDatos.Requerimientos.Find(solicitud.req1);
+            var req2 = baseDatos.Requerimientos.Find(solicitud.req2);
+            
             if (ModelState.IsValid)
             {
-                var solicitud = new Solicitud_Cambios();
-                var req1 = baseDatos.Requerimientos.Find(solicitud.req1);
-                var req2 = baseDatos.Requerimientos.Find(solicitud.req2);
-
                 req1.categoria = "Historial";
                 req2.categoria = "Actual";
 
@@ -309,7 +309,8 @@ namespace ControldeCambios.Controllers
                 solicitud.aprobadoEn = DateTime.Now;
             }
 
-            return View(model);
+            this.AddToastMessage("Solicitud Aprobada", "La solicitud " + req2.nombre + " ha sido aprobada.", ToastType.Success);
+            return RedirectToAction("indexAprobacion", "Solicitud_Cambios", new { id = req2.id });
         }
 
 
@@ -319,27 +320,28 @@ namespace ControldeCambios.Controllers
         // POST: /Solicitud_Cambios/Rechazar
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Rechazar(AprobarSolicitudCambioModelo model)
+        public ActionResult Rechazar(AprobarSolicitudCambioModelo model, string id)
         {
-            if (ModelState.IsValid)
-            {
-                var solicitud = new Solicitud_Cambios();
-                var req1 = baseDatos.Requerimientos.Find(solicitud.req1);
-                var req2 = baseDatos.Requerimientos.Find(solicitud.req2);
+            var solicitud = baseDatos.Solicitud_Cambios.Find(Int32.Parse(id));
+            var req1 = baseDatos.Requerimientos.Find(solicitud.req1);
+            var req2 = baseDatos.Requerimientos.Find(solicitud.req2);
 
-                req1.categoria = "Actual";
-                req2.categoria = "Rechazada";
+            req1.categoria = "Actual";
+            req2.categoria = "Rechazada";
 
-                solicitud.Estado_Solicitud.nombre = "Rechazado";
-                String userIdentityId = System.Web.HttpContext.Current.User.Identity.GetUserId();
-                String usuarioActual = baseDatos.Usuarios.Where(m => m.id == userIdentityId).First().cedula;
-                solicitud.aprobadoPor = usuarioActual;
-                solicitud.aprobadoEn = DateTime.Now;
-            }
+            solicitud.Estado_Solicitud.nombre = "Rechazado";
+            String userIdentityId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+            String usuarioActual = baseDatos.Usuarios.Where(m => m.id == userIdentityId).First().cedula;
+            solicitud.aprobadoPor = usuarioActual;
+            solicitud.aprobadoEn = DateTime.Now;
 
-            return View(model);
+            baseDatos.SaveChanges();
+
+            this.AddToastMessage("Solicitud Rechazada", "La solicitud " + req2.nombre + " se ha rechazado.", ToastType.Success);
+            return RedirectToAction("indexAprobacion", "Solicitud_Cambios", new { id = req1.id });
         }
 
+        
         private bool revisarPermisos(string permiso)
         {
             String userID = System.Web.HttpContext.Current.User.Identity.GetUserId();
