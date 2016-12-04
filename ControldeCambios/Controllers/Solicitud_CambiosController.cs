@@ -184,6 +184,8 @@ namespace ControldeCambios.Controllers
             {
                 return HttpNotFound();
             }
+
+            modelo.id = id;
             
             var req1 = baseDatos.Requerimientos.Find(solicitud.req1);
             if (solicitud.tipo == "Modificar")
@@ -239,6 +241,13 @@ namespace ControldeCambios.Controllers
             modelo.proyecto = req1.proyecto;
             modelo.tipo = solicitud.tipo;
             modelo.estado = solicitud.estado;
+            if (solicitud.aprobadoEn != null)
+            {
+                modelo.aprobadoEn = (solicitud.aprobadoEn ?? DateTime.Now).ToString("MM/dd/yyyy");
+            }
+            if (!String.IsNullOrWhiteSpace(solicitud.aprobadoPor)) {
+                modelo.aprobadoPor = baseDatos.Usuarios.Find(solicitud.aprobadoPor).nombre;
+            }
             modelo.solicitadoEn = solicitud.solicitadoEn.ToString("MM/dd/yyyy");
             modelo.solicitadoPor = baseDatos.Usuarios.Find(solicitud.solicitadoPor).nombre;
             modelo.razon = solicitud.razon;
@@ -286,61 +295,123 @@ namespace ControldeCambios.Controllers
 
 
         /// <summary>
-        /// Funcionalidad para Aceptar una Solicitud de Cambio.
+        /// Funcionalidad para Aprobar o Rechazar una Solicitud de Cambio.
+        /// @param comando: Tipo (Aprobar o Rechazar)
         /// </summary>
-        // POST: /Solicitud_Cambios/Aceptar
+        // POST: /Solicitud_Cambios/Aprobar
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Aprobar(AprobarSolicitudCambioModelo model, string id)
+        public ActionResult Aprobar(AprobarSolicitudCambioModelo model, string comando, HttpPostedFileBase ImageData)
         {
-            var solicitud = baseDatos.Solicitud_Cambios.Find(Int32.Parse(id));
-            var req1 = baseDatos.Requerimientos.Find(solicitud.req1);
-            var req2 = baseDatos.Requerimientos.Find(solicitud.req2);
-            
-            if (ModelState.IsValid)
-            {
-                req1.categoria = "Historial";
-                req2.categoria = "Actual";
-
-                solicitud.Estado_Solicitud.nombre = "Aprobado";
+            var solicitud = baseDatos.Solicitud_Cambios.Find(Int32.Parse(model.id));
+            if (ModelState.IsValid) { //Tipo Modificar y Valido
+                var req1 = baseDatos.Requerimientos.Find(solicitud.req1);
+                var req2 = baseDatos.Requerimientos.Find(solicitud.req2);
+                if (comando == "Aprobar") {
+                    solicitud.estado = "Aprobado";
+                    req1.categoria = "Historial";
+                    req2.categoria = "Actual";
+                    baseDatos.Entry(req1).State = System.Data.Entity.EntityState.Modified;
+                } else {
+                    solicitud.estado = "Rechazado";
+                    req2.categoria = "Rechazada";
+                    //Falta buscar el req actual con la ultima version (en caso de hacer solicitud de una version anterior a la actual)
+                    req2.version = req1.version + 1;
+                    req2.codigo = model.codigo2;
+                    req2.nombre = model.nombre2;
+                    req2.prioridad = Int32.Parse(model.prioridad2);
+                    req2.observaciones = model.observaciones2;
+                    req2.creadoEn = DateTime.ParseExact(model.fechaInicial2, "MM/dd/yyyy", null);
+                    req2.creadoPor = model.creadoPor2;
+                    req2.descripcion = model.descripcion2;
+                    req2.esfuerzo = Int32.Parse(model.esfuerzo2);
+                    req2.estado = model.estado2;
+                    req2.finalizaEn = DateTime.ParseExact(model.fechaFinal2, "MM/dd/yyyy", null);
+                    req2.modulo = req1.modulo;
+                    req2.proyecto = req1.proyecto;
+                    req2.solicitadoPor = model.solicitadoPor2;
+                    if (ImageData != null)
+                    {
+                        var array = new Byte[ImageData.ContentLength];
+                        ImageData.InputStream.Position = 0;
+                        ImageData.InputStream.Read(array, 0, ImageData.ContentLength);
+                        req2.imagen = array;
+                    }
+                    else
+                    {
+                        if (model.file2 == "")
+                        {
+                            req2.imagen = null;
+                        }
+                        else
+                        {
+                            req2.imagen = Encoding.ASCII.GetBytes(model.file2);
+                        }
+                    }
+                }
                 String userIdentityId = System.Web.HttpContext.Current.User.Identity.GetUserId();
                 String usuarioActual = baseDatos.Usuarios.Where(m => m.id == userIdentityId).First().cedula;
                 solicitud.aprobadoPor = usuarioActual;
                 solicitud.aprobadoEn = DateTime.Now;
+                solicitud.comentario = model.comentario;
+                baseDatos.Entry(req2).State = System.Data.Entity.EntityState.Modified;
+                baseDatos.Entry(solicitud).State = System.Data.Entity.EntityState.Modified;
+                baseDatos.SaveChanges();
+                this.AddToastMessage("Solicitud Aprobada", "La solicitud de modificar " + req2.nombre + " ha sido aprobada.", ToastType.Success);
+                return RedirectToAction("indexAprobacion", "Solicitud_Cambios", new { proyecto = solicitud.proyecto });
             }
-
-            this.AddToastMessage("Solicitud Aprobada", "La solicitud " + req2.nombre + " ha sido aprobada.", ToastType.Success);
-            return RedirectToAction("indexAprobacion", "Solicitud_Cambios", new { id = req2.id });
+            if (model.tipo == "Eliminar")
+            {
+                if (!String.IsNullOrWhiteSpace(model.comentario))
+                {
+                    var req1 = baseDatos.Requerimientos.Find(solicitud.req1);
+                    if (comando == "Aprobar") {
+                        solicitud.estado = "Aprobado";
+                        req1.categoria = "Historial";
+                        baseDatos.Entry(req1).State = System.Data.Entity.EntityState.Modified;
+                    } else {
+                        solicitud.estado = "Rechazado";
+                    }
+                    String userIdentityId = System.Web.HttpContext.Current.User.Identity.GetUserId();
+                    String usuarioActual = baseDatos.Usuarios.Where(m => m.id == userIdentityId).First().cedula;
+                    solicitud.aprobadoPor = usuarioActual;
+                    solicitud.aprobadoEn = DateTime.Now;
+                    solicitud.comentario = model.comentario;
+                    baseDatos.Entry(solicitud).State = System.Data.Entity.EntityState.Modified;
+                    baseDatos.SaveChanges();
+                    this.AddToastMessage("Solicitud Aprobada", "La solicitud de eliminar " + req1.nombre + " ha sido aprobada.", ToastType.Success);
+                    return RedirectToAction("indexAprobacion", "Solicitud_Cambios", new { proyecto = solicitud.proyecto });
+                }
+                //No puso comentario
+                this.AddToastMessage("Error al "+comando+" la solicitud", "Se necesita un comentario para aprobar o rechazar la solicitud.", ToastType.Error);
+                return RedirectToAction("Aprobar", "Solicitud_Cambios", new { id = model.id });
+            }
+            //Hay algo malo en el modelo, reprocesar vista
+            List<Usuario> listaDesarrolladores = new List<Usuario>();       // Se inicializan listas que se usan a traves a continuacion
+            List<Modulo> listaModulos = new List<Modulo>();
+            List<Estado_Requerimientos> listaEstadoRequerimientos = new List<Estado_Requerimientos>();
+            List<Usuario> listaClientes = new List<Usuario>();
+            string clienteRol = context.Roles.Where(m => m.Name == "Cliente").First().Id;
+            //Requerido para formar el equipo de trabajo
+            foreach (var proyEquipo in baseDatos.Proyectos.Find(solicitud.proyecto).Proyecto_Equipo)
+            {
+                listaDesarrolladores.Add(baseDatos.Usuarios.Find(proyEquipo.usuario));
+            }
+            foreach (var user in context.Users.ToArray())
+            {
+                if (user.Roles.First().RoleId.Equals(clienteRol))
+                {
+                    listaClientes.Add(baseDatos.Usuarios.Where(m => m.id == user.Id).First());
+                }
+            }
+            ViewBag.eliminarRequerimiento = revisarPermisos("Eliminar Requerimientos");// Aqui se hacen unas validaciones de permisos 
+            ViewBag.modificarRequerimiento = revisarPermisos("Modificar Requerimientos");// y se cargan ciertos Viewbags necesitados por la vista
+            ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
+            ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");
+            ViewBag.DesarrolladoresDisp = listaDesarrolladores;
+            ViewBag.Estados = new SelectList(baseDatos.Estado_Proyecto.ToList(), "nombre", "nombre");
+            return View(model);
         }
-
-
-        /// <summary>
-        /// Funcionalidad para Rechazar una Solicitud de Cambio.
-        /// </summary>
-        // POST: /Solicitud_Cambios/Rechazar
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Rechazar(AprobarSolicitudCambioModelo model, string id)
-        {
-            var solicitud = baseDatos.Solicitud_Cambios.Find(Int32.Parse(id));
-            var req1 = baseDatos.Requerimientos.Find(solicitud.req1);
-            var req2 = baseDatos.Requerimientos.Find(solicitud.req2);
-
-            req1.categoria = "Actual";
-            req2.categoria = "Rechazada";
-
-            solicitud.Estado_Solicitud.nombre = "Rechazado";
-            String userIdentityId = System.Web.HttpContext.Current.User.Identity.GetUserId();
-            String usuarioActual = baseDatos.Usuarios.Where(m => m.id == userIdentityId).First().cedula;
-            solicitud.aprobadoPor = usuarioActual;
-            solicitud.aprobadoEn = DateTime.Now;
-
-            baseDatos.SaveChanges();
-
-            this.AddToastMessage("Solicitud Rechazada", "La solicitud " + req2.nombre + " se ha rechazado.", ToastType.Success);
-            return RedirectToAction("indexAprobacion", "Solicitud_Cambios", new { id = req1.id });
-        }
-
         
         private bool revisarPermisos(string permiso)
         {

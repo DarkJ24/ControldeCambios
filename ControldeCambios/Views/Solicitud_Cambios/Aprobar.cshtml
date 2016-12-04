@@ -62,7 +62,7 @@
 <h2>Gestión de Requerimientos</h2>
 <h4>@ViewBag.Title</h4>
 <hr />
-@using (Html.BeginForm("Aprobar", "Solicitud de Cambio", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
+@using (Html.BeginForm("Aprobar", "Solicitud_Cambios", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
 
@@ -76,11 +76,11 @@
         @*DATOS DE REQUERIMIENTO 1*@
         @if (Model.tipo == "Modificar")
         {
-            @Html.Raw("<div class='col-xs-12 col-sm-6'>");
+            @Html.Raw("<div class='col-xs-12 col-sm-6'>")
         }
         else
         {
-            @Html.Raw("<div class='col-xs-12 col-sm-12'>");
+            @Html.Raw("<div class='col-xs-12 col-sm-12'>")
         }
         <div class="panel panel-info">
             <div class="panel-heading"><label>Datos del Requerimiento Anterior</label></div>
@@ -250,11 +250,11 @@
         @*DATOS DE ESTIMACION 1*@
         @if (Model.tipo == "Modificar")
         {
-            @Html.Raw("<div class='col-xs-12 col-sm-6'>");
+            @Html.Raw("<div class='col-xs-12 col-sm-6'>")
         }
         else
         {
-            @Html.Raw("<div class='col-xs-12 col-sm-12'>");
+            @Html.Raw("<div class='col-xs-12 col-sm-12'>")
         }
             <div class="panel panel-info">
                 <div class="panel-heading"><label>Datos de Estimación del Requerimiento Anterior</label></div>
@@ -343,11 +343,11 @@
         @*DATOS GENERALES 1*@
         @if (Model.tipo == "Modificar")
         {
-            @Html.Raw("<div class='col-xs-12 col-sm-6'>");
+            @Html.Raw("<div class='col-xs-12 col-sm-6'>")
         }
         else
         {
-            @Html.Raw("<div class='col-xs-12 col-sm-12'>");
+            @Html.Raw("<div class='col-xs-12 col-sm-12'>")
         }
             <div class="panel panel-info">
                 <div class="panel-heading"><label>Datos Generales del Requerimiento Anterior</label></div>
@@ -427,6 +427,7 @@
                 <div class="col-md-10">
                     @Html.TextBoxFor(m => m.estado, new { @class = "form-control", @disabled = "disabled" })
                     @Html.ValidationMessageFor(model => model.estado, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(m => m.estado)
                 </div>
             </div>
 
@@ -435,6 +436,7 @@
                 <div class="col-md-10">
                     @Html.TextBoxFor(m => m.tipo, new { @class = "form-control", @disabled = "disabled" })
                     @Html.ValidationMessageFor(model => model.tipo, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(m => m.tipo)
                 </div>
             </div>
             
@@ -443,6 +445,7 @@
                 <div class="col-md-10">
                     @Html.TextBoxFor(m => m.solicitadoEn, new { @class = "form-control", @disabled="disabled" })
                     @Html.ValidationMessageFor(model => model.solicitadoEn, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(m => m.solicitadoEn)
                 </div>
             </div>
             
@@ -451,6 +454,7 @@
                 <div class="col-md-10">
                     @Html.TextBoxFor(m => m.solicitadoPor, new { @class = "form-control", @disabled="disabled" })
                     @Html.ValidationMessageFor(model => model.solicitadoPor, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(m => m.solicitadoPor)
                 </div>
             </div>
             
@@ -459,17 +463,51 @@
                 <div class="col-md-10">
                     @Html.TextAreaFor(m => m.razon, new { @class = "form-control", @disabled="disabled" })
                     @Html.ValidationMessageFor(model => model.razon, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(m => m.razon)
                 </div>
             </div>
 
-            <div class="form-group">
-                @Html.LabelFor(m => m.comentario, new { @class = "col-md-2 control-label required" })
-                <div class="col-md-10">
-                    @Html.TextAreaFor(m => m.comentario, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.comentario, "", new { @class = "text-danger" })
+            @if (Model.estado != "En revisión")
+            {
+                <div class="form-group">
+                    @Html.LabelFor(m => m.comentario, new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-10">
+                        @Html.TextAreaFor(m => m.comentario, new { @class = "form-control", @disabled = "disabled" })
+                        @Html.ValidationMessageFor(model => model.comentario, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(m => m.comentario)
+                    </div>
                 </div>
-            </div> 
-                  
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.aprobadoEn, new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.aprobadoEn, new { @class = "form-control", @disabled = "disabled" })
+                        @Html.ValidationMessageFor(model => model.aprobadoEn, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(m => m.aprobadoEn)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(m => m.aprobadoPor, new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.aprobadoPor, new { @class = "form-control", @disabled = "disabled" })
+                        @Html.ValidationMessageFor(model => model.aprobadoPor, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(m => m.aprobadoPor)
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="form-group">
+                    @Html.LabelFor(m => m.comentario, new { @class = "col-md-2 control-label required" })
+                    <div class="col-md-10">
+                        @Html.TextAreaFor(m => m.comentario, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.comentario, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(m => m.comentario)
+                    </div>
+                </div>
+            }
+
         </div>
     </div>
 
@@ -485,7 +523,11 @@
         window.onload = function () {
             @if (Model.tipo == "Eliminar")
             {
-                @Html.Raw("$('.col-md-4').addClass('col-md-2').removeClass('col-md-4');");
+                @Html.Raw("$('.col-md-4').addClass('col-md-2').removeClass('col-md-4');")
+            }
+            @if (Model.estado != "En revisión")
+            {
+                @Html.Raw("$('.form-control').attr('disabled',true);")
             }
             $('#list2').multiSelect();
             $('#list3').multiSelect();
@@ -503,15 +545,18 @@
         };
     </script>
 
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-success" value="Aceptar" />
-            <input type="submit" class="btn btn-danger" value="Rechazar" />
-            <input type="button" class="btn btn-default" value="Cancelar" onclick="location.reload()" />
+    if (Model.estado == "En revisión")
+    {
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" class="btn btn-success" name="comando" value="Aprobar" />
+                <input type="submit" class="btn btn-danger" name="comando" value="Rechazar" />
+                <input type="button" class="btn btn-default" value="Cancelar" onclick="location.reload()" />
+            </div>
         </div>
-    </div>
-
     }
+
+}
 
     <style>
         @@media (min-width: 768px) {

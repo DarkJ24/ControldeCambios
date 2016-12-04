@@ -8,7 +8,9 @@ namespace ControldeCambios.Models
 {
     public class AprobarSolicitudCambioModelo
     {
-        [Required(ErrorMessage = "El código es un campo requerido.")]
+        [Required(ErrorMessage = "El id de la solicitud es un campo requerido.")]
+        public string id { get; set; }
+        
         [StringLength(15, ErrorMessage = "El código debe ser de {1} dígitos"), MinLength(1, ErrorMessage = "El código debe ser de al menos {1} dígito")]
         [Display(Name = "Código")]
         [RegularExpression(@"^[A-Za-z0-9\-\s]+$", ErrorMessage = "El código solo debe contener letras, números, espacios y guiones")]
@@ -19,8 +21,7 @@ namespace ControldeCambios.Models
         [Display(Name = "Código")]
         [RegularExpression(@"^[A-Za-z0-9\-\s]+$", ErrorMessage = "El código solo debe contener letras, números, espacios y guiones")]
         public string codigo2 { get; set; }
-
-        [Required(ErrorMessage = "El nombre es un campo requerido.")]
+        
         [StringLength(25, ErrorMessage = "El nombre debe ser de {1} caracteres"), MinLength(1, ErrorMessage = "El nombre debe ser de al menos {1} caracteres")]
         [Display(Name = "Nombre")]
         [RegularExpression(@"^[A-Za-z\s]+$", ErrorMessage = "El nombre solo debe contener letras y espacios")]
@@ -39,20 +40,17 @@ namespace ControldeCambios.Models
         [StringLength(120, ErrorMessage = "La descripción debe ser de {1} caracteres máximo"), MinLength(1, ErrorMessage = "La descripción debe ser de al menos {1} caracter")]
         [Display(Name = "Descripción")]
         public string descripcion2 { get; set; }
-
-        [Required(ErrorMessage = "El nombre del solicitante es un campo requerido.")]
+        
         public string solicitadoPor1 { get; set; }
 
         [Required(ErrorMessage = "El nombre del solicitante es un campo requerido.")]
         public string solicitadoPor2 { get; set; }
-
-        [Required(ErrorMessage = "El nombre del creador es un campo requerido.")]
+        
         public string creadoPor1 { get; set; }
 
         [Required(ErrorMessage = "El nombre del creador es un campo requerido.")]
         public string creadoPor2 { get; set; }
-
-        [Required(ErrorMessage = "La prioridad es un campo requerido.")]
+        
         [Display(Name = "Prioridad")]
         [RegularExpression(@"^[0-9]+$", ErrorMessage = "La prioridad solo puede contener números")]
         public string prioridad1 { get; set; }
@@ -64,7 +62,6 @@ namespace ControldeCambios.Models
 
         [Display(Name = "Esfuerzo")]
         [RegularExpression(@"^[0-9\s]+$", ErrorMessage = "El esfuerzo solo pueden contener números y espacios")]
-        [Required(ErrorMessage = "El esfuerzo es un campo requerido.")]
         public string esfuerzo1 { get; set; }
 
         [Display(Name = "Esfuerzo")]
@@ -73,7 +70,6 @@ namespace ControldeCambios.Models
         public string esfuerzo2 { get; set; }
 
         [Display(Name = "Fecha de Inicio")]
-        [Required(ErrorMessage = "La fecha de inicio es un campo requerido.")]
         public string fechaInicial1 { get; set; }
 
         [Display(Name = "Fecha de Inicio")]
@@ -86,7 +82,6 @@ namespace ControldeCambios.Models
         public string fechaFinal2 { get; set; }
 
         [Display(Name = "Estado")]
-        [Required(ErrorMessage = "El estado es un campo requerido.")]
         public string estado1 { get; set; }
 
         [Display(Name = "Estado")]
@@ -106,7 +101,6 @@ namespace ControldeCambios.Models
         public string file2 { get; set; }
 
         [Display(Name = "Criterios de Aceptación")]
-        [Required(ErrorMessage = "Los criterios de aceptación son un campo requerido.")]
         public string criteriosAceptacion1 { get; set; }
 
         [Display(Name = "Criterios de Aceptación")]
@@ -151,5 +145,11 @@ namespace ControldeCambios.Models
         [Required(ErrorMessage = "La razón es un campo obligatorio.")]
         [Display(Name = "Razón")]
         public string razon { get; set; }
+
+        [Display(Name = "Aprobado en:")]
+        public string aprobadoEn { get; set; }
+
+        [Display(Name = "Aprobado por:")]
+        public string aprobadoPor { get; set; }
     }
 }
