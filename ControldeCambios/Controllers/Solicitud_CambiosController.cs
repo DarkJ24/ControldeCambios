@@ -289,7 +289,7 @@ namespace ControldeCambios.Controllers
             ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
             ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");
             ViewBag.DesarrolladoresDisp = listaDesarrolladores;
-            ViewBag.Estados = new SelectList(baseDatos.Estado_Proyecto.ToList(), "nombre", "nombre");
+            ViewBag.Estados = new SelectList(baseDatos.Estado_Requerimientos.ToList(), "nombre", "nombre");
             return View(modelo);        // Se retorna la vista al modelo luego de cargar los datos
         }
 
@@ -307,16 +307,17 @@ namespace ControldeCambios.Controllers
             if (ModelState.IsValid) { //Tipo Modificar y Valido
                 var req1 = baseDatos.Requerimientos.Find(solicitud.req1);
                 var req2 = baseDatos.Requerimientos.Find(solicitud.req2);
-                if (comando == "Aprobar") {
-                    solicitud.estado = "Aprobado";
-                    req1.categoria = "Historial";
-                    req2.categoria = "Actual";
-                    baseDatos.Entry(req1).State = System.Data.Entity.EntityState.Modified;
-                } else {
+                if (comando == "Rechazar") {
                     solicitud.estado = "Rechazado";
                     req2.categoria = "Rechazada";
-                    //Falta buscar el req actual con la ultima version (en caso de hacer solicitud de una version anterior a la actual)
-                    req2.version = req1.version + 1;
+                } else {
+                    solicitud.estado = "Aprobado";
+                    req2.categoria = "Actual";
+                    //Busca el req actual con la ultima version (en caso de hacer solicitud de una version anterior a la actual)
+                    var reqActual = getLastRequerimiento(req1, req1);
+                    reqActual.categoria = "Historial";
+                    baseDatos.Entry(reqActual).State = System.Data.Entity.EntityState.Modified;
+                    req2.version = reqActual.version + 1;
                     req2.codigo = model.codigo2;
                     req2.nombre = model.nombre2;
                     req2.prioridad = Int32.Parse(model.prioridad2);
@@ -553,6 +554,7 @@ namespace ControldeCambios.Controllers
                 requerimiento.estado = modelo.estado;
                 requerimiento.observaciones = modelo.observaciones;
                 requerimiento.proyecto = modelo.proyecto;
+                requerimiento.modulo = requerimientoViejo.modulo;
                 requerimiento.Usuarios = new List<Usuario>();
                 baseDatos.SaveChanges();
                 if (modelo.equipo != null)
@@ -969,6 +971,55 @@ namespace ControldeCambios.Controllers
                 baseDatos.Progreso_Sprint.Add(progreso_hoy);
             }
             baseDatos.SaveChanges();
+        }
+
+        private Requerimiento getLastRequerimiento(Requerimiento requerimiento, Requerimiento requerimientoOrigen)
+        {
+            //Solo se puede crear solicitud desde Historial y Actual
+            if (requerimiento.categoria == "Actual")
+            {
+                return requerimiento;
+            } else {//Es historial o Solicitud o Rechazada
+                var solicitudesDeCambio = baseDatos.Solicitud_Cambios.Where(m => m.req1 == requerimiento.id && m.estado == "Aprobado" && m.tipo == "Modificar").ToList();//Ahora solo es Historial
+                if (solicitudesDeCambio != null && solicitudesDeCambio.Count > 0) {
+                    foreach (var solicitud in solicitudesDeCambio) {
+                        var req = baseDatos.Requerimientos.Find(solicitud.req2);
+                        if (req != requerimientoOrigen) {
+                            if (req.categoria == "Actual") {
+                                return req;
+                            } else {
+                                //Al ser aprobada y de tipo modificar req2 solo puede ser actual o historial
+                                Requerimiento prueba = getLastRequerimiento(req, requerimiento);//Hacia adelante
+                                if (prueba.categoria == "Actual") {
+                                    return prueba;//Lo encontramos
+                                }
+                                //No es, intentar otra vez
+                            }
+                        }
+                    }
+                }
+                //Si es historial y no tiene un siguiente actual
+                var solicitudesDeCambio2 = baseDatos.Solicitud_Cambios.Where(m => m.req2 == requerimiento.id && m.estado == "Aprobado" && m.tipo == "Modificar").ToList();
+                if (solicitudesDeCambio2 != null && solicitudesDeCambio2.Count > 0) {
+                    foreach (var solicitud in solicitudesDeCambio2) {
+                        var req = baseDatos.Requerimientos.Find(solicitud.req1);
+                        if (req != requerimientoOrigen) {
+                            if (req.categoria == "Actual") {
+                                return req;
+                            } else {
+                                //Al ser aprobada y de tipo modificar req2 solo puede ser actual o historial
+                                Requerimiento prueba = getLastRequerimiento(req, requerimiento);//Hacia atras
+                                if (prueba.categoria == "Actual") {
+                                    return prueba;//Lo encontramos
+                                }
+                                //No es, intentar otra vez
+                            }
+                        }
+                    }
+                }
+                //No tiene anterior ni siguiente actual
+                return requerimiento;
+            }
         }
     }
 }
