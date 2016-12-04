@@ -338,7 +338,7 @@ req.version)
 
                 @Html.PagedListPager((IPagedList)ViewBag.OnePageOfReqs, page => Url.Action("CrearSolicitud", new { page, id = Model.idReqAnterior }))
                 @Html.Raw("Página:")
-                if (ViewBag.OnePageOfReqs.PageCount < ViewBag.OnePageOfReqs.PageNumber)
+                @if (ViewBag.OnePageOfReqs.PageCount < ViewBag.OnePageOfReqs.PageNumber)
                 {
                 @Html.Raw("0")
                 }
@@ -348,7 +348,6 @@ req.version)
                 }
                 @Html.Raw(" de ")
                 @ViewBag.OnePageOfReqs.PageCount
-                }
                 </div>
         </div>
     }
