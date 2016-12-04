@@ -8,8 +8,6 @@ namespace ControldeCambios.Models
 {
     public class SolicitudCambiosModel
     {
-
-
         /// <summary>
         /// Datos de la solicitud
         /// </summary>
@@ -43,12 +41,6 @@ namespace ControldeCambios.Models
         [Display(Name = "Aprobrado por")]
         //[Required(ErrorMessage = "El nombre de la persona que aprueba es un campo requerido.")]
         public string aprobadoPor { get; set; }
-
-<<<<<<< HEAD
-
-=======
-        
->>>>>>> cd308be48d81646752c8c35a6f6a383e36f0cd26
 
         /// <summary>
         /// Datos del Requerimiento
@@ -101,13 +93,6 @@ namespace ControldeCambios.Models
         [Display(Name = "Estado")]
         public string estado { get; set; }
 
-<<<<<<< HEAD
-
-=======
-    
->>>>>>> cd308be48d81646752c8c35a6f6a383e36f0cd26
-
-
         [Display(Name = "Observaciones")]
         [RegularExpression(@"^[A-Za-z0-9\s]+$", ErrorMessage = "Las observaciones solo pueden contener números, letras y espacios")]
         public string observaciones { get; set; }
@@ -123,8 +108,6 @@ namespace ControldeCambios.Models
 
         //AGREGAR EQUIPO
         public List<string> equipo { get; set; }
-
-
 
     }
 }
