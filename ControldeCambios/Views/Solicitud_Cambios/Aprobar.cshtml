@@ -20,13 +20,13 @@
     }
 
     function add_textbox() {
-        $("#textboxes").append("<div class='row'><div id='textbox" + i + "'><div class='col-md-4'><textarea class='multitextbox form-control multitextbox" + i + "' disabled="+'"disabled"'+" cols='30' rows='2' style='border-radius:4px'></textarea></div></div></div>")
+        $("#textboxes").append("<div class='row'><div id='textbox" + i + "'><div class='col-md-10'><textarea class='multitextbox form-control multitextbox" + i + "' disabled="+'"disabled"'+" cols='30' rows='2' style='border-radius:4px'></textarea></div></div></div>")
         var tbid = "multitextbox" + i;
         i++
         return tbid;
     }
     function add_textbox1() {
-        $("#textboxes1").append("<div class='row'><div id='textbox" + i + "'><div class='col-md-4'><textarea class='multitextbox2 form-control multitextbox-" + i + "' oninput=update_output1() cols='30' rows='2' style='border-radius:4px'></textarea></div> <div class='col-md-1'><button onclick='delete_all(this)' class='btn' id='textbox" + i + "'><span class='glyphicon glyphicon-minus' aria-hidden='true'></span></button></div> <br/> <br/> <br />  </div></div>")
+        $("#textboxes1").append("<div class='row'><div id='textbox" + i + "'><div class='col-md-10'><textarea class='multitextbox2 form-control multitextbox-" + i + "' oninput=update_output1() cols='30' rows='2' style='border-radius:4px'></textarea></div> <div class='col-md-1'><button onclick='delete_all(this)' class='btn' id='textbox" + i + "'><span class='glyphicon glyphicon-minus' aria-hidden='true'></span></button></div> <br/> <br/> <br />  </div></div>")
         var tbid = "multitextbox-" + i;
         i++
         return tbid;
@@ -119,7 +119,7 @@
                     @Html.HiddenFor(m => m.criteriosAceptacion1, new { @id = "output", @disabled = "disabled" })
                     <div class="col-md-8" style="margin-bottom:25px">
                         <div id="textboxes">
-                            <div class='row'><div id='textbox0'><div class='col-md-4'><textarea class='multitextbox form-control multitextbox0' disabled="disabled" oninput=update_output() cols='30' rows='2' style='border-radius:4px'></textarea></div> <div class='col-md-1'></div> <br /> <br /> <br />  </div></div>
+                            <div class='row'><div id='textbox0'><div class='col-md-10'><textarea class='multitextbox form-control multitextbox0' disabled="disabled" oninput=update_output() cols='30' rows='2' style='border-radius:4px'></textarea></div> <div class='col-md-1'></div> <br /> <br /> <br />  </div></div>
                         </div>
                     </div>
                     @Html.ValidationMessageFor(m => m.criteriosAceptacion1, "", new { @class = "text-danger" })
@@ -158,7 +158,7 @@
                 </div>
             </div>
         </div>
-        @Html.Raw("</div>");
+        @Html.Raw("</div>")
 
         @*DATOS DE REQUERIMIENTO 2*@
         @if (Model.tipo == "Modificar")
@@ -204,7 +204,7 @@
                                 <br />
                                 <br />
                                 <div id="textboxes1">
-                                    <div class='row'><div id='textbox1'><div class='col-md-4'><textarea class='multitextbox2 form-control multitextbox-0' oninput=update_output2() cols='30' rows='2' style='border-radius:4px'></textarea></div> <div class='col-md-1'></div> <br /> <br /> <br />  </div></div>
+                                    <div class='row'><div id='textbox1'><div class='col-md-10'><textarea class='multitextbox2 form-control multitextbox-0' oninput=update_output2() cols='30' rows='2' style='border-radius:4px'></textarea></div> <div class='col-md-1'></div> <br /> <br /> <br />  </div></div>
                                 </div>
                             </div>
                             @Html.ValidationMessageFor(m => m.criteriosAceptacion2, "", new { @class = "text-danger" })
@@ -292,7 +292,7 @@
                     </div>
                 </div>
             </div>
-        @Html.Raw("</div>");
+        @Html.Raw("</div>")
 
         @*DATOS DE ESTIMACION 2*@
         @if (Model.tipo == "Modificar")
@@ -378,7 +378,7 @@
                     </div>
                 </div>
             </div>
-        @Html.Raw("</div>");
+        @Html.Raw("</div>")
 
         @*DATOS GENERALES 2*@
         @if (Model.tipo == "Modificar")
@@ -507,7 +507,6 @@
                     </div>
                 </div>
             }
-
         </div>
     </div>
 

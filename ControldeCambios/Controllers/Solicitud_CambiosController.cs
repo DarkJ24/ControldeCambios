@@ -337,17 +337,6 @@ namespace ControldeCambios.Controllers
                         ImageData.InputStream.Read(array, 0, ImageData.ContentLength);
                         req2.imagen = array;
                     }
-                    else
-                    {
-                        if (model.file2 == "")
-                        {
-                            req2.imagen = null;
-                        }
-                        else
-                        {
-                            req2.imagen = Encoding.ASCII.GetBytes(model.file2);
-                        }
-                    }
                 }
                 String userIdentityId = System.Web.HttpContext.Current.User.Identity.GetUserId();
                 String usuarioActual = baseDatos.Usuarios.Where(m => m.id == userIdentityId).First().cedula;
@@ -499,7 +488,7 @@ namespace ControldeCambios.Controllers
             ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
             ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");
             ViewBag.DesarrolladoresDisp = listaDesarrolladores;
-            ViewBag.Estados = new SelectList(baseDatos.Estado_Proyecto.ToList(), "nombre", "nombre");
+            ViewBag.Estados = new SelectList(baseDatos.Estado_Requerimientos.ToList(), "nombre", "nombre");
 
             //Indice de Versiones Anteriores
             var solicitudes = baseDatos.Solicitud_Cambios.Where(m => m.proyecto == requerimiento.proyecto && m.estado == "Aprobado" && (m.req1 == requerimiento.id || m.req2 == requerimiento.id)).ToList();
@@ -723,6 +712,7 @@ namespace ControldeCambios.Controllers
             modelo.tipoSolicitud = solicitud_cambio.tipo;
             modelo.razon = solicitud_cambio.razon;
             modelo.solicitadoPorSolicitud = solicitud_cambio.solicitadoPor;
+            ViewBag.nombreDeSolicitadoPor = baseDatos.Usuarios.Find(solicitud_cambio.solicitadoPor).nombre;
             modelo.solicitadoEn = solicitud_cambio.solicitadoEn.ToString("MM/dd/yyyy");
 
             if (solicitud_cambio.aprobadoEn != null)

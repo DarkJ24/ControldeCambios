@@ -248,12 +248,14 @@ namespace ControldeCambios.Controllers
                 var ultimo_dia = horas_esfuerzo.Select(h => h.fecha).Max();
                 for (var dia = start; dia < ultimo_dia.AddDays(1); dia = dia.AddDays(1))
                 {
-                    double puntaje;
+                    double puntaje = 0;
                     var esfuerzo_actual = horas_esfuerzo.Where(s => s.fecha.Date.Equals(dia.Date)).FirstOrDefault();
                     // repetir el esfuerzo del día pasado si no se hizo nada
                     if (esfuerzo_actual == null)
                     {
-                        puntaje = esfuerzo_real.Last();
+                        if (esfuerzo_real.Count > 0) {
+                            puntaje = esfuerzo_real.Last();
+                        }
                     }
                     //sino, usar el puntaje normal
                     else
