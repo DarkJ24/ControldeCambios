@@ -572,14 +572,7 @@ namespace ControldeCambios.Controllers
                 }
                 else
                 {
-                    if (modelo.file == "")
-                    {
-                        requerimiento.imagen = null;
-                    }
-                    else
-                    {
-                        requerimiento.imagen = Encoding.ASCII.GetBytes(modelo.file);
-                    }
+                    requerimiento.imagen = requerimientoViejo.imagen;
                 }
                 //Se hace el split para separar los criterios de aceptación y meterlos en una lista
                 var criterios = modelo.criteriosAceptacion.Split('|').ToList();
