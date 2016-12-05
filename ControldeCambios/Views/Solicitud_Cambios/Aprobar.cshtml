@@ -59,8 +59,13 @@
 
 </script>
 
-<h2>Gestión de Requerimientos</h2>
-<h4>@ViewBag.Title</h4>
+<div data-step="1" data-intro="En esta pantalla se puede aceptar o rechazar una solicitud de cambios">
+    <h2>Gestión de Requerimientos</h2>
+    <h4>@ViewBag.Title</h4>
+</div>
+
+@{ int ayudasActuales = 2; }
+
 <hr />
 @using (Html.BeginForm("Aprobar", "Solicitud_Cambios", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data" }))
 {
@@ -73,6 +78,7 @@
 
     //***PRIMER ROW***
     <div class="row">
+        
         @*DATOS DE REQUERIMIENTO 1*@
         @if (Model.tipo == "Modificar")
         {
@@ -82,7 +88,8 @@
         {
             @Html.Raw("<div class='col-xs-12 col-sm-12'>")
         }
-        <div class="panel panel-info">
+        <div class="panel panel-info" data-step=@ayudasActuales data-intro="Aquí se puede ver la información del requerimiento en la versión anterior">
+            @{ ayudasActuales++; }
             <div class="panel-heading"><label>Datos del Requerimiento Anterior</label></div>
             <div class="panel-body">
                 <div class="form-group">
@@ -163,7 +170,8 @@
         @*DATOS DE REQUERIMIENTO 2*@
         @if (Model.tipo == "Modificar")
         {
-            <div class='col-xs-12 col-sm-6'>
+            <div class='col-xs-12 col-sm-6' data-step=@ayudasActuales data-intro="Aquí se puede ver la información del requerimiento en la versión propuesta. Cualquier cambio que se desee hacer sobre la solicitud, se puede hacer.">
+                @{ ayudasActuales++; }
                 <div class="panel panel-info">
                     <div class="panel-heading"><label>Datos del Requerimiento Solicitado</label></div>
                     <div class="panel-body">
@@ -418,7 +426,8 @@
     </div>
 
     //INFORMACION DEL CAMBIO
-    <div class="panel panel-info">
+    <div class="panel panel-info" data-step=@ayudasActuales data-intro="Aquí se puede ver la información acerca de la solicitud, y se agrega un comentario explicando la razón de que se quiera aceptar o rechazar">
+        @{ ayudasActuales++; }
         <div class="panel-heading"><label>Datos de la Solicitud de Cambio</label></div>
         <div class="panel-body">
 
@@ -548,9 +557,12 @@
     {
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" class="btn btn-success" name="comando" value="Aprobar" />
-                <input type="submit" class="btn btn-danger" name="comando" value="Rechazar" />
-                <input type="button" class="btn btn-default" value="Cancelar" onclick="location.reload()" />
+                <input type="submit" class="btn btn-success" name="comando" value="Aprobar" data-step=@ayudasActuales data-intro="Si se desea aceptar la solicitud se puede hacer click aquí." data-position="left" />
+                @{ ayudasActuales++; }
+                <input type="submit" class="btn btn-danger" name="comando" value="Rechazar" data-step=@ayudasActuales data-intro="Si se desea rechazar la solicitud se puede hacer click aquí." data-position="left" />
+                @{ ayudasActuales++; }
+                <input type="button" class="btn btn-default" value="Cancelar" onclick="location.reload()" data-step=@ayudasActuales data-intro="Si se comete un error y se desea descartar los cambios hechos, se hace click aquí." data-position="right" />
+                @{ ayudasActuales++; }
             </div>
         </div>
     }

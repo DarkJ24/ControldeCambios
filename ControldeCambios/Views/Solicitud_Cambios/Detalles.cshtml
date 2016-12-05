@@ -43,7 +43,7 @@ function load_all() {
 
 </script>
 
-<div data-step="1" data-intro="En esta pantalla se puede ver los detalles de una solicitud de cambio" class="datastep1">
+<div data-step="1" data-intro="En esta pantalla se puede ver los detalles de un requerimiento" class="datastep1">
     <h2>Gestión de Requerimientos</h2>
     <h4 id="subtitle">@ViewBag.Title</h4>
 </div>
@@ -56,7 +56,7 @@ function load_all() {
 }
 @if (Model.estadoSolicitud.Equals("En revisión"))
 {
-    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal" data-step=@ayudasActuales data-intro="Haciendo click aquí, se puede eliminar el proyecto">Eliminar</button>
+    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal" data-step=@ayudasActuales data-intro="Haciendo click aquí, se puede eliminar el requerimiento">Eliminar</button>
     { ayudasActuales++; }
     <hr />
 }
@@ -68,7 +68,7 @@ function load_all() {
     @Html.HiddenFor(m => m.proyecto)
     @Html.HiddenFor(m => m.idReqActual)
     @Html.HiddenFor(m => m.idReqSolicitud)
-    <div class="camposdiv" data-step=@ayudasActuales data-intro="Estos son los campos que despliegan la información del proyecto">
+    <div class="camposdiv" data-step=@ayudasActuales data-intro="Estos son los campos que despliegan la información del requerimiento">
         @{ayudasActuales++;}
         <div class="panel panel-info">
             <div class="panel-heading"><label>Datos de la Solicitud</label></div>
@@ -535,8 +535,8 @@ function load_all() {
     }
 
     function cambiarIntro() {
-        $('.datastep1').attr("data-intro", "Esta es la pantalla donde se puede modificar una solicitud de cambio");
-        $('.camposdiv').attr("data-intro", "Estos son los campos donde se puede cambiar la información del usuario");
+        $('.datastep1').attr("data-intro", "Esta es la pantalla donde se puede crear una solicitud de cambio");
+        $('.camposdiv').attr("data-intro", "Estos son los campos donde se puede cambiar la información del requerimiento");
         $('.botcritac').attr("data-step", @ayudasActuales);
         @{ ayudasActuales++; }
         $('.botcritac').attr("data-intro", "Haciendo click en este botón se pueden agregar más criterios de aceptación")

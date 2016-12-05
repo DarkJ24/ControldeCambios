@@ -6,9 +6,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Solicitud de Cambios</h2>
-<h4>@ViewBag.Title</h4>
+<div data-step="1" data-intro="En esta pantalla se puede ver las solicitudes de cambios que ha hecho y sus estados.">
+    <h2>Solicitud de Cambios</h2>
+    <h4>@ViewBag.Title</h4>
+</div>
 <hr />
+
+@{bool primero = true; }
 
 @if (Model.indexSolicitudInfoList.Count() > 0)
 {
@@ -58,27 +62,38 @@
                 @Html.DisplayFor(modelItem => req.fecha)
             </td>
             <td>
+                @if(primero) {
                 @Html.ActionLink("Consultar", "Detalles", new
-               {
-                   id = req.id
-               })
+           {
+               id = req.id
+           },new { @data_step=2, @data_intro="Haciendo click aquí, se pueden ver los detalles de la solicitud de cambios" })
+                    { primero = false; }
+                } else
+                {
+                    @Html.ActionLink("Consultar", "Detalles", new
+                    {
+                        id = req.id
+                    })
+                }
             </td>
         </tr>
     }
 </table>
 
-@Html.PagedListPager((IPagedList)ViewBag.OnePageOfReqs, page => Url.Action("Index", new { page, proyecto = Model.proyecto }))
-@Html.Raw("Página:")
-if (ViewBag.OnePageOfReqs.PageCount < ViewBag.OnePageOfReqs.PageNumber)
-{
-@Html.Raw("0")
-}
-else
-{
-@ViewBag.OnePageOfReqs.PageNumber
-}
-@Html.Raw(" de ")
-@ViewBag.OnePageOfReqs.PageCount
+<div data-step="3" data-intro="Haciendo click aquí se pueden ver más solicitudes de cambio">
+    @Html.PagedListPager((IPagedList)ViewBag.OnePageOfReqs, page => Url.Action("Index", new { page, proyecto = Model.proyecto }))
+    @Html.Raw("Página:")
+    @if (ViewBag.OnePageOfReqs.PageCount < ViewBag.OnePageOfReqs.PageNumber)
+    {
+    @Html.Raw("0")
+    }
+    else
+    {
+    @ViewBag.OnePageOfReqs.PageNumber
+    }
+    @Html.Raw(" de ")
+    @ViewBag.OnePageOfReqs.PageCount
+</div>
 }
 else
 {
