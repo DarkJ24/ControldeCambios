@@ -227,9 +227,12 @@
                                         <img id="myImg" src="data:image/png;base64,@Html.DisplayFor(m => m.file2)" width="100px" data-toggle="modal" data-target="#myModal2" class="imagen myImageContainer" />
                                     </label>
                                 }
-                                <label class="" style="cursor:pointer">
-                                    <input id="imageInput" value="@Html.DisplayFor(m => m.file2)" class="btn btn-default btn-file" type="file" name="ImageData" accept="image/*" />
-                                </label>
+                                @if (Model.estado == "En revisión")
+                                {
+                                    <label class="" style="cursor:pointer">
+                                        <input id="imageInput" value="@Html.DisplayFor(m => m.file2)" class="btn btn-default btn-file" type="file" name="ImageData" accept="image/*" />
+                                    </label>
+                                }
                             </div>
                         </div>
                         <div class="form-group">
