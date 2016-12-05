@@ -795,7 +795,7 @@ namespace ControldeCambios.Controllers
                 solicitud_cambio.estado = modelo.estado;
                 solicitud_cambio.tipo = modelo.tipoSolicitud;
                 solicitud_cambio.razon = modelo.razon;
-                solicitud_cambio.solicitadoPor = modelo.solicitadoPor;
+                solicitud_cambio.solicitadoPor = modelo.solicitadoPorSolicitud;
                 solicitud_cambio.solicitadoEn = DateTime.ParseExact(modelo.solicitadoEn, "MM/dd/yyyy", null);
                 if (solicitud_cambio.aprobadoEn != null) {
                     solicitud_cambio.aprobadoEn = DateTime.ParseExact(modelo.aprobadoEn, "MM/dd/yyyy", null);
@@ -807,7 +807,18 @@ namespace ControldeCambios.Controllers
 
                 var estado = baseDatos.Estado_Solicitud.Find(modelo.estadoSolicitud);
                 solicitud_cambio.Estado_Solicitud = estado;
-                var requerimiento = baseDatos.Requerimientos.Find(modelo.idReqSolicitud);   // Se busca el modelo en la base y se cambian sus datos por los
+
+                int? idReq;
+                if (modelo.tipoSolicitud == "Modificar")
+                {
+                    idReq = modelo.idReqSolicitud;
+                }
+                else
+                {
+                    idReq = modelo.idReqActual;
+                }
+
+                var requerimiento = baseDatos.Requerimientos.Find(idReq);   // Se busca el modelo en la base y se cambian sus datos por los
                 requerimiento.nombre = modelo.nombre;                           // del modelo que entra como parametro
                 requerimiento.codigo = modelo.codigo;
                 requerimiento.creadoPor = modelo.creadoPor;
@@ -840,9 +851,7 @@ namespace ControldeCambios.Controllers
                         requerimiento.imagen = null;
                     }
                 }
-
-                var reqcriacs = baseDatos.Requerimientos.Find(modelo.id).Requerimientos_Cri_Acep.ToList();
-
+                var reqcriacs = baseDatos.Requerimientos.Find(idReq).Requerimientos_Cri_Acep.ToList();
                 foreach (var reqcriac in reqcriacs) {
                     baseDatos.Entry(reqcriac).State = System.Data.Entity.EntityState.Deleted;
                 }
@@ -864,9 +873,13 @@ namespace ControldeCambios.Controllers
                 baseDatos.Entry(requerimiento).State = System.Data.Entity.EntityState.Modified;     // Con esta linea se notifica a la base que se hacen los cambios
                 baseDatos.SaveChanges();    // Se guardan los cambios en la base
 
-                var sprints = baseDatos.Requerimientos.Find(modelo.idReqActual).Modulo1.Sprint_Modulos.Select(x => x.sprint);
-                foreach (var sprint in sprints) {
-                    updateSprintPoints(modelo.proyecto, sprint);
+                if (baseDatos.Requerimientos.Find(idReq).Modulo1 != null)
+                {
+                    var sprints = baseDatos.Requerimientos.Find(idReq).Modulo1.Sprint_Modulos.Select(x => x.sprint);
+                    foreach (var sprint in sprints)
+                    {
+                        updateSprintPoints(modelo.proyecto, sprint);
+                    }
                 }
                 this.AddToastMessage("Requerimiento Modificado", "La solicitud de cambio del requerimiento " + modelo.nombre + " se ha modificado correctamente.", ToastType.Success);      // Se muestra un mensaje de confirmacion
                 return RedirectToAction("Detalles", "Solicitud_Cambios", new { id = solicitud_cambio.id });       // Se carga el requerimiento modificado en la pantalla
