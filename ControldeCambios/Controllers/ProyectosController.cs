@@ -251,8 +251,10 @@ namespace ControldeCambios.Controllers
                     }
                 }
             }
-            //model.eliminarPermitido = (revisarPermisos("Eliminar Proyectos") && (model.estado == "Por iniciar") && (baseDatos.Requerimientos.Where(m => m.proyecto == id).Count() == 0) && (baseDatos.Sprints.Where(m => m.proyecto == id).Count() == 0) && (baseDatos.Modulos.Where(m => m.proyecto == id).Count() == 0));
-            model.eliminarPermitido = revisarPermisos("Eliminar Proyectos");
+            var pReqs = baseDatos.Requerimientos.Where(m => m.proyecto == id).ToList();
+            var pSprints = baseDatos.Sprints.Where(m => m.proyecto == id).ToList();
+            var pModulos = baseDatos.Modulos.Where(m => m.proyecto == id).ToList();
+            model.eliminarPermitido = (revisarPermisos("Eliminar Proyectos") && (model.estado == "Por iniciar             ") && (pReqs == null || pReqs.Count() == 0) && (pSprints == null || pSprints.Count() == 0) && (pModulos == null || pModulos.Count() == 0));
             model.modificarProyecto = revisarPermisos("Modificar Proyectos");
             ViewBag.Desarrolladores = new SelectList(listaDesarrolladores, "cedula", "nombre");
             ViewBag.Clientes = new SelectList(listaClientes, "cedula", "nombre");
@@ -435,6 +437,25 @@ namespace ControldeCambios.Controllers
             var modulosAsIPagedList = new StaticPagedList<ProyectoInfoModel.moduloInfo>(model.indexModuloInfoList, pageNumber2, pageSize2, model.modulos.Count);
             ViewBag.OnePageOfModulos = modulosAsIPagedList;
             return View(model);
+        }
+
+        // POST: Detalles
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Borrar(ModificarProyectoModel model)
+        {
+            var proyecto = baseDatos.Proyectos.Find(model.nombre);
+
+            foreach (var userProyecto in proyecto.Proyecto_Equipo.ToList())
+            {
+                baseDatos.Entry(userProyecto).State = System.Data.Entity.EntityState.Deleted;
+            }
+
+            baseDatos.Entry(proyecto).State = System.Data.Entity.EntityState.Deleted;
+            baseDatos.SaveChanges();
+
+            this.AddToastMessage("Proyecto Borrado", "El proyecto " + proyecto.nombre + " se ha borrado correctamente.", ToastType.Success);
+            return RedirectToAction("Index", "Proyectos");
         }
     }
 }
