@@ -4,17 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<script>
-    function habilitarCampos() {
-        $('.editBtns').show();
-        $('.editFields').attr("disabled", false);
-        $('.ms-elem-selectable').removeClass('disabled');
-        $('.ms-elem-selection').removeClass('disabled');
-        $('#subtitle').html("Modificar Proyecto");
-    }
-</script>
-
-<div data-step="1" data-intro="En esta pantalla podemos consultar modulos creados">
+<div class="datastep1" data-step="1" data-intro="En esta pantalla podemos consultar modulos creados">
     <h2>Gestión de Proyectos</h2>
     <h4 id="subtitle">@ViewBag.Title</h4>
 </div>
@@ -28,22 +18,24 @@
 {
     if (ViewBag.eliminar)
     {
-    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal">Eliminar</button>
+    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal data-step="3" data-intro="Haciendo click aquí, se puede eliminar el módulo">Eliminar</button>
     }
-    else
-    {
-        <a href="#" data-toggle="tooltip" title="No se puede eliminar este modulo porque tiene requerimientos asociados" data-placement="right">
-            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal" disabled="disabled">Eliminar</button>
-        </a>
-    }
+
+}
+else
+{
+    <a href="#" data-toggle="tooltip" title="No se puede eliminar este modulo porque tiene requerimientos asociados" data-placement="right">
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal" disabled="disabled" data-step="3" data-intro="Haciendo click aquí, se puede eliminar el módulo">Eliminar</button>
+    </a>
 }
 
 @using (Html.BeginForm("Detalles", "Modulos", FormMethod.Post, new { @class = "form-horizontal editFields", role = "form" }))
 {
     @Html.AntiForgeryToken()
 
-    <div data-step="3" data-intro="Aqui se muestran los datos del modulo que se consulta">
+    <div class="camposdiv" data-step="4" data-intro="Aqui se muestran los datos del modulo que se consulta">
 
+        
         @Html.HiddenFor(model => model.numero)
         <div class="form-group">
             @Html.LabelFor(m => m.proyecto, new { @class = "col-md-2 control-label required" })
@@ -62,8 +54,8 @@
                 @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
             </div>
         </div>
-
-        <div class="form-group">
+        
+        <div class="form-group datastepreqs">
             @Html.Label("Requerimientos", new { @class = "col-md-2 control-label" })
             <div class="col-md-10">
                 @Html.ListBoxFor(m => m.requerimientos, new MultiSelectList(ViewBag.listarequerimientos, "id", "nombre"), new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;", @disabled = "disabled", @class = "editFields" })
@@ -75,8 +67,8 @@
 
         <div class="form-group editBtns" style="display:none">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" class="btn btn-success" value="Aceptar" />
-                <input type="button" class="btn btn-default" value="Cancelar" onclick="location.reload()" />
+                <input type="submit" class="btn btn-success botonaceptar" value="Aceptar" />
+                <input type="button" class="btn btn-default botoncancelar" value="Cancelar" onclick="location.reload()" />
             </div>
         </div>
         }
@@ -122,6 +114,31 @@
                 $('[data-toggle="tooltip"]').tooltip();
             };
         </script>
+
+<script>
+    function habilitarCampos() {
+        $('.editBtns').show();
+        $('.editFields').attr("disabled", false);
+        $('.ms-elem-selectable').removeClass('disabled');
+        $('.ms-elem-selection').removeClass('disabled');
+        $('#subtitle').html("Modificar Proyecto");
+        cambiarIntro()
+    }
+
+    function cambiarIntro() {
+        $('.datastep1').attr("data-intro", "En esta pantalla se pueden modificar los datos del módulo");
+        $('.camposdiv').attr("data-intro", "Aquí se puede llenar la información del modulo");
+        $('.datastepreqs').attr("data-intro", "Aquí se puede modificar los requerimientos del módulo, haciendo click en cualquiera de los dos lados para asignar y desasignar requerimientos")
+        $('.datastepreqs').attr("data-step", 5);
+        $('.datastepreqs').attr("data-position", "right")
+        $('.botonaceptar').attr("data-step", 6);
+        $('.botonaceptar').attr("data-intro", "Haciendo click aquí se pueden guardar los cambios.")
+        $('.botonaceptar').attr("data-position", "left")
+        $('.botoncancelar').attr("data-step", 7);
+        $('.botoncancelar').attr("data-intro", "Se se cometió algún error y no se quieren guardar los cambios, haciendo click aquí se pueden deshacer.")
+        $('.botoncancelar').attr("data-position", "right")
+    }
+</script>
 
         @section Scripts {
             @Scripts.Render("~/bundles/jqueryval")
