@@ -527,6 +527,7 @@
             @if (Model.estado != "En revisión")
             {
                 @Html.Raw("$('.form-control').attr('disabled',true);")
+                @Html.Raw("$('#list3').attr('disabled',true);")
             }
             $('#list2').multiSelect();
             $('#list3').multiSelect();

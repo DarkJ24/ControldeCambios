@@ -492,28 +492,7 @@ namespace ControldeCambios.Controllers
             ViewBag.Estados = new SelectList(baseDatos.Estado_Requerimientos.ToList(), "nombre", "nombre");
 
             //Indice de Versiones Anteriores
-            var solicitudes = baseDatos.Solicitud_Cambios.Where(m => m.proyecto == requerimiento.proyecto && m.estado == "Aprobado" && (m.req1 == requerimiento.id || m.req2 == requerimiento.id)).ToList();
-            solicitudes = getRequerimientos(solicitudes);
-            var reqs = new List<Requerimiento>();
-            foreach (var sol in solicitudes)
-            {
-                var req = baseDatos.Requerimientos.Find(sol.req1);
-                if (req.categoria == "Historial")
-                {
-                    if (!reqs.Contains(req))
-                    {
-                        reqs.Add(req);
-                    }
-                }
-                var req2 = baseDatos.Requerimientos.Find(sol.req2);
-                if (req2.categoria == "Historial" || req2.categoria == "Actual")
-                {
-                    if (!reqs.Contains(req2))
-                    {
-                        reqs.Add(req2);
-                    }
-                }
-            }
+            var reqs = getRequerimientos(new List<Requerimiento>(), requerimiento).OrderBy(m => m.version).ToList();
             int pageSize = 10;
             int pageNumber = (page ?? 1);
             int lastElement = (reqs.Count < pageSize * pageNumber) ? reqs.Count : pageSize * pageNumber;
@@ -631,28 +610,46 @@ namespace ControldeCambios.Controllers
             return View(modelo);    // Se retorna la vista al modelo luego de modificar los datos
         }
 
-        List<Solicitud_Cambios> getRequerimientos(List<Solicitud_Cambios> solicitudes)
+        List<Requerimiento> getRequerimientos(List<Requerimiento> requerimientos, Requerimiento actual)
         {
-            if (solicitudes != null && solicitudes.Count > 0)
+            List<Requerimiento> newRequerimientos = requerimientos;
+            newRequerimientos.Add(actual);
+            if (actual.categoria != "Actual")
             {
-                var izquierda = new List<Solicitud_Cambios>();
-                var derecha = new List<Solicitud_Cambios>();
-                foreach (var sol in solicitudes)
-                {
-                    var izq = getRequerimientos(baseDatos.Solicitud_Cambios.Where(m => m.proyecto == sol.proyecto && m.estado == "Aprobado" && m.req2 == sol.req1).ToList());
-                    izquierda.AddRange(izq);
-                    var der = getRequerimientos(baseDatos.Solicitud_Cambios.Where(m => m.proyecto == sol.proyecto && m.estado == "Aprobado" && m.req1 == sol.req2).ToList());
-                    derecha.AddRange(der);
+                //Hay que revisar derecha
+                var solicitudes = baseDatos.Solicitud_Cambios.Where(m => m.req1 == actual.id && m.estado == "Aprobado").ToList();
+                if (solicitudes != null && solicitudes.Count > 0) {
+                    //Si hay derecha
+                    foreach (var sol in solicitudes) {
+                        if (sol.tipo == "Modificar") {
+                            var req2 = baseDatos.Requerimientos.Find(sol.req2);
+                            if (!newRequerimientos.Contains(req2)) {
+                                var reqs = getRequerimientos(newRequerimientos, req2);
+                                foreach (var req in reqs) {
+                                    if (!newRequerimientos.Contains(req)) {
+                                        newRequerimientos.Add(req);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
-                var respuesta = solicitudes;
-                respuesta.AddRange(izquierda);
-                respuesta.AddRange(derecha);
-                return respuesta;
             }
-            else
-            {
-                return solicitudes;
+            //Revisar Izquierda
+            if (actual.version > 1) {
+                //Tiene Izquierda
+                var solicitudDeCambio = baseDatos.Solicitud_Cambios.Where(m => m.req2 == actual.id && m.estado == "Aprobado").First();
+                var req1 = baseDatos.Requerimientos.Find(solicitudDeCambio.req1);
+                if (!newRequerimientos.Contains(req1)) {
+                    var reqs = getRequerimientos(newRequerimientos, req1);
+                    foreach (var req in reqs) {
+                        if (!newRequerimientos.Contains(req)) {
+                            newRequerimientos.Add(req);
+                        }
+                    }
+                }
             }
+            return newRequerimientos;
         }
 
         // POST: Crear Solicitud de Borrado
