@@ -4,17 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<script>
-    function habilitarCampos() {
-        $('.editBtns').show();
-        $('.editFields').attr("disabled", false);
-        $('.ms-elem-selectable').removeClass('disabled');
-        $('.ms-elem-selection').removeClass('disabled');
-        $('#subtitle').html("Modificar Sprint");
-    }
-</script>
-
-<div data-step="1" data-intro="En esta pantalla podemos consultar sprints creados">
+<div data-step="1" data-intro="En esta pantalla podemos consultar sprints creados" class="datastep1">
     <h2>Gestión de Proyectos</h2>
     <h4 id="subtitle">@ViewBag.Title</h4>
 </div>
@@ -36,7 +26,7 @@ else
 {
     @Html.AntiForgeryToken()
 
-    <div data-step="4" data-intro="Aqui se muestran los datos del sprint que se consulta">
+    <div data-step="4" data-intro="Aqui se muestran los datos del sprint que se consulta" class="camposdiv">
 
         <div class="form-group">
             @Html.LabelFor(m => m.proyecto, new { @class = "col-md-2 control-label required" })
@@ -74,7 +64,7 @@ else
         </div>
 
 
-        <div class="form-group">
+        <div class="form-group" class="datastepmod">
             @Html.Label("Modulos", new { @class = "col-md-2 control-label" })
             <div class="col-md-10">
                 @Html.ListBoxFor(m => m.modulos, (MultiSelectList)ViewBag.listamodulos, new { id = "list2", Multiple = "multiple", Size = 15, style = "width: 100%;", @class = "editFields", @disabled = "disabled" })
@@ -86,8 +76,8 @@ else
 
         <div class="form-group editBtns" style="display:none">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" class="btn btn-success" value="Aceptar" />
-                <input type="button" class="btn btn-default" value="Cancelar" onclick="location.reload()" />
+                <input type="submit" class="btn btn-success botonaceptar" value="Aceptar" />
+                <input type="button" class="btn btn-default botoncancelar" value="Cancelar" onclick="location.reload()" />
             </div>
         </div>
         }
@@ -134,6 +124,31 @@ else
                 $('[data-toggle="tooltip"]').tooltip();
             };
         </script>
+
+<script>
+    function habilitarCampos() {
+        $('.editBtns').show();
+        $('.editFields').attr("disabled", false);
+        $('.ms-elem-selectable').removeClass('disabled');
+        $('.ms-elem-selection').removeClass('disabled');
+        $('#subtitle').html("Modificar Sprint");
+        cambiarIntro();
+    }
+
+    function cambiarIntro() {
+        $('.datastep1').attr("data-intro", "En esta pantalla se pueden modificar los datos del sprint");
+        $('.camposdiv').attr("data-intro", "Aquí se puede llenar la información del sprint");
+        $('.datastepmod').attr("data-intro", "Aquí se puede modificar los módulos asociados al sprint, haciendo click en cualquiera de los dos lados para asignar y desasignarlos")
+        $('.datastepmod').attr("data-step", 5);
+        $('.datastepmod').attr("data-position", "right")
+        $('.botonaceptar').attr("data-step", 6);
+        $('.botonaceptar').attr("data-intro", "Haciendo click aquí se pueden guardar los cambios.")
+        $('.botonaceptar').attr("data-position", "left")
+        $('.botoncancelar').attr("data-step", 7);
+        $('.botoncancelar').attr("data-intro", "Se se cometió algún error y no se quieren guardar los cambios, haciendo click aquí se pueden deshacer.")
+        $('.botoncancelar').attr("data-position", "right")
+    }
+</script>
 
         @section Scripts {
             @Scripts.Render("~/bundles/jqueryval")

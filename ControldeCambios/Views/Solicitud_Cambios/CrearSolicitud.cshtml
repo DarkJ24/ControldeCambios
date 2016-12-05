@@ -5,29 +5,7 @@
     ViewBag.Title = "Consultar Requerimiento";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<script>
-    function habilitarCampos() {
-        $('.editBtns').show();
-        $('.editFields').attr("disabled", false);
-        $('.ms-elem-selectable').removeClass('disabled');
-        $('.ms-elem-selection').removeClass('disabled');
-        $('#subtitle').html("Crear Solicitud");
-        $('.imgdiv').removeClass("hidden");
-        $('.showimgdiv').addClass("hidden");
-        $('.versionDisplayer').hide();
-        $('.motivoDiv').show();
-        $('.minusbutton').show();
-        $('#imageInput').change(function () {
-            if (this.files && this.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    $('.myImageContainer').attr('src', e.target.result);
-                }
-                reader.readAsDataURL(this.files[0]);
-            }
-        });
-    }
-</script>
+
 <script>
     i = 1;
 
@@ -62,18 +40,24 @@
         }
     }
 </script>
-
-<h2>Gestión de Requerimientos</h2>
-<h4 id="subtitle">@ViewBag.Title</h4>
+<div data-step="1" data-intro="En esta pantalla se puede ver los detalles de un requerimiento" class="datastep1">
+    <h2>Gestión de Requerimientos</h2>
+    <h4 id="subtitle">@ViewBag.Title</h4>
+</div>
 <hr />
+
+@{ int ayudasActuales = 2; }
 @if (Model.crearSolicitud)
 {
-    <button type="button" class="btn btn-primary" onClick="habilitarCampos()">Crear Solicitud</button>
+    <button type="button" class="btn btn-primary" onClick="habilitarCampos()" data-step=@ayudasActuales data-intro="Haciendo click aquí, se puede crear una solicitud">Crear Solicitud</button>
+    { ayudasActuales++; }
 }
 @if (Model.eliminarRequerimiento)
 {
-    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal">Eliminar</button>
+    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal" data-step=@ayudasActuales data-intro="Haciendo click aquí, se puede crear una solicitud para eliminar el proyecto">Eliminar</button>
+    { ayudasActuales++; }
 }
+
 <hr />
 @using (Html.BeginForm("CrearSolicitud", "Solicitud_Cambios", FormMethod.Post, new { @class = "form-horizontal editFields", role = "form", enctype = "multipart/form-data" }))
 {
@@ -82,8 +66,9 @@
     @Html.HiddenFor(m => m.idReqAnterior)
     @Html.HiddenFor(m => m.proyecto)
 
-
-    <div class="panel panel-info">
+    <div class="camposdiv" data-step=@ayudasActuales data-intro="Estos son los campos que despliegan la información del requerimiento">
+    @{ ayudasActuales++; }
+        <div class="panel panel-info">
         <div class="panel-heading"><label>Datos de Requerimiento</label></div>
         <div class="panel-body">
             <div class="form-group">
@@ -117,11 +102,11 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="control-label col-md-2 required">Criterios de Aceptación:</label>
+                <label class="control-label col-md-2 required ">Criterios de Aceptación:</label>
                 @Html.HiddenFor(m => m.criteriosAceptacion, new { @id = "output" })
                 <div class="col-md-10" style="margin-bottom:25px">
                     <div class="editBtns" style="display:none">
-                        <button type="button" onclick="add_textbox()" class="btn editBtns" style="border-radius:4px"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Nuevo Criterio de Aceptación</button>
+                        <button type="button" onclick="add_textbox()" class="btn editBtns botcritac" style="border-radius:4px"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span>Nuevo Criterio de Aceptación</button>
                         <br />
                         <br />
                     </div>
@@ -155,7 +140,7 @@
                     @Html.ValidationMessageFor(model => model.observaciones, "", new { @class = "text-danger" })
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group recursos">
                 @Html.Label("Disponibles", new { @class = "col-md-offset-2 col-md-2 control-label", @style = "text-align:center;margin-left:195px;" })
                 @Html.Label("Responsables", new { @class = "col-md-offset-2  col-md-2 control-label required", @style = "text-align:center;margin-left:10px;margin-bottom:10px" })
                 <div class="col-md-offset-2 col-md-10" style="margin-bottom:25px">
@@ -244,11 +229,11 @@
             </div>
         </div>
     </div>
-
+    </div>
     <div class="form-group editBtns" style="display:none">
         <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-success" value="Aceptar" />
-            <input type="button" class="btn btn-default" value="Cancelar" onclick="location.reload()" />
+            <input type="submit" class="btn btn-success botonaceptar" value="Aceptar" />
+            <input type="button" class="btn btn-default botoncancelar" value="Cancelar" onclick="location.reload()" />
         </div>
     </div>
     <style type="text/css">
@@ -421,6 +406,50 @@ req.version)
         var offset = ($(window).height() - $dialog.height()) / 2;
         // Center modal vertically in window
         $dialog.css("margin-top", offset);
+    }
+</script>
+
+<script>
+    function habilitarCampos() {
+        $('.editBtns').show();
+        $('.editFields').attr("disabled", false);
+        $('.ms-elem-selectable').removeClass('disabled');
+        $('.ms-elem-selection').removeClass('disabled');
+        $('#subtitle').html("Crear Solicitud");
+        $('.imgdiv').removeClass("hidden");
+        $('.showimgdiv').addClass("hidden");
+        $('.versionDisplayer').hide();
+        $('.motivoDiv').show();
+        $('.minusbutton').show();
+        $('#imageInput').change(function () {
+            if (this.files && this.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('.myImageContainer').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+        cambiarIntro();
+    }
+
+    function cambiarIntro() {
+        $('.datastep1').attr("data-intro", "Esta es la pantalla donde se puede crear una solicitud de cambio");
+        $('.camposdiv').attr("data-intro", "Estos son los campos donde se puede cambiar la información del requerimiento");
+        $('.botcritac').attr("data-step", @ayudasActuales);
+    @{ ayudasActuales++; }
+        $('.botcritac').attr("data-intro", "Haciendo click en este botón se pueden agregar más criterios de aceptación")
+        $('.recursos').attr("data-step", @ayudasActuales)
+    @{ ayudasActuales++; }
+        $('.recursos').attr("data-intro", "Para agregar un desarrollador al requerimiento se puede hacer click aquí para llevarlos a la lista de responsables o para devolverlos a los disponibles.")
+        $('.botonaceptar').attr("data-step", @ayudasActuales);
+        $('.botonaceptar').attr("data-intro", "Haciendo click aquí se pueden guardar los cambios.")
+        $('.botonaceptar').attr("data-position", "left")
+    @{ayudasActuales++;}
+        $('.botoncancelar').attr("data-step", @ayudasActuales);
+        $('.botoncancelar').attr("data-intro", "Se se cometió algún error y no se quieren guardar los cambios, haciendo click aquí se pueden deshacer.")
+        $('.botoncancelar').attr("data-position", "right")
+    @{ayudasActuales++;}
     }
 </script>
 @section Scripts {

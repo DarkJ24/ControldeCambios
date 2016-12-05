@@ -6,9 +6,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Solicitud de Cambios por Aprobar</h2>
-<h4>@ViewBag.Title</h4>
+<div data-step="1" data-intro="En esta pantalla se pueden ver los criterios de aceptación del sistema y elegir los que no han sido aprobados">
+    <h2>Solicitud de Cambios por Aprobar</h2>
+    <h4>@ViewBag.Title</h4>
+</div>
 <hr />
+
+@{ bool primero = true; }
 
 @if (Model.indexSolicitudInfoList.Count() > 0)
 {
@@ -64,30 +68,41 @@
                     @Html.DisplayFor(modelItem => req.fecha)
                 </td>
                 <td>
+                    @if(primero) { 
                     @Html.ActionLink("Consultar", "Aprobar", new
-               {
-                   id = req.id
-               }, new { })
+                    {
+                        id = req.id
+                    }, new { @data_step=2, @data_intro="Haciendo click aquí se puede revisar la información de la solicitud para aprobarla o rechazada si no ha sido aprobada o rechazada anteriormente" })
+                        { primero = false; }
+                    }
+                    else
+                    {
+                        @Html.ActionLink("Consultar", "Aprobar", new
+                       {
+                           id = req.id
+                       }, new { })
+                    }
                 </td>
             </tr>
         }
     </table>
-
-    @Html.PagedListPager((IPagedList)ViewBag.OnePageOfReqs, page => Url.Action("Index", new { page, proyecto = Model.proyecto }))
-    @Html.Raw("Página:")
-    if (ViewBag.OnePageOfReqs.PageCount < ViewBag.OnePageOfReqs.PageNumber)
-    {
+    <div data-step="3" data-intro="Haciendo click aquí se pueden ver más solicitudes">
+        @Html.PagedListPager((IPagedList)ViewBag.OnePageOfReqs, page => Url.Action("Index", new { page, proyecto = Model.proyecto }))
+        @Html.Raw("Página:")
+        @if (ViewBag.OnePageOfReqs.PageCount < ViewBag.OnePageOfReqs.PageNumber)
+        {
         @Html.Raw("0")
+        }
+        else
+        {
+        @ViewBag.OnePageOfReqs.PageNumber
+        }
+        @Html.Raw(" de ")
+        @ViewBag.OnePageOfReqs.PageCount
+    </div>
     }
     else
     {
-        @ViewBag.OnePageOfReqs.PageNumber
-    }
-    @Html.Raw(" de ")
-    @ViewBag.OnePageOfReqs.PageCount
-}
-else
-{
     <div class="row text-center">
         <label>No hay Solicitudes por aprobar</label>
     </div>
